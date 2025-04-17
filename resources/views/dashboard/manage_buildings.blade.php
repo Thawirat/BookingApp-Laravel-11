@@ -46,7 +46,7 @@
                                                 <i class="fas fa-trash me-1"></i>ลบ
                                             </button>
                                             <button class="btn btn-sm btn-outline-info flex-grow-1"
-                                                    onclick="window.location.href='{{ route('manage_rooms.show', $building->id) }}'">
+                                                    onclick="window.location.href='{{ route('sub_admin.rooms', $building->id) }}'">
                                                 <i class="fas fa-door-open me-1"></i>ห้อง
                                             </button>
                                         </div>

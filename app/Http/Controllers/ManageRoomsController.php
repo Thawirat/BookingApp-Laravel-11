@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class ManageRoomsController extends Controller
 {
@@ -20,18 +21,18 @@ class ManageRoomsController extends Controller
                         $query->where('building_name', 'like', '%'.request('search').'%');
                     })
                     ->paginate(12);
-                    
+
         // Get room statistics
         $rooms = Room::all();
         $status = Status::all();
-        
+
         // Get total counts
         $totalBuildings = Building::count();
         $totalRooms = Room::count();
-        
+
         return view('dashboard.manage_rooms', compact(
-            'buildings', 
-            'rooms', 
+            'buildings',
+            'rooms',
             'status',
             'totalBuildings',
             'totalRooms'
@@ -42,15 +43,15 @@ class ManageRoomsController extends Controller
     {
         // Ensure building exists and get its ID
         $building = Building::findOrFail($buildingId);
-        
+
         // Get rooms for this building with search and pagination
         // Get total counts for available and unavailable rooms
         $totalCount = Room::where('building_id', $building->id)->count();
-        
+
         $availableCount = Room::where('building_id', $building->id)
                             ->where('status_id', 2)
                             ->count();
-                            
+
         $unavailableCount = Room::where('building_id', $building->id)
                               ->where('status_id', 1)
                               ->count();
@@ -62,14 +63,14 @@ class ManageRoomsController extends Controller
                         $query->where('room_name', 'like', '%'.request('search').'%');
                     })
                     ->paginate(12);
-                    
+
         $buildings = Building::all();
         $status = Status::all();
-        
+
         return view('dashboard.rooms', compact(
-            'rooms', 
-            'building', 
-            'buildings', 
+            'rooms',
+            'building',
+            'buildings',
             'status',
             'totalCount',
             'availableCount',
@@ -87,7 +88,7 @@ class ManageRoomsController extends Controller
         // Get the maximum room_id for this building
         $maxRoomId = Room::where('building_id', $buildingId)
                         ->max('room_id');
-        
+
         // Return next available room_id
         return $maxRoomId ? $maxRoomId + 1 : 1;
     }
@@ -127,7 +128,7 @@ class ManageRoomsController extends Controller
                 if ($request->hasFile('image')) {
                     try {
                         $image = $request->file('image');
-                        
+
                         // Validate file type and size
                         if (!$image->isValid()) {
                             Log::error('Invalid file upload attempt', [
@@ -136,17 +137,17 @@ class ManageRoomsController extends Controller
                             ]);
                             throw new \Exception('Invalid file upload: ' . $image->getErrorMessage());
                         }
-                        
+
                         // Verify file extension
                         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
                         $extension = strtolower($image->getClientOriginalExtension());
                         if (!in_array($extension, $allowedExtensions)) {
                             throw new \Exception('Invalid file type. Allowed types: ' . implode(', ', $allowedExtensions));
                         }
-                        
+
                         // Generate unique filename with original extension
                         $imageName = time() . '_' . uniqid() . '.' . $extension;
-                        
+
                         // Verify storage directory exists
                         $storagePath = storage_path('app/public/room_images');
                         if (!is_dir($storagePath)) {
@@ -154,13 +155,13 @@ class ManageRoomsController extends Controller
                                 throw new \Exception('Failed to create storage directory');
                             }
                         }
-                        
+
                         // Store image and handle errors
                         $imagePath = $image->storeAs('public/room_images', $imageName);
                         if (!$imagePath) {
                             throw new \Exception('Failed to store image');
                         }
-                        
+
                         $room->image = 'room_images/' . $imageName;
                         Log::info('Room image uploaded successfully:', [
                             'path' => $imagePath,
@@ -226,7 +227,7 @@ class ManageRoomsController extends Controller
                 if ($request->hasFile('image')) {
                     try {
                         $image = $request->file('image');
-                        
+
                         // Validate file type and size
                         if (!$image->isValid()) {
                             Log::error('Invalid file upload attempt', [
@@ -235,24 +236,24 @@ class ManageRoomsController extends Controller
                             ]);
                             throw new \Exception('Invalid file upload: ' . $image->getErrorMessage());
                         }
-                        
+
                         // Verify file extension
                         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
                         $extension = strtolower($image->getClientOriginalExtension());
                         if (!in_array($extension, $allowedExtensions)) {
                             throw new \Exception('Invalid file type. Allowed types: ' . implode(', ', $allowedExtensions));
                         }
-                        
+
                         // Delete old image if exists
                         if ($room->image && Storage::exists('public/' . $room->image)) {
                             if (!Storage::delete('public/' . $room->image)) {
                                 Log::warning('Failed to delete old image', ['path' => $room->image]);
                             }
                         }
-                        
+
                         // Generate unique filename with original extension
                         $imageName = time() . '_' . uniqid() . '.' . $extension;
-                        
+
                         // Verify storage directory exists
                         $storagePath = storage_path('app/public/room_images');
                         if (!is_dir($storagePath)) {
@@ -260,13 +261,13 @@ class ManageRoomsController extends Controller
                                 throw new \Exception('Failed to create storage directory');
                             }
                         }
-                        
+
                         // Store new image
                         $imagePath = $image->storeAs('public/room_images', $imageName);
                         if (!$imagePath) {
                             throw new \Exception('Failed to store image');
                         }
-                        
+
                         $room->image = 'room_images/' . $imageName;
                         Log::info('Room image updated successfully:', [
                             'path' => $imagePath,
@@ -311,7 +312,27 @@ class ManageRoomsController extends Controller
     // ลบห้อง
     $room->delete();
 
-    // ส่งกลับไปยังหน้าก่อนหน้าพร้อมข้อความสำเร็จ
-    return redirect()->back()->with('success', 'ลบห้องเรียบร้อยแล้ว');
+    // ส่งหน้าก่อนหน้าพร้อมข้อความสำเร็จ
+    return redirect()->back()->with('success', 'ลบห้องสำเร็จ');
 }
+
+    public function subAdminRooms()
+    {
+        $user = Auth::user();
+
+        // Get buildings assigned to sub-admin
+        $buildings = Building::whereHas('users', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+
+        // Get rooms from these buildings
+        $rooms = Room::whereIn('building_id', $buildings->pluck('id'))
+            ->with(['building', 'status'])
+            ->when(request('search'), function($query) {
+                $query->where('room_name', 'like', '%'.request('search').'%');
+            })
+            ->paginate(12);
+
+        return view('dashboard.sub_admin_rooms', compact('rooms', 'buildings'));
+    }
 }

@@ -71,7 +71,7 @@ Route::get('/booking', [BookingController::class, 'index'])->name('booking.index
 //Route::get('/rooms/building/{building_id}', [RoomController::class, 'byBuilding'])->name('rooms.byBuilding');
 //Route::get('/rooms/popular', [RoomController::class, 'popular'])->name('rooms.popular');
 
-//ปฏิทิน
+//ทิน
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 Route::get('/calendar/data', [CalendarController::class, 'getCalendarData'])->name('calendar.data');
 Route::get('/calendar/table', [CalendarController::class, 'getTableView'])->name('calendar.table');
@@ -138,18 +138,18 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     //Route::post('/bookings/{id}/verify-payment', [BookingController::class, 'verifyPayment'])->name('booking.verify-payment');
     // Existing routes
     //Route::post('/booking/{id}/confirm-payment', [Booking_dbController::class, 'confirmPayment'])->name('booking.confirm-payment');
-    // เส้นทางสำหรับการจัดการห้อง
+    // เส้นทางห้อง
     Route::get('/booking-management', [Booking_dbController::class, 'index'])->name('booking_db');
 
-    // เส้นทางสำหรับเปลี่ยนสถานะการจอง
+    // เส้นทางเปลี่ยนสถานะการจอง
     Route::patch('/booking/{id}/update-status', [Booking_dbController::class, 'updateStatus'])
         ->name('booking.update-status');
 
-    // เส้นทางสำหรับยืนยันการชำระเงิน
+    // เส้นทางการชำระ
     Route::post('/booking/{id}/confirm-payment', [Booking_dbController::class, 'confirmPayment'])
         ->name('booking.confirm-payment');
 
-    // สำหรับดูประวัติการจอง
+    //การจอง
     Route::get('/booking_history', [BookingHistoryController::class, 'index'])->name('booking.history');
     Route::get('/dashboard/booking_history', [App\Http\Controllers\Booking_dbController::class, 'history'])->name('booking_history');
     // Room management
@@ -192,4 +192,9 @@ Route::middleware(['auth', 'sub-admin'])->group(function () {
     Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
     Route::post('/manage-buildings', [ManageBuildingsController::class, 'store'])->name('manage.buildings.store');
     Route::resource('manage/buildings', ManageBuildingsController::class);
+});
+
+// Sub-admin room view route
+Route::middleware(['auth', 'sub-admin'])->group(function () {
+    Route::get('/sub-admin/rooms', [ManageRoomsController::class, 'subAdminRooms'])->name('sub_admin.rooms');
 });

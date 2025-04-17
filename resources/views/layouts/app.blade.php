@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจองห้องออนไลน์มหาวิทยาลัยราชภัฏสกลนคร</title>
+    <title>ระบบจองห้องออนไลน์ราช:ฏสกลนคร</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- ลิงก์ CSS สำหรับ Bootstrap และ Font Awesome -->
+    <!-- ลิงก์ CSS  Bootstrap และ Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -57,17 +57,17 @@
                 <!-- เมนูแนวตั้ง -->
                 <nav>
                     <ul class="nav flex-column">
-                        <!-- หน้าหลัก -->
+                        <!-- หน้าแรก -->
                         <li class="nav-item">
                             <a href="{{ route('index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-home me-2"></i> หน้าหลัก
+                                <i class="fas fa-home me-2"></i> หน้าแรก
                             </a>
                         </li>
 
-                        <!-- ปฏิทินการจอง -->
+                        <!-- ทินการจอง -->
                         <li class="nav-item">
                             <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-calendar-alt me-2"></i> ปฏิทินการจอง
+                                <i class="fas fa-calendar-alt me-2"></i> ทินการจอง
                             </a>
                         </li>
 
@@ -78,10 +78,10 @@
                             </a>
                         </li>
 
-                        <!-- วิธีใช้ -->
+                        <!-- ใช้ -->
                         <li class="nav-item">
                             <a href="{{ route('usage.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-info-circle me-2"></i> วิธีใช้
+                                <i class="fas fa-info-circle me-2"></i> ใช้
                             </a>
                         </li>
                         <!-- แดชบอร์ด (admin และ sub-admin) -->
@@ -113,14 +113,14 @@
                                 </form>
                             </li>
                         @else
-                            <!-- เข้าสู่ระบบ (สำหรับผู้ที่ยังไม่ได้ล็อกอิน) -->
+                            <!-- เข้าสู่ระบบ (ถ้ายังไม่ได้ล็อก) -->
                             <li class="nav-item">
                                 <a href="{{ route('login') }}" class="nav-link text-gray-700">
                                     <i class="fas fa-sign-in-alt me-2"></i> เข้าสู่ระบบ
                                 </a>
                             </li>
 
-                            <!-- สมัครสมาชิก (สำหรับผู้ที่ยังไม่ได้ล็อกอิน) -->
+                            <!-- สมัครสมาชิก (ถ้ายังไม่ได้ล็อก) -->
                             <li class="nav-item">
                                 <a href="{{ route('register') }}" class="nav-link text-gray-700">
                                     <i class="fas fa-user-plus me-2"></i> สมัครสมาชิก
@@ -145,7 +145,7 @@
     document.body.classList.toggle('sidebar-collapse');
     });
         $(document).ready(function() {
-            // เมื่อคลิกที่ลิงก์ใดๆ ให้แสดง Loader
+            // เมื่อคลิกที่ลิงค์ใดๆ ให้แสดง Loader
             $("a").on("click", function(event) {
                 let target = $(this).attr("target");
                 if (!target || target === "_self") {
@@ -697,4 +697,5 @@ td:nth-child(9):contains("partial") {
     }
 }
 </style>
+
 
