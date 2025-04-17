@@ -58,6 +58,16 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
+    public function isSubAdmin()
+    {
+        return $this->role === 'sub-admin';
+    }
+
+    public function isAdminOrSubAdmin()
+    {
+        return in_array($this->role, ['admin', 'sub-admin']);
+    }
+
 
     public function buildings()
     {

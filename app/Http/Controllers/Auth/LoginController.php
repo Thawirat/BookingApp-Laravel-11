@@ -37,10 +37,13 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if ($user->isAdmin()) {
-            return redirect('/dashboard'); // ถ้าเป็นแอดมินให้ไปที่ /dashboard
+            return redirect('/dashboard');
+        } elseif ($user->isSubAdmin()) {
+            return redirect('/manage-buildings');
         }
 
-        return redirect('/'); // ถ้าไม่ใช่แอดมินให้ไปที่หน้าแรก
+        return redirect('/');
     }
 
 }
+

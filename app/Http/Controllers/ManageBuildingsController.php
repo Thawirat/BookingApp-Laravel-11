@@ -8,30 +8,43 @@ use App\Models\Room;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Auth;
 
 class ManageBuildingsController extends Controller
 {
     // แสดงรายการอาคาร
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        $query = Building::query();
 
-        $buildings = Building::when($search, function($query) use ($search) {
-            return $query->where('building_name', 'like', '%'.$search.'%')
-                       ->orWhere('citizen_save', 'like', '%'.$search.'%');
-        })->paginate(15);
+        // If sub-admin, only show assigned buildings
+        if (Auth::user()->role === 'sub-admin') {
+            $query->whereHas('users', function($q) {
+                $q->where('users.id', Auth::id());
+            });
+        }
 
-        $totalBuildings = Building::count();
+        // Apply search if provided
+        if ($request->has('search')) {
+            $query->where('building_name', 'like', '%' . $request->search . '%')
+                  ->orWhere('citizen_save', 'like', '%' . $request->search . '%');
+        }
+
+        $buildings = $query->paginate(15);
+        $totalBuildings = $query->count();
 
         return view('dashboard.manage_buildings', compact('buildings', 'totalBuildings'));
-
     }
 
     // เพิ่มอาคาร
     public function store(Request $request)
     {
-        // เพิ่ม validation สำหรับ `building_name` และ `citizen_save`
+        // Verify permission
+        if (Auth::user()->role === 'sub-admin') {
+            abort(403, 'Only administrators can create new buildings.');
+        }
+
+        // เล่ม validation `building_name` และ `citizen_save`
         $request->validate([
             'building_name' => 'required|string|max:255',
             'citizen_save' => 'required|string|max:255',
@@ -62,10 +75,11 @@ class ManageBuildingsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $building = Building::find($id);
+        $building = Building::findOrFail($id);
 
-        if (!$building) {
-            return response()->json(['message' => 'ไม่พบอาคาร'], 404);
+        // Check if sub-admin has permission for this building
+        if (Auth::user()->role === 'sub-admin' && !$building->users->contains(Auth::id())) {
+            abort(403, 'You do not have permission to edit this building.');
         }
 
         $building->building_name = $request->building_name;
@@ -89,14 +103,19 @@ class ManageBuildingsController extends Controller
 
     public function destroy($id)
     {
-        // 1. หาอาคารที่ต้องการลบ
         $building = Building::findOrFail($id);
+
+        // Check if sub-admin has permission for this building
+        if (Auth::user()->role === 'sub-admin' && !$building->users->contains(Auth::id())) {
+            abort(403, 'You do not have permission to delete this building.');
+        }
 
         // 2. ลบข้อมูล
         $building->delete();
 
         // 3. Redirect พร้อมข้อความแจ้งเตือน
         return redirect()->back()
-            ->with('success', 'ลบอาคารเรียบร้อยแล้ว');
+            ->with('success', 'ลบอาคาร: สำเร็จ');
     }
 }
+

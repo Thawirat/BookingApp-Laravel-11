@@ -185,3 +185,11 @@ Route::middleware('auth')->group(function () {
 
 // Booking routes
 Route::post('/book-room/{id}', [BookingController::class, 'bookRoom'])->name('book.room'); // Route for booking a room
+
+// Sub-admin routes
+Route::middleware(['auth', 'sub-admin'])->group(function () {
+    // Building management
+    Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
+    Route::post('/manage-buildings', [ManageBuildingsController::class, 'store'])->name('manage.buildings.store');
+    Route::resource('manage/buildings', ManageBuildingsController::class);
+});

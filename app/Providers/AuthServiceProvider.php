@@ -25,7 +25,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // Define role-based access control
+        Gate::define('manage-buildings', function ($user) {
+            return $user->isAdminOrSubAdmin();
+        });
+
         Gate::define('admin-only', function ($user) {
             return $user->isAdmin();
         });

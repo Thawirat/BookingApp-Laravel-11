@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจองห้องออนไลน์มหาวิทยาลัยราชภัฏสกลนคร</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
-    
+
     <!-- ลิงก์ CSS สำหรับ Bootstrap และ Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
@@ -63,37 +63,46 @@
                                 <i class="fas fa-home me-2"></i> หน้าหลัก
                             </a>
                         </li>
-                
+
                         <!-- ปฏิทินการจอง -->
                         <li class="nav-item">
                             <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700">
                                 <i class="fas fa-calendar-alt me-2"></i> ปฏิทินการจอง
                             </a>
                         </li>
-                
+
                         <!-- จองห้อง -->
                         <li class="nav-item">
                             <a href="{{ route('booking.index') }}" class="nav-link text-gray-700">
                                 <i class="fas fa-door-open me-2"></i> จองห้อง
                             </a>
                         </li>
-                
+
                         <!-- วิธีใช้ -->
                         <li class="nav-item">
                             <a href="{{ route('usage.index') }}" class="nav-link text-gray-700">
                                 <i class="fas fa-info-circle me-2"></i> วิธีใช้
                             </a>
-                        </li>                  
-                        <!-- แดชบอร์ด (สำหรับ admin) -->
-                        @if(Auth::check() && Auth::user()->role === 'admin')
+                        </li>
+                        <!-- แดชบอร์ด (admin และ sub-admin) -->
+                        @if(Auth::check() && Auth::user()->isAdminOrSubAdmin())
+                            <li class="nav-item">
+                                <a href="{{ route('manage.buildings') }}" class="nav-link text-gray-700">
+                                    <i class="fas fa-building me-2"></i> อาคาร
+                                </a>
+                            </li>
+                        @endif
+
+                        <!-- แดชบอร์ด (admin เท่านั้น) -->
+                        @if(Auth::check() && Auth::user()->isAdmin())
                             <li class="nav-item">
                                 <a href="{{ route('dashboard') }}" class="nav-link text-gray-700">
                                     <i class="fas fa-tachometer-alt me-2"></i> แดชบอร์ด
                                 </a>
                             </li>
                         @endif
-                
-                        <!-- ออกจากระบบ (สำหรับผู้ที่ล็อกอินแล้ว) -->
+
+                        <!-- ออกจากระบบ (ถ้าได้ล็อกแล้ว) -->
                         @if(Auth::check())
                             <li class="nav-item">
                                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
@@ -110,7 +119,7 @@
                                     <i class="fas fa-sign-in-alt me-2"></i> เข้าสู่ระบบ
                                 </a>
                             </li>
-                
+
                             <!-- สมัครสมาชิก (สำหรับผู้ที่ยังไม่ได้ล็อกอิน) -->
                             <li class="nav-item">
                                 <a href="{{ route('register') }}" class="nav-link text-gray-700">
@@ -122,7 +131,7 @@
                 </nav>
             </div>
             <div class="col-md-10 content">
-                
+
                 @yield('content')
                 @yield('scripts')
             </div>
@@ -530,7 +539,7 @@ td:nth-child(9):contains("partial") {
         height: auto;
         min-height: 100px;
     }
-    
+
     .stat-card .icon {
         font-size: 20px;
         padding: 12px;
@@ -541,11 +550,11 @@ td:nth-child(9):contains("partial") {
     .content {
         padding: 20px 15px;
     }
-    
+
     .sidebar {
         padding: 20px 15px;
     }
-    
+
     .search-bar {
         width: 150px;
     }
@@ -556,40 +565,40 @@ td:nth-child(9):contains("partial") {
         flex-direction: column;
         align-items: flex-start !important;
     }
-    
+
     .d-flex.align-items-center {
         margin-top: 15px;
         width: 100%;
         justify-content: space-between;
     }
-    
+
     .search-bar {
         width: 100%;
     }
-    
+
     .sidebar {
         height: auto;
         position: relative;
         padding: 15px 10px;
     }
-    
+
     .card-header, .card-body {
         padding: 10px;
     }
-    
+
     .table th, .table td {
         padding: 10px 8px;
     }
-    
+
     .stat-card {
         margin-bottom: 15px;
     }
-    
+
     .icon-btn {
         width: 35px;
         height: 35px;
     }
-    
+
     .profile-img {
         width: 35px;
         height: 35px;
@@ -600,44 +609,44 @@ td:nth-child(9):contains("partial") {
     .content {
         padding: 15px 10px;
     }
-    
+
     .stat-card {
         padding: 15px;
     }
-    
+
     .stat-card .icon {
         padding: 10px;
         font-size: 18px;
         margin-right: 10px;
     }
-    
+
     .table-responsive {
         border: none;
     }
-    
+
     /* Adjust table for very small screens */
     .table th, .table td {
         padding: 8px 5px;
         white-space: nowrap;
     }
-    
+
     /* Make buttons stack on very small screens */
     td:last-child {
         display: flex;
         flex-direction: column;
     }
-    
+
     td:last-child .btn {
         margin-bottom: 5px;
         width: 100%;
         text-align: center;
     }
-    
+
     /* Collapse sidebar on mobile */
     .sidebar-collapse .sidebar {
         transform: translateX(-100%);
     }
-    
+
     /* Mobile menu toggle button */
     .mobile-menu-toggle {
         display: block;
@@ -671,20 +680,21 @@ td:nth-child(9):contains("partial") {
         align-items: flex-start !important;
         height: auto;
     }
-    
+
     .profile-img, .icon-btn {
         margin-top: 10px;
         margin-left: 0;
     }
-    
+
     form.d-flex {
         width: 100%;
         margin-right: 0;
     }
-    
+
     /* Adjust status indicators for small screens */
     td:nth-child(8), td:nth-child(9) {
         min-width: 80px;
     }
 }
 </style>
+

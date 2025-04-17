@@ -11,6 +11,10 @@ class Building extends Model
 
     protected $fillable = ['building_name', 'citizen_save', 'date_save', 'image'];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_buildings');
+    }
 
     public function rooms()
     {

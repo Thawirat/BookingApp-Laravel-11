@@ -53,11 +53,13 @@ class ManageUsersController extends Controller
 
         $user->update($userData);
 
-        // Update building assignments
-        if ($request->has('buildings')) {
-            $user->buildings()->sync($request->buildings);
-        } else {
-            $user->buildings()->detach();
+        // Only sync buildings if the user is a sub-admin
+        if ($request->role === 'sub-admin') {
+            if ($request->has('buildings')) {
+                $user->buildings()->sync($request->buildings);
+            } else {
+                $user->buildings()->detach();
+            }
         }
 
         return redirect()->route('manage_users.index')

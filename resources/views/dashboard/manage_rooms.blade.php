@@ -61,9 +61,11 @@
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                         <h5 class="mb-0">รายการอาคาร</h5>
+                        @if(Auth::user()->role === 'admin')
                         <button class="btn btn-primary btn-sm" onclick="openAddBuildingModal()">
                             <i class="fas fa-plus me-1"></i>เพิ่มอาคาร
                         </button>
+                        @endif
                     </div>
                     <div class="card-body p-0">
                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 p-4">
