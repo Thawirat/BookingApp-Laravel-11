@@ -37,17 +37,17 @@
                                             </p>
                                         </div>
                                         <div class="card-footer bg-white border-0 d-flex gap-2 pt-0">
-                                            <button class="btn btn-sm btn-outline-warning flex-grow-1"
+                                            {{-- <button class="btn btn-sm btn-outline-warning flex-grow-1"
                                                     onclick="openEditBuildingModal('{{ $building->id }}', '{{ $building->building_name }}', '{{ $building->citizen_save }}')">
                                                 <i class="fas fa-edit me-1"></i>แก้ไข
                                             </button>
                                             <button class="btn btn-sm btn-outline-danger flex-grow-1"
                                                     onclick="confirmDeleteBuilding('{{ $building->id }}')">
                                                 <i class="fas fa-trash me-1"></i>ลบ
-                                            </button>
+                                            </button> --}}
                                             <button class="btn btn-sm btn-outline-info flex-grow-1"
                                                     onclick="window.location.href='{{ route('sub_admin.rooms', $building->id) }}'">
-                                                <i class="fas fa-door-open me-1"></i>ห้อง
+                                                <i class="fas fa-door-open me-1"></i>ดูห้อง
                                             </button>
                                         </div>
                                     </div>

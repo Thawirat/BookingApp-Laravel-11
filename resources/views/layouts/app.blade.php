@@ -67,21 +67,21 @@
                         <!-- ทินการจอง -->
                         <li class="nav-item">
                             <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-calendar-alt me-2"></i> ทินการจอง
+                                <i class="fas fa-calendar-alt me-2"></i>ปฏิทินการจอง
                             </a>
                         </li>
 
                         <!-- จองห้อง -->
                         <li class="nav-item">
                             <a href="{{ route('booking.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-door-open me-2"></i> จองห้อง
+                                <i class="fas fa-door-open me-2"></i>จองห้อง
                             </a>
                         </li>
 
                         <!-- ใช้ -->
                         <li class="nav-item">
                             <a href="{{ route('usage.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-info-circle me-2"></i> ใช้
+                                <i class="fas fa-info-circle me-2"></i>วิธีใช้งาน
                             </a>
                         </li>
                         <!-- แดชบอร์ด (admin และ sub-admin) -->

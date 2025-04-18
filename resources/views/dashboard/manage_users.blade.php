@@ -477,6 +477,9 @@ td:nth-child(9):contains('unpaid') {
             document.getElementById('edit_role').value = user.role;
             document.getElementById('edit_password').value = '';
 
+            // Trigger toggle after setting role
+            toggleBuildingsField();
+
             // Load buildings
             loadUserBuildings(userId);
 
@@ -514,8 +517,30 @@ td:nth-child(9):contains('unpaid') {
             `).join('');
         });
     }
+
+    function toggleBuildingsField() {
+        const roleSelect = document.getElementById('edit_role');
+        const buildingsContainer = document.getElementById('buildings_container');
+        const buildingsWrapper = buildingsContainer.closest('.mb-3');
+        const selectedRole = roleSelect.value;
+
+        // แสดงเฉพาะเมื่อเป็น sub-admin เท่านั้น
+        if (selectedRole === 'sub-admin') {
+            buildingsWrapper.style.display = 'block';
+        } else {
+            buildingsWrapper.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const roleSelect = document.getElementById('edit_role');
+        if (roleSelect) {
+            roleSelect.addEventListener('change', toggleBuildingsField);
+        }
+    });
 </script>
 @endpush
+
 
 
 
