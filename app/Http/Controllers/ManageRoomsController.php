@@ -316,20 +316,24 @@ class ManageRoomsController extends Controller
     return redirect()->back()->with('success', 'ลบห้องสำเร็จ');
 }
 
-    public function subAdminRooms()
+    public function subAdminRooms(Request $request)
     {
         $user = Auth::user();
-
-        // Get buildings assigned to sub-admin
         $buildings = Building::whereHas('users', function($query) use ($user) {
             $query->where('user_id', $user->id);
         })->get();
 
-        // Get rooms from these buildings
-        $rooms = Room::whereIn('building_id', $buildings->pluck('id'))
+        $query = Room::query();
+
+        // If building ID is provided, filter rooms by that building
+        if ($request->building) {
+            $query->where('building_id', $request->building);
+        }
+
+        $rooms = $query->whereIn('building_id', $buildings->pluck('id'))
             ->with(['building', 'status'])
-            ->when(request('search'), function($query) {
-                $query->where('room_name', 'like', '%'.request('search').'%');
+            ->when($request->search, function($query) use ($request) {
+                $query->where('room_name', 'like', '%'.$request->search.'%');
             })
             ->paginate(12);
 
