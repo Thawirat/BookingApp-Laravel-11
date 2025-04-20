@@ -95,6 +95,12 @@ class ManageRoomsController extends Controller
 
     public function store(Request $request)
     {
+        // Check permission
+
+        if (!Auth::user()->hasPermissionTo('create rooms')) {
+            abort(403);
+        }
+
         try {
             // Log incoming request data
             Log::info('Room creation request data:', $request->all());
@@ -299,22 +305,28 @@ class ManageRoomsController extends Controller
         }
     }
 
-    public function destroy($room_id)
-{
-    // ค้นหาห้องที่ต้องการลบ
-    $room = Room::findOrFail($room_id);
+    public function destroy(Room $room)
+    {
+        // Check permission
 
-    // ลบรูปภาพ (ถ้ามี)
-    if ($room->image) {
-        Storage::delete('public/' . $room->image);
+        if (!Auth::user()->hasPermissionTo('delete rooms')) {
+            abort(403);
+        }
+
+        // ค้นหาห้องที่ต้องการลบ
+        $room = Room::findOrFail($room_id);
+
+        // ลบรูปภาพ (ถ้ามี)
+        if ($room->image) {
+            Storage::delete('public/' . $room->image);
+        }
+
+        // ลบห้อง
+        $room->delete();
+
+        // ส่งหน้าก่อนหน้าพร้อมข้อความสำเร็จ
+        return redirect()->back()->with('success', 'ลบห้องสำเร็จ');
     }
-
-    // ลบห้อง
-    $room->delete();
-
-    // ส่งหน้าก่อนหน้าพร้อมข้อความสำเร็จ
-    return redirect()->back()->with('success', 'ลบห้องสำเร็จ');
-}
 
     public function subAdminRooms()
     {
@@ -335,4 +347,5 @@ class ManageRoomsController extends Controller
 
         return view('dashboard.sub_admin_rooms', compact('rooms', 'buildings'));
     }
+
 }

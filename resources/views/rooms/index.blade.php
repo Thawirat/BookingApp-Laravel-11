@@ -30,4 +30,16 @@
         </div>
     </div>
 </div>
+@can('create rooms')
+    <a href="{{ route('rooms.create') }}" class="btn btn-primary">Create Room</a>
+@endcan
+
+@can('delete rooms')
+    <form action="{{ route('rooms.destroy', $room) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+@endcan
 @endsection
+

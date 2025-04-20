@@ -12,12 +12,13 @@ class UserSeeder extends Seeder
     {
         // Create admin user
         if (!User::where('email', 'admin@example.com')->exists()) {
-            User::create([
+            $admin = User::create([
                 'name' => 'Admin',
                 'email' => 'admin@example.com',
                 'password' => Hash::make('password'),
                 'role' => 'admin'
             ]);
+            $admin->assignRole('admin');
         }
 
         // Create regular users
@@ -25,7 +26,10 @@ class UserSeeder extends Seeder
             ->count(100)
             ->create([
                 'role' => 'user'
-            ]);
+            ])
+            ->each(function ($user) {
+                $user->assignRole('user');
+            });
     }
 
 }
