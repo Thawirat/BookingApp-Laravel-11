@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-      // ตาราง buildings
+        // ตาราง buildings
         Schema::create('buildings', function (Blueprint $table) {
             $table->id('id'); // ใช้ id() เพื่อสร้าง primary key แบบ unsignedBigInteger
             $table->string('building_name'); // ชื่ออาคาร

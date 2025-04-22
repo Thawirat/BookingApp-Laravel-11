@@ -36,7 +36,6 @@ return new class extends Migration
             $table->timestamp('verified_at')->nullable();
             $table->string('approver_name')->nullable();
 
-
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
@@ -45,7 +44,7 @@ return new class extends Migration
             $table->foreign('status_id')->references('status_id')->on('status')->onDelete('cascade');
 
         });
-        
+
     }
 
     /**

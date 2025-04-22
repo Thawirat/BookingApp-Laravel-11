@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Building;
-use App\Models\Room;
-use Illuminate\Pagination\Paginator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 
 class ManageBuildingsController extends Controller
 {
@@ -19,15 +17,15 @@ class ManageBuildingsController extends Controller
 
         // If sub-admin, only show assigned buildings
         if (Auth::user()->role === 'sub-admin') {
-            $query->whereHas('users', function($q) {
+            $query->whereHas('users', function ($q) {
                 $q->where('users.id', Auth::id());
             });
         }
 
         // Apply search if provided
         if ($request->has('search')) {
-            $query->where('building_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('citizen_save', 'like', '%' . $request->search . '%');
+            $query->where('building_name', 'like', '%'.$request->search.'%')
+                ->orWhere('citizen_save', 'like', '%'.$request->search.'%');
         }
 
         $buildings = $query->paginate(15);
@@ -51,12 +49,11 @@ class ManageBuildingsController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-
         // Log the request data for debugging
         Log::info('Building Store Request Data:', $request->all());
 
         // ส่วนของการเพิ่มข้อมูล
-        $building = new Building();
+        $building = new Building;
         $building->building_name = $request->building_name;
         $building->citizen_save = $request->citizen_save;
         $building->date_save = now();
@@ -68,7 +65,6 @@ class ManageBuildingsController extends Controller
 
         $building->save();
 
-
         return redirect()->route('manage_rooms.index')->with('success', 'Building added successfully.');
 
     }
@@ -78,7 +74,7 @@ class ManageBuildingsController extends Controller
         $building = Building::findOrFail($id);
 
         // Check if sub-admin has permission for this building
-        if (Auth::user()->role === 'sub-admin' && !$building->users->contains(Auth::id())) {
+        if (Auth::user()->role === 'sub-admin' && ! $building->users->contains(Auth::id())) {
             abort(403, 'You do not have permission to edit this building.');
         }
 
@@ -97,7 +93,6 @@ class ManageBuildingsController extends Controller
 
         $building->save();
 
-
         return redirect()->route('manage_rooms.index')->with('success', 'Building updated successfully.');
     }
 
@@ -106,7 +101,7 @@ class ManageBuildingsController extends Controller
         $building = Building::findOrFail($id);
 
         // Check if sub-admin has permission for this building
-        if (Auth::user()->role === 'sub-admin' && !$building->users->contains(Auth::id())) {
+        if (Auth::user()->role === 'sub-admin' && ! $building->users->contains(Auth::id())) {
             abort(403, 'You do not have permission to delete this building.');
         }
 
@@ -118,4 +113,3 @@ class ManageBuildingsController extends Controller
             ->with('success', 'ลบอาคาร: สำเร็จ');
     }
 }
-

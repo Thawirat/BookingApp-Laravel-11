@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Building;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class ManageUsersController extends Controller
@@ -16,7 +16,7 @@ class ManageUsersController extends Controller
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where('name', 'like', "%$search%")
-                  ->orWhere('email', 'like', "%$search%");
+                ->orWhere('email', 'like', "%$search%");
         }
 
         $users = $query->paginate(50);
@@ -33,10 +33,10 @@ class ManageUsersController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,'.$id,
             'role' => 'required|in:admin,sub-admin,user',
             'password' => 'nullable|min:8',
-            'buildings' => 'array'
+            'buildings' => 'array',
         ]);
 
         $user = User::findOrFail($id);
@@ -44,7 +44,7 @@ class ManageUsersController extends Controller
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role
+            'role' => $request->role,
         ];
 
         if ($request->filled('password')) {
@@ -71,15 +71,14 @@ class ManageUsersController extends Controller
         $user = User::findOrFail($id);
         $userBuildingIds = $user->buildings->pluck('id')->toArray();
 
-        $buildings = Building::all()->map(function($building) use ($userBuildingIds) {
+        $buildings = Building::all()->map(function ($building) use ($userBuildingIds) {
             return [
                 'id' => $building->id,
                 'building_name' => $building->building_name,
-                'assigned' => in_array($building->id, $userBuildingIds)
+                'assigned' => in_array($building->id, $userBuildingIds),
             ];
         });
 
         return response()->json(['buildings' => $buildings]);
     }
 }
-

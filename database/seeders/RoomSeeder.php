@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class RoomSeeder extends Seeder
-{   
+{
     public function run()
     {
         $faker = Faker::create();
@@ -224,6 +224,4 @@ class RoomSeeder extends Seeder
             ]);
         }
     }
-
 }
-

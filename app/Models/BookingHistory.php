@@ -10,7 +10,7 @@ class BookingHistory extends Model
     use HasFactory;
 
     protected $table = 'booking_history';
-    
+
     protected $fillable = [
         'user_id',
         'external_name',

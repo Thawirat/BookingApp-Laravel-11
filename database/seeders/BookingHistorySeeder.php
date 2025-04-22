@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\BookingHistory;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Seeder;
 
 class BookingHistorySeeder extends Seeder
 {
@@ -20,13 +19,13 @@ class BookingHistorySeeder extends Seeder
             BookingHistory::create([
                 'booking_id' => rand(1, 50), // Assuming there are valid booking IDs from 1 to 50
                 'user_id' => rand(1, 10), // Assuming there are 10 users
-                'external_name' => 'User ' . $i,
-                'external_email' => 'user' . $i . '@example.com',
+                'external_name' => 'User '.$i,
+                'external_email' => 'user'.$i.'@example.com',
                 'external_phone' => '0123456789',
                 'building_id' => rand(1, 5), // Assuming there are 5 buildings
-                'building_name' => 'Building ' . rand(1, 5),
+                'building_name' => 'Building '.rand(1, 5),
                 'room_id' => rand(1, 20), // Assuming there are 20 rooms
-                'room_name' => 'Room ' . rand(1, 20),
+                'room_name' => 'Room '.rand(1, 20),
                 'booking_start' => now(),
                 'booking_end' => now()->addDays(rand(1, 30)),
                 'status_id' => 6, // Assuming status_id 6 is for completed

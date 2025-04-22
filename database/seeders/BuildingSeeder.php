@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Building;
 
 class BuildingSeeder extends Seeder
 {
@@ -35,5 +34,4 @@ class BuildingSeeder extends Seeder
             ]);
         }
     }
-
 }

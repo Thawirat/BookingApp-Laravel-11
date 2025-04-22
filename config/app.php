@@ -71,7 +71,6 @@ return [
 
     'timezone' => 'Asia/Bangkok',
 
-
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

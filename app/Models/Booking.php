@@ -13,7 +13,9 @@ class Booking extends Model
         'booking_start' => 'datetime',
         'verified_at' => 'datetime',
     ];
+
     use HasFactory;
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -58,12 +60,7 @@ class Booking extends Model
         'department',
         'payment_slip',
         'attendees',
-        'purpose'
-        
+        'purpose',
 
     ];
-
 }
-
-
-

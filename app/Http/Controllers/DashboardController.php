@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -25,17 +22,17 @@ class DashboardController extends Controller
 
         // ดึงจำนวนการจองของเดือนปัจจุบัน
         $monthlyBookings = Booking::whereYear('created_at', date('Y'))
-                                  ->whereMonth('created_at', date('m'))
-                                  ->count();
+            ->whereMonth('created_at', date('m'))
+            ->count();
 
         // ดึงสถิติการจองแยกตามเดือน
         $weeklyStats = Booking::selectRaw('YEARWEEK(created_at, 1) as week, COUNT(*) as total')
-        ->whereBetween('created_at', [now()->subWeeks(12), now()]) // 12 สัปดาห์ย้อนหลัง
-        ->groupBy('week')
-        ->orderBy('week', 'asc')
-        ->get();
+            ->whereBetween('created_at', [now()->subWeeks(12), now()]) // 12 สัปดาห์ย้อนหลัง
+            ->groupBy('week')
+            ->orderBy('week', 'asc')
+            ->get();
 
-        return view('dashboard.dashboard', compact('recentBookings', 'monthlyBookings', 'weeklyStats','totalRooms', 'totalUsers', 'totalBookings'));
+        return view('dashboard.dashboard', compact('recentBookings', 'monthlyBookings', 'weeklyStats', 'totalRooms', 'totalUsers', 'totalBookings'));
     }
 
     public function showIndex()

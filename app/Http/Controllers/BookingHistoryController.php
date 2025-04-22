@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\BookingHistory;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BookingHistoryController extends Controller
@@ -11,12 +11,12 @@ class BookingHistoryController extends Controller
     /**
      * เพิ่มการจองลงในประวัติ
      *
-     * @param mixed $booking
+     * @param  mixed  $booking
      * @return void
      */
     public function addBookingToHistory($booking)
     {
-        $bookingHistory = new BookingHistory();
+        $bookingHistory = new BookingHistory;
         $bookingHistory->fill([
             'booking_id' => $booking->id,
             'user_id' => $booking->user_id,
@@ -39,7 +39,6 @@ class BookingHistoryController extends Controller
     /**
      * แสดงรายการประวัติการจอง
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -49,18 +48,18 @@ class BookingHistoryController extends Controller
             ->leftJoin('status', 'booking_history.status_id', '=', 'status.status_id')
             ->leftJoin('users', 'booking_history.user_id', '=', 'users.id')
             ->select(
-                'booking_history.*', 
-                'status.status_name', 
+                'booking_history.*',
+                'status.status_name',
                 'users.name as user_name'
             );
 
         // ค้นหาข้อมูล
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('booking_history.booking_id', 'like', "%{$search}%")
-                  ->orWhere('booking_history.external_name', 'like', "%{$search}%")
-                  ->orWhere('users.name', 'like', "%{$search}%");
+                    ->orWhere('booking_history.external_name', 'like', "%{$search}%")
+                    ->orWhere('users.name', 'like', "%{$search}%");
             });
         }
 
@@ -77,7 +76,6 @@ class BookingHistoryController extends Controller
         // เรียงลำดับและแบ่งหน้า
         $bookingHistory = $query->orderBy('booking_history.booking_date', 'desc')->paginate(20);
 
-
         // นับจำนวนการจอง
         $totalBookings = DB::table('booking_history')->count();
         $completedBookings = DB::table('booking_history')->where('status_id', 6)->count(); // เสร็จสิ้น
@@ -87,14 +85,13 @@ class BookingHistoryController extends Controller
             'bookings' => $bookingHistory,
             'totalBookings' => $totalBookings,
             'completedBookings' => $completedBookings,
-            'cancelledBookings' => $cancelledBookings
+            'cancelledBookings' => $cancelledBookings,
         ]);
     }
 
     /**
      * แสดงประวัติการจองห้อง (Alternate Method)
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function history(Request $request)
@@ -104,27 +101,27 @@ class BookingHistoryController extends Controller
             ->leftJoin('status', 'booking_history.status_id', '=', 'status.status_id')
             ->leftJoin('users', 'booking_history.user_id', '=', 'users.id')
             ->select(
-                'booking_history.*', 
-                'status.status_name', 
+                'booking_history.*',
+                'status.status_name',
                 'users.name as user_name'
             );
 
         // ค้นหาข้อมูล
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('booking_history.booking_id', 'like', "%{$search}%")
-                  ->orWhere('booking_history.external_name', 'like', "%{$search}%")
-                  ->orWhere('users.name', 'like', "%{$search}%");
+                    ->orWhere('booking_history.external_name', 'like', "%{$search}%")
+                    ->orWhere('users.name', 'like', "%{$search}%");
             });
         }
 
         // กรองตามวันที่
         if ($request->has('booking_date')) {
             $bookingDate = $request->booking_date;
-            $query->where(function($q) use ($bookingDate) {
+            $query->where(function ($q) use ($bookingDate) {
                 $q->whereDate('booking_history.booking_start', '<=', $bookingDate)
-                  ->whereDate('booking_history.booking_end', '>=', $bookingDate);
+                    ->whereDate('booking_history.booking_end', '>=', $bookingDate);
             });
         }
 

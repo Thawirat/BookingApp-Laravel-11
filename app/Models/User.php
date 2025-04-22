@@ -68,11 +68,8 @@ class User extends Authenticatable
         return in_array($this->role, ['admin', 'sub-admin']);
     }
 
-
     public function buildings()
     {
         return $this->belongsToMany(Building::class, 'user_buildings');
     }
 }
-
-

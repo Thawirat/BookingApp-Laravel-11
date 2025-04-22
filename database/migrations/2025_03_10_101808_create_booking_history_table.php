@@ -28,7 +28,7 @@ class CreateBookingHistoryTable extends Migration
             $table->enum('payment_status', ['pending', 'paid', 'cancelled'])->default('pending'); // สถานะการชำระเงิน
             $table->boolean('is_external')->default(false); // ระบุว่าผู้จองเป็นบุคคลภายนอกหรือไม่
             $table->timestamps(); // วันที่สร้างและอัปเดต
-        
+
             // Foreign keys
             $table->foreign('booking_id')->references('id')->on('bookings')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');

@@ -23,7 +23,7 @@ class BookingSeeder extends Seeder
             'status_id' => 1,
             'total_price' => 500.00,
             'payment_status' => 'paid',
-            'is_external' => false
+            'is_external' => false,
         ]);
 
         Booking::create([
@@ -37,7 +37,7 @@ class BookingSeeder extends Seeder
             'status_id' => 2,
             'total_price' => 750.00,
             'payment_status' => 'pending',
-            'is_external' => true
+            'is_external' => true,
         ]);
     }
 }

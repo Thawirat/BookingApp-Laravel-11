@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Status;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CalendarController extends Controller
 {
@@ -21,11 +21,11 @@ class CalendarController extends Controller
         $currentDate = $date->format('Y-m-d');
 
         // Get the status list with colors from config
-        $statusList = Status::all()->map(function($status) {
+        $statusList = Status::all()->map(function ($status) {
             return [
                 'status_id' => $status->status_id,
                 'status_name' => $status->status_name,
-                'color' => config('status.colors.'.$status->status_id, '#607D8B')
+                'color' => config('status.colors.'.$status->status_id, '#607D8B'),
             ];
         });
 
@@ -59,8 +59,9 @@ class CalendarController extends Controller
             ->select('bookings.*', 'status.status_name', 'bookings.status_id')
             ->leftJoin('status', 'bookings.status_id', '=', 'status.status_id')
             ->get()
-            ->map(function($booking) {
+            ->map(function ($booking) {
                 $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+
                 return $booking;
             });
 
@@ -82,7 +83,7 @@ class CalendarController extends Controller
                 'date' => $dayFormat,
                 'currentMonth' => $day->format('m') === $date->format('m'),
                 'today' => $day->isToday(),
-                'bookings' => $dayBookings
+                'bookings' => $dayBookings,
             ];
 
             $currentWeek[] = $dayData;
@@ -93,7 +94,7 @@ class CalendarController extends Controller
             }
         }
 
-        if (!empty($currentWeek)) {
+        if (! empty($currentWeek)) {
             $calendarData[] = $currentWeek;
         }
 
@@ -109,13 +110,13 @@ class CalendarController extends Controller
 
         $weekDays = [];
         $dayNames = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
-        
+
         for ($i = 0; $i < 7; $i++) {
             $day = $startOfWeek->copy()->addDays($i);
             $weekDays[] = [
                 'date' => $day->format('Y-m-d'),
                 'dayName' => $dayNames[$i],
-                'today' => $day->isToday()
+                'today' => $day->isToday(),
             ];
         }
 
@@ -125,8 +126,9 @@ class CalendarController extends Controller
             ->leftJoin('users', 'bookings.user_id', '=', 'users.id')
             ->selectRaw('IFNULL(users.name, bookings.external_name) as user_name')
             ->get()
-            ->map(function($booking) {
+            ->map(function ($booking) {
                 $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+
                 return $booking;
             });
 
@@ -157,8 +159,9 @@ class CalendarController extends Controller
             ->leftJoin('users', 'bookings.user_id', '=', 'users.id')
             ->selectRaw('IFNULL(users.name, bookings.external_name) as user_name')
             ->get()
-            ->map(function($booking) {
+            ->map(function ($booking) {
                 $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+
                 return $booking;
             });
 
@@ -189,8 +192,9 @@ class CalendarController extends Controller
             ->leftJoin('users', 'bookings.user_id', '=', 'users.id')
             ->selectRaw('IFNULL(users.name, bookings.external_name) as user_name')
             ->get()
-            ->map(function($booking) {
+            ->map(function ($booking) {
                 $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+
                 return $booking;
             });
 
@@ -208,12 +212,12 @@ class CalendarController extends Controller
             ->leftJoin('buildings', 'bookings.building_id', '=', 'buildings.id')
             ->leftJoin('rooms', function ($join) {
                 $join->on('bookings.building_id', '=', 'rooms.building_id')
-                     ->on('bookings.room_id', '=', 'rooms.room_id');
+                    ->on('bookings.room_id', '=', 'rooms.room_id');
             })
             ->selectRaw('IFNULL(users.name, bookings.external_name) as user_name')
             ->first();
 
-        if (!$booking) {
+        if (! $booking) {
             return response()->json(['error' => 'ไม่พบข้อมูลการจอง'], 404);
         }
 
@@ -229,8 +233,9 @@ class CalendarController extends Controller
             ->selectRaw('IFNULL(users.name, "ระบบ") as changed_by_name')
             ->orderBy('changed_at', 'desc')
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 $item->statusColor = config('status.colors.'.$item->status_id, '#607D8B');
+
                 return $item;
             });
 

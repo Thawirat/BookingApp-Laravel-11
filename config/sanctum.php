@@ -67,5 +67,3 @@ return [
     // Enable this
     'supports_credentials' => true,
 ];
-
-

@@ -15,7 +15,7 @@ class UpdateBookingPaymentRequest extends FormRequest
     {
         return [
             'payment_status' => 'required|in:pending,paid,partial,cancelled',
-            'payment_slip' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048'
+            'payment_slip' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ];
     }
 }

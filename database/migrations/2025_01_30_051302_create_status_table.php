@@ -14,12 +14,12 @@ return new class extends Migration
     public function up()
     {
         // สร้างตาราง status
-            Schema::create('status', function (Blueprint $table) {
-                $table->id('status_id'); // รหัสสถานะ
-                $table->string('status_name'); // ชื่อสถานะ
-                $table->timestamps();
-                
-            });
+        Schema::create('status', function (Blueprint $table) {
+            $table->id('status_id'); // รหัสสถานะ
+            $table->string('status_name'); // ชื่อสถานะ
+            $table->timestamps();
+
+        });
     }
 
     /**

@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Booking;
 use App\Models\BookingHistory;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Console\Command;
 
 class MoveCompletedBookingsToHistory extends Command
 {
     protected $signature = 'bookings:move-to-history';
+
     protected $description = 'Move completed bookings to history table';
 
     public function __construct()
@@ -21,12 +21,12 @@ class MoveCompletedBookingsToHistory extends Command
     public function handle()
     {
         $today = Carbon::today();
-        
+
         // ค้นหาการจองที่สิ้นสุดวันจองแล้ว (วันที่จองน้อยกว่าวันนี้)
         $completedBookings = Booking::where('booking_start', '<', $today)->get();
-        
+
         $count = 0;
-        
+
         foreach ($completedBookings as $booking) {
             // สร้างบันทึกใหม่ในตารางประวัติ
             BookingHistory::create([
@@ -45,14 +45,14 @@ class MoveCompletedBookingsToHistory extends Command
                 'amount' => $booking->amount,
                 'moved_to_history_at' => now(),
             ]);
-            
+
             // เปลี่ยนสถานะเป็น "จบแล้ว" (สถานะ ID 4)
             $booking->status_id = 6;
             $booking->save();
-            
+
             $count++;
         }
-        
+
         $this->info("Moved {$count} bookings to history.");
     }
 }
