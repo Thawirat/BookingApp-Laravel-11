@@ -31,7 +31,7 @@
 
                                 <!-- Room Name -->
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">ห้องที่จอง</label>
+                                    <label class="form-label fw-semibold">ห้อง <span class="text-danger">*</span></label>
                                     <input class="form-control bg-light" type="text" value="{{ $room->room_name }}" readonly>
                                 </div>
 
@@ -103,13 +103,17 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">เวลาเข้า</label>
-                                            <input type="time" name="check_in_time" id="check_in_time" value="08:00"
-                                                   class="form-control bg-light" readonly>
+                                            <input type="time" name="check_in_time" id="check_in_time"
+                                                   class="form-control" min="08:00" max="22:00"
+                                                   value="08:00" required>
+                                            <div class="form-text">เวลาเข้าต้องอยู่ระหว่าง 08:00 - 22:00 น.</div>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">เวลาออก</label>
-                                            <input type="time" name="check_out_time" id="check_out_time" value="23:00"
-                                                   class="form-control bg-light" readonly>
+                                            <input type="time" name="check_out_time" id="check_out_time"
+                                                   class="form-control" min="09:00" max="23:00"
+                                                   value="23:00" required>
+                                            <div class="form-text">เวลาออกต้องอยู่ระหว่าง 09:00 - 23:00 น.</div>
                                         </div>
                                     </div>
                                     <p class="small text-muted mt-3 mb-0">
@@ -118,7 +122,7 @@
                                     </p>
                                 </div>
                             </div>
-                            
+
 
                             <!-- Action Buttons -->
                             <div class="d-flex justify-content-between">
@@ -673,3 +677,4 @@
     });
 </script>
 @endsection
+

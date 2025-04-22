@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Building;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
@@ -120,11 +121,41 @@ class BookingController extends Controller
                 'external_phone' => 'required|string|max:20',
                 'booking_start' => 'required|date|after:today',
                 'booking_end' => 'required|date|after:booking_start',
+                'check_in_time' => [
+                    'required',
+                    'date_format:H:i',
+                    'after_or_equal:08:00',
+                    'before:22:00'
+                ],
+                'check_out_time' => [
+                    'required',
+                    'date_format:H:i',
+                    'after:check_in_time',
+                    'before_or_equal:23:00'
+                ],
                 'reason' => 'nullable|string',
                 'payment_slip' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             ]);
 
-            // ส่วนตรวจสอบวันหยุดและการซ้อนทับ...
+            // Combine date and time for booking start and end
+            $bookingStart = Carbon::parse($validated['booking_start'])->format('Y-m-d') . ' ' . $validated['check_in_time'];
+            $bookingEnd = Carbon::parse($validated['booking_end'])->format('Y-m-d') . ' ' . $validated['check_out_time'];
+
+            // Check if the time slot is available
+            $existingBooking = Booking::where('room_id', $validated['room_id'])
+                ->where(function($query) use ($bookingStart, $bookingEnd) {
+                    $query->whereBetween('booking_start', [$bookingStart, $bookingEnd])
+                        ->orWhereBetween('booking_end', [$bookingStart, $bookingEnd])
+                        ->orWhere(function($q) use ($bookingStart, $bookingEnd) {
+                            $q->where('booking_start', '<=', $bookingStart)
+                              ->where('booking_end', '>=', $bookingEnd);
+                        });
+                })
+                ->exists();
+
+            if ($existingBooking) {
+                return back()->withErrors(['message' => 'ช่วงเวลาที่เลือก已被预订']);
+            }
 
             // คำนวณราคารวม
             $room = Room::find($validated['room_id']);
@@ -142,6 +173,8 @@ class BookingController extends Controller
             $booking->is_external = true;
             $booking->total_price = $totalPrice;
             $booking->payment_status = 'pending';
+            $booking->booking_start = $bookingStart;
+            $booking->booking_end = $bookingEnd;
 
             // กรณีผู้ใช้ที่ login แล้ว
             if (auth()->check()) {
@@ -226,3 +259,4 @@ class BookingController extends Controller
         }
     }
 }
+
