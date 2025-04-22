@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Building;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class BookingController extends Controller
@@ -99,7 +100,7 @@ class BookingController extends Controller
             ));
 
         } catch (\Exception $e) {
-            \Log::error('Booking form error: '.$e->getMessage());
+            Log::error('Booking form error: '.$e->getMessage());
 
             return back()->with('error', 'ไม่พบห้องที่ต้องการ หรือเกิดข้อผิดพลาดในการแสดงแบบฟอร์ม');
         }
@@ -108,7 +109,7 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         try {
-            \Log::debug('Incoming booking request:', $request->all());
+            Log::debug('Incoming booking request:', $request->all());
 
             // Validate request data
             $validated = $request->validate([
@@ -188,15 +189,15 @@ class BookingController extends Controller
                     if ($file->isValid()) {
                         $filePath = $file->store('payment_slips', 'public');
                         $booking->payment_slip = $filePath;
-                        \Log::info('Payment slip saved successfully: '.$filePath);
+                        Log::info('Payment slip saved successfully: '.$filePath);
                     } else {
-                        \Log::warning('Invalid payment slip file.');
+                        Log::warning('Invalid payment slip file.');
                     }
                 } catch (\Exception $e) {
-                    \Log::error('Error uploading payment slip: '.$e->getMessage());
+                    Log::error('Error uploading payment slip: '.$e->getMessage());
                 }
             } else {
-                \Log::info('No payment slip provided in the request.');
+                Log::info('No payment slip provided in the request.');
             }
 
             $booking->save();
@@ -206,7 +207,7 @@ class BookingController extends Controller
             return redirect()->route('booking.index')->with('success', 'การจองห้องสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันการจอง');
 
         } catch (\Exception $e) {
-            \Log::error('Booking failed: '.$e->getMessage(), ['request' => $request->all()]);
+            Log::error('Booking failed: '.$e->getMessage(), ['request' => $request->all()]);
 
             return back()->with('error', 'เกิดข้อผิดพลาดในการจอง: '.$e->getMessage())
                 ->withInput();
@@ -253,7 +254,7 @@ class BookingController extends Controller
                 return back()->with('error', 'คุณไม่มีสิทธิ์ยกเลิกการจองนี้');
             }
         } catch (\Exception $e) {
-            \Log::error('Cancel booking failed: '.$e->getMessage());
+            Log::error('Cancel booking failed: '.$e->getMessage());
 
             return back()->with('error', 'เกิดข้อผิดพลาดในการยกเลิกการจอง');
         }
