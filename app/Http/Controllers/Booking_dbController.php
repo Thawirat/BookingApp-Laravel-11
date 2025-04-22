@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Booking_dbController extends Controller
 {
@@ -41,7 +42,7 @@ class Booking_dbController extends Controller
 
             $booking->delete();
         } catch (\Exception $e) {
-            \Log::error('Failed to move booking to history: '.$e->getMessage());
+            Log::error('Failed to move booking to history: '.$e->getMessage());
         }
     }
 
@@ -108,7 +109,7 @@ class Booking_dbController extends Controller
         // ตรวจสอบว่าสถานะเป็น 6 และเรียกใช้ moveToHistory
         if ($status->status_id == 6) {
             $this->moveToHistory($id);
-            \Log::info("Booking {$id} moved to history."); // ล็อกข้อความเพื่อตรวจสอบ
+            Log::info("Booking {$id} moved to history."); // ล็อกข้อความเพื่อตรวจสอบ
         }
 
         return redirect()->route('booking_db')->with('success', "การจองถูกเปลี่ยนสถานะเป็น {$status->status_name} เรียบร้อยแล้ว");
