@@ -37,20 +37,35 @@
 
                                 <!-- User Name -->
                                 <div class="col-md-12">
-                                    <label class="form-label fw-semibold">ชื่อผู้จอง</label>
-                                    <input class="form-control" name="external_name" type="text" required>
+                                    <label class="form-label fw-semibold">ชื่อผู้จอง <span class="text-danger">*</span></label>
+                                    @if(auth()->check())
+                                        <input class="form-control" type="text" name="external_name"
+                                            value="{{ auth()->user()->name }}">
+                                    @else
+                                        <input class="form-control" name="external_name" type="text" required>
+                                    @endif
                                 </div>
 
                                 <!-- Email -->
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">อีเมล</label>
-                                    <input class="form-control" name="external_email" type="email" required>
+                                    <label class="form-label fw-semibold">อีเมล <span class="text-danger">*</span></label>
+                                    @if(auth()->check())
+                                        <input class="form-control" type="email" name="external_email"
+                                            value="{{ auth()->user()->email }}">
+                                    @else
+                                        <input class="form-control" type="email" name="external_email" required>
+                                    @endif
                                 </div>
 
                                 <!-- Phone -->
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">เบอร์โทร</label>
-                                    <input class="form-control" name="external_phone" type="text" required>
+                                    <label class="form-label fw-semibold">เบอร์โทร <span class="text-danger">*</span></label>
+                                    @if(auth()->check())
+                                        <input class="form-control" type="tel" name="external_phone"
+                                            value="{{ auth()->user()->phone ?? '' }}" {{ auth()->user()->phone ? '' : '' }}>
+                                    @else
+                                        <input class="form-control" type="tel" name="external_phone" required>
+                                    @endif
                                 </div>
 
                                 <!-- Reason -->
@@ -463,7 +478,7 @@
         minDate: new Date(),
         allowSingleDayRange: true,
         tooltipText: {
-            one: 'วัน',
+            one: '1 วัน',
             other: 'วัน'
         },
         lockDays: disabledDates,
