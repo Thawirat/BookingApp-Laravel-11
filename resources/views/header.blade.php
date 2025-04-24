@@ -1,5 +1,5 @@
 <header class="bg-transparent absolute top-0 left-0 w-full z-10">
-    <section class="hero-section bg-cover bg-center text-white text-center py-20">  
+    <section class="hero-section bg-cover bg-center text-white text-center py-20">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center">
                 <!-- Logo and Title -->

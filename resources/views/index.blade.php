@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row mb-4">
-        
+    <div class="container">
+        <div class="row mb-4">
+
             <!-- Hero Banner -->
             <div class="card bg-warning text-white mb-4">
                 <div class="card-body text-center py-5">
@@ -53,17 +53,20 @@
             <!-- Featured Rooms -->
             <h3 class="fw-bold mb-3">ห้องแนะนำ</h3>
             <div class="row g-4 mb-4">
-                @if(isset($featuredRooms) && count($featuredRooms) > 0)
-                    @foreach($featuredRooms as $room)
+                @if (isset($featuredRooms) && count($featuredRooms) > 0)
+                    @foreach ($featuredRooms as $room)
                         <div class="col-md-4">
                             <div class="card shadow-sm">
-                                <img src="{{ $room->image ? asset('storage/'.$room->image) : '/api/placeholder/400/200' }}" class="card-img-top" alt="Room Image">
+                                <img src="{{ $room->image ? asset('storage/' . $room->image) : '/api/placeholder/400/200' }}"
+                                    class="card-img-top" alt="Room Image">
                                 <div class="card-body">
                                     <h5 class="fw-bold">{{ $room->room_name }}</h5>
-                                    <p class="text-muted mb-1">อาคาร {{ $room->building->building_name }} ชั้น {{ $room->floor }}</p>
+                                    <p class="text-muted mb-1">อาคาร {{ $room->building->building_name }} ชั้น
+                                        {{ $room->floor }}</p>
                                     <p class="text-muted mb-1">รองรับได้ {{ $room->capacity }} คน</p>
                                     <p class="fw-bold text-warning">฿{{ number_format($room->service_rates, 2) }} /วัน</p>
-                                    <a href="{{ route('partials.booking.form', ['id' => $room->room_id]) }}" class="btn btn-warning w-100">จองเลย</a>
+                                    <a href="{{ route('partials.booking.form', ['id' => $room->room_id]) }}"
+                                        class="btn btn-warning w-100">จองเลย</a>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +85,8 @@
                     <div class="row text-center g-4">
                         <div class="col-md-3">
                             <div class="p-3">
-                                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center mb-3"
+                                    style="width: 80px; height: 80px;">
                                     <i class="fas fa-search fa-2x"></i>
                                 </div>
                                 <h4>1. เลือกห้อง</h4>
@@ -91,7 +95,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="p-3">
-                                <div class="rounded-circle bg-success text-white d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                                <div class="rounded-circle bg-success text-white d-inline-flex justify-content-center align-items-center mb-3"
+                                    style="width: 80px; height: 80px;">
                                     <i class="fas fa-calendar-alt fa-2x"></i>
                                 </div>
                                 <h4>2. เลือกวันเวลา</h4>
@@ -100,7 +105,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="p-3">
-                                <div class="rounded-circle bg-warning text-white d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                                <div class="rounded-circle bg-warning text-white d-inline-flex justify-content-center align-items-center mb-3"
+                                    style="width: 80px; height: 80px;">
                                     <i class="fas fa-clipboard-list fa-2x"></i>
                                 </div>
                                 <h4>3. กรอกข้อมูล</h4>
@@ -109,7 +115,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="p-3">
-                                <div class="rounded-circle bg-danger text-white d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                                <div class="rounded-circle bg-danger text-white d-inline-flex justify-content-center align-items-center mb-3"
+                                    style="width: 80px; height: 80px;">
                                     <i class="fas fa-check-circle fa-2x"></i>
                                 </div>
                                 <h4>4. รอการยืนยัน</h4>
@@ -122,8 +129,8 @@
 
             <!-- Upcoming Holidays -->
             <div class="card mb-4">
-                <div class="card-header bg-warning text-white">
-                    <h4 class="mb-0">วันหยุดประจำปี 2025</h4>
+                <div class=" card-header bg-warning text-white d-flex justify-content-between">
+                    <h4 class="mb-0">วันหยุดประจำปี 2568</h4> <!-- ปี พ.ศ. -->
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -131,23 +138,23 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันขึ้นปีใหม่</span>
-                                    <span class="badge bg-primary rounded-pill">1 มกราคม 2025</span>
+                                    <span class="badge bg-primary rounded-pill">1 มกราคม 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันมาฆบูชา</span>
-                                    <span class="badge bg-primary rounded-pill">10 กุมภาพันธ์ 2025</span>
+                                    <span class="badge bg-primary rounded-pill">10 กุมภาพันธ์ 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันจักรี</span>
-                                    <span class="badge bg-primary rounded-pill">6 เมษายน 2025</span>
+                                    <span class="badge bg-primary rounded-pill">6 เมษายน 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันสงกรานต์</span>
-                                    <span class="badge bg-primary rounded-pill">13-15 เมษายน 2025</span>
+                                    <span class="badge bg-primary rounded-pill">13-15 เมษายน 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันแรงงานแห่งชาติ</span>
-                                    <span class="badge bg-primary rounded-pill">1 พฤษภาคม 2025</span>
+                                    <span class="badge bg-primary rounded-pill">1 พฤษภาคม 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                             </ul>
                         </div>
@@ -155,23 +162,23 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันเฉลิมพระชนมพรรษา ร.10</span>
-                                    <span class="badge bg-primary rounded-pill">28 กรกฎาคม 2025</span>
+                                    <span class="badge bg-primary rounded-pill">28 กรกฎาคม 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันแม่แห่งชาติ</span>
-                                    <span class="badge bg-primary rounded-pill">12 สิงหาคม 2025</span>
+                                    <span class="badge bg-primary rounded-pill">12 สิงหาคม 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันปิยมหาราช</span>
-                                    <span class="badge bg-primary rounded-pill">23 ตุลาคม 2025</span>
+                                    <span class="badge bg-primary rounded-pill">23 ตุลาคม 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันพ่อแห่งชาติ/วันชาติ</span>
-                                    <span class="badge bg-primary rounded-pill">5 ธันวาคม 2025</span>
+                                    <span class="badge bg-primary rounded-pill">5 ธันวาคม 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>วันสิ้นปี</span>
-                                    <span class="badge bg-primary rounded-pill">31 ธันวาคม 2025</span>
+                                    <span class="badge bg-primary rounded-pill">31 ธันวาคม 2568</span> <!-- ปี พ.ศ. -->
                                 </li>
                             </ul>
                         </div>
@@ -186,11 +193,12 @@
                         <div class="card-header bg-primary text-white">
                             <h4 class="mb-0">ติดต่อเรา</h4>
                         </div>
-                        <div class="card-body">
-                            <p><i class="fas fa-university me-2"></i> มหาวิทยาลัยราชภัฏสกลนคร</p>
-                            <p><i class="fas fa-map-marker-alt me-2"></i> 680 ถนนนิตโย ตำบลธาตุเชิงชุม อำเภอเมือง จังหวัดสกลนคร 47000</p>
-                            <p><i class="fas fa-phone-alt me-2"></i> 042-970021</p>
-                            <p><i class="fas fa-envelope me-2"></i> booking@snru.ac.th</p>
+                        <div class="card-body ps-3">
+                            <p><i class="fas fa-university me-2 ms-1 text-primary"></i>มหาวิทยาลัยราชภัฏสกลนคร</p>
+                            <p><i class="fas fa-map-marker-alt me-2 ms-1 text-danger"></i>680 ถนนนิตโย ตำบลธาตุเชิงชุม
+                                อำเภอเมือง จังหวัดสกลนคร 47000</p>
+                            <p><i class="fas fa-phone-alt me-2 ms-1 text-success"></i>042-970021</p>
+                            <p><i class="fas fa-envelope me-2 ms-1 text-warning"></i>booking@snru.ac.th</p>
                         </div>
                     </div>
                 </div>
@@ -201,63 +209,77 @@
                         </div>
                         <div class="card-body">
                             <div class="accordion" id="faqAccordion">
-                                <div class="accordion-item">
+                                <div class="accordion-item border-0">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        <button class="accordion-button collapsed border-0" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq1">
                                             ทำการจองห้องได้ล่วงหน้ากี่วัน?
                                         </button>
                                     </h2>
-                                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div id="faq1" class="accordion-collapse collapse"
+                                        data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             สามารถทำการจองล่วงหน้าได้ไม่เกิน 30 วัน
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item">
+                                <div class="accordion-item border-0">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        <button class="accordion-button collapsed border-0" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq2">
                                             มีค่าใช้จ่ายในการจองห้องหรือไม่?
                                         </button>
                                     </h2>
-                                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div id="faq2" class="accordion-collapse collapse"
+                                        data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
-                                            ค่าใช้จ่ายขึ้นอยู่กับประเภทห้องและระยะเวลาการใช้งาน โปรดตรวจสอบราคาในหน้ารายละเอียดห้อง
+                                            ค่าใช้จ่ายขึ้นอยู่กับประเภทห้องและระยะเวลาการใช้งาน
+                                            โปรดตรวจสอบราคาในหน้ารายละเอียดห้อง
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item">
+                                <div class="accordion-item border-0">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        <button class="accordion-button collapsed border-0" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq3">
                                             สามารถยกเลิกการจองได้หรือไม่?
                                         </button>
                                     </h2>
-                                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div id="faq3" class="accordion-collapse collapse"
+                                        data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
-                                            สามารถยกเลิกการจองได้ผ่านระบบออนไลน์ โดยต้องยกเลิกก่อนวันใช้งานอย่างน้อย 24 ชั่วโมง
+                                            สามารถยกเลิกการจองได้ผ่านระบบออนไลน์ โดยต้องยกเลิกก่อนวันใช้งานอย่างน้อย 24
+                                            ชั่วโมง
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item">
+                                <div class="accordion-item border-0">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                        <button class="accordion-button collapsed border-0" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq4">
                                             ต้องชำระเงินอย่างไร?
                                         </button>
                                     </h2>
-                                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div id="faq4" class="accordion-collapse collapse"
+                                        data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
-                                            สามารถชำระเงินผ่านบัตรเครดิต/เดบิต หรือชำระเงินสดที่สำนักงานการเงินของมหาวิทยาลัย
+                                            สามารถชำระเงินผ่านบัตรเครดิต/เดบิต
+                                            หรือชำระเงินสดที่สำนักงานการเงินของมหาวิทยาลัย
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item">
+                                <div class="accordion-item border-0">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                        <button class="accordion-button collapsed border-0" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq5">
                                             มีห้องให้เลือกกี่ประเภท?
                                         </button>
                                     </h2>
-                                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div id="faq5" class="accordion-collapse collapse"
+                                        data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
-                                            มีห้องให้เลือกหลากหลายประเภท เช่น ห้องเรียนขนาดเล็ก ห้องประชุม ห้องสัมมนา และห้องอเนกประสงค์
+                                            มีห้องให้เลือกหลากหลายประเภท เช่น ห้องเรียนขนาดเล็ก ห้องประชุม ห้องสัมมนา
+                                            และห้องอเนกประสงค์
                                         </div>
                                     </div>
                                 </div>
@@ -266,6 +288,6 @@
                     </div>
                 </div>
             </div>
+        </div>
     </div>
-</div>
 @endsection
