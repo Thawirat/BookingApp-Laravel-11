@@ -48,7 +48,6 @@ class BookingController extends Controller
         $rooms = Room::with('status')->get();
 
         return view('booking', compact('buildings', 'rooms'));
-
     }
 
     public function showBookingForm($id)
@@ -60,7 +59,7 @@ class BookingController extends Controller
             $bookedTimeSlots = Booking::where('room_id', $id)
                 ->whereIn('status_id', [1, 2, 3])
                 ->get(['booking_start', 'booking_end', 'external_name'])
-                ->map(function($booking) {
+                ->map(function ($booking) {
                     return [
                         'date' => Carbon::parse($booking->booking_start)->format('Y-m-d'),
                         'start' => Carbon::parse($booking->booking_start)->format('H:i'),
@@ -87,7 +86,7 @@ class BookingController extends Controller
                     $end
                 );
 
-                $bookingInfo = 'จองโดย: '.mb_substr($booking->external_name, 0, 1).'xxx';
+                $bookingInfo = 'จองโดย: ' . mb_substr($booking->external_name, 0, 1) . 'xxx';
 
                 foreach ($period as $date) {
                     $formattedDate = $date->format('Y-m-d');
@@ -108,9 +107,8 @@ class BookingController extends Controller
                 'bookedDetails',
                 'bookedTimeSlots'
             ));
-
         } catch (\Exception $e) {
-            Log::error('Booking form error: '.$e->getMessage());
+            Log::error('Booking form error: ' . $e->getMessage());
 
             return back()->with('error', 'ไม่พบห้องที่ต้องการ หรือเกิดข้อผิดพลาดในการแสดงแบบฟอร์ม');
         }
@@ -154,13 +152,11 @@ class BookingController extends Controller
 
             // Check if the time slot is available
             $existingBooking = Booking::where('room_id', $validated['room_id'])
-                ->where(function($query) use ($bookingStart, $bookingEnd) {
-                    $query->whereBetween('booking_start', [$bookingStart, $bookingEnd])
-                        ->orWhereBetween('booking_end', [$bookingStart, $bookingEnd])
-                        ->orWhere(function($q) use ($bookingStart, $bookingEnd) {
-                            $q->where('booking_start', '<=', $bookingStart)
-                              ->where('booking_end', '>=', $bookingEnd);
-                        });
+                ->where(function ($query) use ($bookingStart, $bookingEnd) {
+                    $query->where(function ($q) use ($bookingStart, $bookingEnd) {
+                        $q->where('booking_start', '<', $bookingEnd)
+                            ->where('booking_end', '>', $bookingStart);
+                    });
                 })
                 ->exists();
 
@@ -169,21 +165,21 @@ class BookingController extends Controller
             }
 
             // Check for overlapping bookings with time slots
-            $existingBooking = Booking::where('room_id', $validated['room_id'])
-                ->where(function($query) use ($bookingStart, $bookingEnd) {
-                    $query->where(function($q) use ($bookingStart, $bookingEnd) {
-                        // Check if new booking overlaps with existing booking
-                        $q->where(function($inner) use ($bookingStart, $bookingEnd) {
-                            $inner->where('booking_start', '<', $bookingEnd)
-                                  ->where('booking_end', '>', $bookingStart);
-                        });
-                    });
-                })
-                ->exists();
+            // $existingBooking = Booking::where('room_id', $validated['room_id'])
+            //     ->where(function ($query) use ($bookingStart, $bookingEnd) {
+            //         $query->where(function ($q) use ($bookingStart, $bookingEnd) {
+            //             // Check if new booking overlaps with existing booking
+            //             $q->where(function ($inner) use ($bookingStart, $bookingEnd) {
+            //                 $inner->where('booking_start', '<', $bookingEnd)
+            //                     ->where('booking_end', '>', $bookingStart);
+            //             });
+            //         });
+            //     })
+            //     ->exists();
 
-            if ($existingBooking) {
-                return back()->withErrors(['message' => 'ช่วงเวลาที่เลือกมีการจองแล้ว'])->withInput();
-            }
+            // if ($existingBooking) {
+            //     return back()->withErrors(['message' => 'ช่วงเวลาที่เลือกมีการจองแล้ว'])->withInput();
+            // }
 
             // คำนวณราคารวม
             $room = Room::find($validated['room_id']);
@@ -216,12 +212,12 @@ class BookingController extends Controller
                     if ($file->isValid()) {
                         $filePath = $file->store('payment_slips', 'public');
                         $booking->payment_slip = $filePath;
-                        Log::info('Payment slip saved successfully: '.$filePath);
+                        Log::info('Payment slip saved successfully: ' . $filePath);
                     } else {
                         Log::warning('Invalid payment slip file.');
                     }
                 } catch (\Exception $e) {
-                    Log::error('Error uploading payment slip: '.$e->getMessage());
+                    Log::error('Error uploading payment slip: ' . $e->getMessage());
                 }
             } else {
                 Log::info('No payment slip provided in the request.');
@@ -232,11 +228,10 @@ class BookingController extends Controller
             // ส่งอีเมลแจ้งยืนยันการจอง...
 
             return redirect()->route('booking.index')->with('success', 'การจองห้องสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันการจอง');
-
         } catch (\Exception $e) {
-            Log::error('Booking failed: '.$e->getMessage(), ['request' => $request->all()]);
+            Log::error('Booking failed: ' . $e->getMessage(), ['request' => $request->all()]);
 
-            return back()->with('error', 'เกิดข้อผิดพลาดในการจอง: '.$e->getMessage())
+            return back()->with('error', 'เกิดข้อผิดพลาดในการจอง: ' . $e->getMessage())
                 ->withInput();
         }
     }
@@ -281,10 +276,9 @@ class BookingController extends Controller
                 return back()->with('error', 'คุณไม่มีสิทธิ์ยกเลิกการจองนี้');
             }
         } catch (\Exception $e) {
-            Log::error('Cancel booking failed: '.$e->getMessage());
+            Log::error('Cancel booking failed: ' . $e->getMessage());
 
             return back()->with('error', 'เกิดข้อผิดพลาดในการยกเลิกการจอง');
         }
     }
 }
-
