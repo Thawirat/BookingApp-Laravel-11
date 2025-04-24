@@ -14,7 +14,7 @@
                 </a>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <h2>ปฏิทินการจองห้อง</h2>
         </div>
@@ -143,7 +143,7 @@
                     } else {
                         renderBookingDetails(data);
                     }
-                    
+
                     var modal = new bootstrap.Modal(document.getElementById('bookingDetailsModal'));
                     modal.show();
                 })
@@ -159,11 +159,11 @@
         function renderBookingDetails(booking) {
             const startTime = new Date(booking.booking_start).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
             const endTime = new Date(booking.booking_end).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-            const bookingDate = new Date(booking.booking_start).toLocaleDateString('th-TH', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+            const bookingDate = new Date(booking.booking_start).toLocaleDateString('th-TH', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
 
             let historyHtml = '';
@@ -195,11 +195,11 @@
                     <div class="col-md-8">
                         <h4>${booking.room_name} (${booking.building_name})</h4>
                         <p class="text-muted">${bookingDate}</p>
-                        
+
                         <div class="mb-3">
                             <span class="badge" style="background-color: ${booking.statusColor}; font-size: 1rem;">${booking.status_name}</span>
                         </div>
-                        
+
                         <div class="mb-3">
                             <h6>รายละเอียดการจอง</h6>
                             <p><i class="far fa-clock me-2"></i> ${startTime} - ${endTime}</p>
@@ -281,7 +281,7 @@
         text-overflow: ellipsis;
         color: white;
     }
-    .calendar-week .table th, 
+    .calendar-week .table th,
     .calendar-week .table td {
         height: 60px;
         vertical-align: top;

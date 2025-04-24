@@ -32,7 +32,7 @@ class CalendarController extends Controller
         // Data for navigation
         $prevMonth = $date->copy()->subMonth()->format('Y-m-d');
         $nextMonth = $date->copy()->addMonth()->format('Y-m-d');
-        $currentMonth = $date->format('F Y');
+        $currentMonth = $date->locale('th')->translatedFormat('F') . ' ' . ($date->year + 543);
 
         switch ($view) {
             case 'month':
@@ -151,7 +151,7 @@ class CalendarController extends Controller
 
     private function dayView($date, $statusList, $prevMonth, $nextMonth, $currentMonth, $currentDate, $view)
     {
-        $dayViewDate = $date->format('วันl ที่ d F Y');
+        $dayViewDate = $date->locale('th')->translatedFormat('วัน l ที่ j F พ.ศ.') . ' ' . ($date->year + 543);
 
         $bookings = Booking::whereDate('booking_start', $date->format('Y-m-d'))
             ->select('bookings.*', 'status.status_name', 'bookings.status_id')

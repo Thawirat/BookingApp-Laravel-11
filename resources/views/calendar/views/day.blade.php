@@ -14,7 +14,7 @@
                     <td>
                         @foreach($bookingsByTime[$time] ?? [] as $booking)
                             @if(!in_array($booking->status_id, [1, 2])) {{-- ซ่อนสถานะ 1 และ 2 --}}
-                                <div class="event-item booking-item mb-2 p-2 rounded" 
+                                <div class="event-item booking-item mb-2 p-2 rounded"
                                      style="background-color: {{ $booking->statusColor }}"
                                      data-booking-id="{{ $booking->id }}">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -25,9 +25,9 @@
                                         <span class="badge bg-light text-dark">{{ $booking->status_name }}</span>
                                     </div>
                                     <div class="text-white-50 mt-1">
-                                        <i class="far fa-clock"></i> 
-                                        {{ Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - 
-                                        {{ Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
+                                        <i class="far fa-clock"></i>
+                                        {{ Carbon\Carbon::parse($booking->booking_start)->translatedFormat('lที่ j F') }} {{ \Carbon\Carbon::parse($dayViewDate)->year + 543 }} -
+                                        {{ Carbon\Carbon::parse($booking->booking_end)->translatedFormat('lที่ j F') }} {{ \Carbon\Carbon::parse($dayViewDate)->year + 543 }}
                                     </div>
                                     <div class="text-white mt-1">
                                         <i class="fas fa-user"></i> xxx
