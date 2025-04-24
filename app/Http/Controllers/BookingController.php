@@ -53,13 +53,22 @@ class BookingController extends Controller
 
     public function showBookingForm($id)
     {
-        if (! is_numeric($id)) {
-            return back()->with('error', 'Invalid room ID provided.');
-        }
-
         try {
-            // Get room with building relationship
             $room = Room::with('building')->findOrFail($id);
+
+            // Get booked time slots
+            $bookedTimeSlots = Booking::where('room_id', $id)
+                ->whereIn('status_id', [1, 2, 3])
+                ->get(['booking_start', 'booking_end', 'external_name'])
+                ->map(function($booking) {
+                    return [
+                        'date' => Carbon::parse($booking->booking_start)->format('Y-m-d'),
+                        'start' => Carbon::parse($booking->booking_start)->format('H:i'),
+                        'end' => Carbon::parse($booking->booking_end)->format('H:i'),
+                        'name' => mb_substr($booking->external_name, 0, 1) . 'xxx'
+                    ];
+                })
+                ->groupBy('date');
 
             // Get booked dates
             $bookedDates = Booking::where('room_id', $id)
@@ -90,13 +99,14 @@ class BookingController extends Controller
             $holidaysWithNames = $this->holidays;
 
             // Get all disabled days
-            $disabledDays = array_merge(array_keys($bookedDetails), array_keys($holidaysWithNames));
+            $disabledDays = array_keys($holidaysWithNames);
 
             return view('partials.booking-form', compact(
                 'room',
                 'disabledDays',
                 'holidaysWithNames',
-                'bookedDetails'
+                'bookedDetails',
+                'bookedTimeSlots'
             ));
 
         } catch (\Exception $e) {
@@ -156,6 +166,23 @@ class BookingController extends Controller
 
             if ($existingBooking) {
                 return back()->withErrors(['message' => 'ช่วงเวลาที่เลือก已被预订']);
+            }
+
+            // Check for overlapping bookings with time slots
+            $existingBooking = Booking::where('room_id', $validated['room_id'])
+                ->where(function($query) use ($bookingStart, $bookingEnd) {
+                    $query->where(function($q) use ($bookingStart, $bookingEnd) {
+                        // Check if new booking overlaps with existing booking
+                        $q->where(function($inner) use ($bookingStart, $bookingEnd) {
+                            $inner->where('booking_start', '<', $bookingEnd)
+                                  ->where('booking_end', '>', $bookingStart);
+                        });
+                    });
+                })
+                ->exists();
+
+            if ($existingBooking) {
+                return back()->withErrors(['message' => 'ช่วงเวลาที่เลือกมีการจองแล้ว'])->withInput();
             }
 
             // คำนวณราคารวม
