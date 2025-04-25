@@ -163,7 +163,6 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::delete('/manage-users/{id}', [ManageUsersController::class, 'destroy'])->name('manage_users.destroy');
     Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db');
     Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('booking_history');
-    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 
     // Building management
     Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
@@ -179,7 +178,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/update', [RegisterController::class, 'update'])->name('profile.update');
     Route::post('/user/change-password', [UserController::class, 'changePassword'])->name('user.changePassword');
 });
-
+Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 // Booking routes
 Route::post('/book-room/{id}', [BookingController::class, 'bookRoom'])->name('book.room'); // Route for booking a room
 

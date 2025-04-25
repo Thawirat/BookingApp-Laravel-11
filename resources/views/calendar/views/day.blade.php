@@ -8,15 +8,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($timeSlots as $time)
+            @foreach ($timeSlots as $time)
                 <tr>
                     <td class="text-center">{{ $time }}</td>
                     <td>
-                        @foreach($bookingsByTime[$time] ?? [] as $booking)
-                            @if(!in_array($booking->status_id, [1, 2])) {{-- ซ่อนสถานะ 1 และ 2 --}}
+                        @foreach ($bookingsByTime[$time] ?? [] as $booking)
+                            @if (!in_array($booking->status_id, [1, 2]))
+                                {{-- ซ่อนสถานะ 1 และ 2 --}}
                                 <div class="event-item booking-item mb-2 p-2 rounded"
-                                     style="background-color: {{ $booking->statusColor }}"
-                                     data-booking-id="{{ $booking->id }}">
+                                    style="background-color: {{ $booking->statusColor }}"
+                                    data-booking-id="{{ $booking->id }}">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <strong class="text-white">{{ $booking->room_name }}</strong>
@@ -26,8 +27,14 @@
                                     </div>
                                     <div class="text-white-50 mt-1">
                                         <i class="far fa-clock"></i>
-                                        {{ Carbon\Carbon::parse($booking->booking_start)->translatedFormat('lที่ j F') }} {{ \Carbon\Carbon::parse($dayViewDate)->year + 543 }} -
-                                        {{ Carbon\Carbon::parse($booking->booking_end)->translatedFormat('lที่ j F') }} {{ \Carbon\Carbon::parse($dayViewDate)->year + 543 }}
+                                        @if ($booking->booking_start && $booking->booking_end)
+                                            {{ Carbon\Carbon::parse($booking->booking_start)->translatedFormat('lที่ j F') }}
+                                            {{ Carbon\Carbon::parse($booking->booking_start)->year + 543 }} -
+                                            {{ Carbon\Carbon::parse($booking->booking_end)->translatedFormat('lที่ j F') }}
+                                            {{ Carbon\Carbon::parse($booking->booking_end)->year + 543 }}
+                                        @else
+                                            <span class="text-danger">ไม่พบข้อมูลวันที่</span>
+                                        @endif
                                     </div>
                                     <div class="text-white mt-1">
                                         <i class="fas fa-user"></i> xxx
