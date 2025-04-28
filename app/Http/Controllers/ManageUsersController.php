@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class ManageUsersController extends Controller
 {
@@ -33,7 +34,7 @@ class ManageUsersController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'role' => 'required|in:admin,sub-admin,user',
             'password' => 'nullable|min:8',
             'buildings' => 'array',
@@ -41,10 +42,14 @@ class ManageUsersController extends Controller
 
         $user = User::findOrFail($id);
 
+        // ดึง Role Model ที่ตรงกับชื่อ role ที่เลือก
+        $roleModel = Role::where('name', $request->role)->first();
+
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
+            'role_id' => $roleModel ? $roleModel->id : null, // เพิ่มตรงนี้
         ];
 
         if ($request->filled('password')) {
@@ -52,6 +57,11 @@ class ManageUsersController extends Controller
         }
 
         $user->update($userData);
+
+        // syncRoles เพื่ออัปเดตตาราง model_has_roles ด้วย
+        if ($roleModel) {
+            $user->syncRoles([$roleModel->name]);
+        }
 
         // Only sync buildings if the user is a sub-admin
         if ($request->role === 'sub-admin') {

@@ -14,8 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('role_id')->nullable()->after('id'); // เชื่อมกับ Spatie role
-            $table->string('role')->default('user')->after('role_id'); // เก็บชื่อ role ง่าย ๆ
+            $table->dropColumn('role_id');
         });
     }
 
@@ -27,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['role_id', 'role']);
+            $table->unsignedBigInteger('role_id')->nullable()->after('id');
         });
     }
 };
