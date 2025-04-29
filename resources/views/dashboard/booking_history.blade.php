@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
 @section('content')
 <div>
@@ -98,16 +98,16 @@
                                         <td>
                                             <div><i class="far fa-calendar-alt me-1"></i> {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}</div>
                                             <small class="text-muted">
-                                                <i class="far fa-clock me-1"></i> 
-                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - 
+                                                <i class="far fa-clock me-1"></i>
+                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} -
                                                 {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
                                             </small>
                                         </td>
                                         <td>
                                             <div><i class="far fa-calendar-alt me-1"></i> {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}</div>
                                             <small class="text-muted">
-                                                <i class="far fa-clock me-1"></i> 
-                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - 
+                                                <i class="far fa-clock me-1"></i>
+                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} -
                                                 {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
                                             </small>
                                         </td>
@@ -117,17 +117,17 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge 
-                                                @if($booking->status_id == 4) bg-success 
-                                                @elseif($booking->status_id == 5) bg-danger 
-                                                @elseif($booking->status_id == 6) bg-secondary 
+                                            <span class="badge
+                                                @if($booking->status_id == 4) bg-success
+                                                @elseif($booking->status_id == 5) bg-danger
+                                                @elseif($booking->status_id == 6) bg-secondary
                                                 @else bg-info @endif">
                                                 {{ $booking->status_name }}
                                             </span>
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="#" class="btn btn-outline-info btn-sm view-details" 
+                                                <a href="#" class="btn btn-outline-info btn-sm view-details"
                                                    data-bs-toggle="modal" data-bs-target="#detailsModal{{ $booking->id }}">
                                                     <i class="fas fa-eye"></i> รายละเอียด
                                                 </a>
@@ -156,15 +156,15 @@
                                                                 <strong>วันที่จอง:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}
                                                             </div>
                                                             <div class="mb-2">
-                                                                <strong>เวลา:</strong> 
-                                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - 
+                                                                <strong>เวลา:</strong>
+                                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} -
                                                                 {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
                                                             </div>
                                                             <div class="mb-2">
                                                                 <strong>วัตถุประสงค์:</strong> {{ $booking->reason ?? 'ไม่ระบุ' }}
                                                             </div>
                                                             <div class="mb-2">
-                                                                <strong>สถานะการชำระเงิน:</strong> 
+                                                                <strong>สถานะการชำระเงิน:</strong>
                                                                 <span class="badge {{ $booking->payment_status == 'ชำระแล้ว' ? 'bg-success' : 'bg-warning' }}">
                                                                     {{ $booking->payment_status }}
                                                                 </span>
@@ -220,7 +220,7 @@
                     </div>
                 </div>
             </div>
-        </div>  
+        </div>
     </div>
 </div>
 @endsection

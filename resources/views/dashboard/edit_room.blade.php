@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -7,7 +7,7 @@
         @csrf
         @method('PUT')
         <input type="hidden" name="building_id" value="{{ $room->building_id }}">
-        
+
         <div class="row">
             <!-- Left Column for Image -->
             <div class="col-md-4">

@@ -44,61 +44,76 @@
 </head>
 
 <body>
-
-    <!-- Loader -->
     <div id="loading-overlay">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-
     <div class="container-fluid">
-        <button class="mobile-menu-toggle">
-            <i class="fas fa-bars"></i>
+        <button class="btn btn-outline-secondary d-md-none my-2" id="toggleSidebar">
+            <i class="fas fa-bars"></i> เมนู
         </button>
         <div class="row">
-            <div class="col-md-2 sidebar">
+            <div class="col-md-2 sidebar" id="sidebar">
                 <img src="{{ asset('images/snru-logo.jpeg') }}" alt="SNru Logo" style="width: 100%; height: auto;">
                 <!-- เมนูแนวตั้ง -->
                 <nav>
                     <ul class="nav flex-column">
-                        <!-- หน้าแรก -->
+                        {{-- เมนูทั่วไป --}}
                         <li class="nav-item">
                             <a href="{{ route('index') }}" class="nav-link text-gray-700">
                                 <i class="fas fa-home me-2"></i> หน้าแรก
                             </a>
                         </li>
-
-                        <!-- ทินการจอง -->
                         <li class="nav-item">
                             <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-calendar-alt me-2"></i>ปฏิทินการจอง
+                                <i class="fas fa-calendar-alt me-2"></i> ปฏิทินการจอง
                             </a>
                         </li>
-
-                        <!-- จองห้อง -->
                         <li class="nav-item">
                             <a href="{{ route('booking.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-door-open me-2"></i>จองห้อง
+                                <i class="fas fa-door-open me-2"></i> จองห้อง
                             </a>
                         </li>
-
-                        <!-- ใช้ -->
                         <li class="nav-item">
                             <a href="{{ route('usage.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-info-circle me-2"></i>วิธีใช้งาน
+                                <i class="fas fa-info-circle me-2"></i> วิธีใช้งาน
                             </a>
                         </li>
-
+                        {{-- เฉพาะผู้ดูแลระบบหรือผู้ดูแลอาคาร --}}
                         @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
+                            <hr>
+                            <h6 class="sidebar-heading text-white text-center py-2 px-3 mb-3"
+                                style="background-color: #343a40; border-radius: 0.25rem;">สำหรับผู้ดูแล</h6>
                             <li class="nav-item">
                                 <a href="{{ route('dashboard') }}" class="nav-link text-gray-700">
                                     <i class="fas fa-tachometer-alt me-2"></i> แดชบอร์ด
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('booking_db') }}" class="nav-link text-gray-700">
+                                    <i class="fas fa-calendar-check me-2"></i> การจองห้อง
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('manage_rooms.index') }}" class="nav-link text-gray-700">
+                                    <i class="fas fa-building me-2"></i> จัดการห้องและอาคาร
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('booking_history') }}" class="nav-link text-gray-700">
+                                    <i class="fas fa-history me-2"></i> ประวัติการจองห้อง
+                                </a>
+                            </li>
+                            @if (Auth::user()->isAdmin())
+                                <li class="nav-item">
+                                    <a href="{{ route('manage_users.index') }}" class="nav-link text-gray-700">
+                                        <i class="fas fa-users-cog me-2"></i> จัดการผู้ใช้
+                                    </a>
+                                </li>
+                            @endif
                         @endif
-
-                        <!-- ออกจากระบบ (ถ้าได้ล็อกแล้ว) -->
+                        {{-- เมนูล็อกอิน/ล็อกเอาท์ --}}
                         @if (Auth::check())
                             <li class="nav-item">
                                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
@@ -109,14 +124,11 @@
                                 </form>
                             </li>
                         @else
-                            <!-- เข้าสู่ระบบ (ถ้ายังไม่ได้ล็อก) -->
                             <li class="nav-item">
                                 <a href="{{ route('login') }}" class="nav-link text-gray-700">
                                     <i class="fas fa-sign-in-alt me-2"></i> เข้าสู่ระบบ
                                 </a>
                             </li>
-
-                            <!-- สมัครสมาชิก (ถ้ายังไม่ได้ล็อก) -->
                             <li class="nav-item">
                                 <a href="{{ route('register') }}" class="nav-link text-gray-700">
                                     <i class="fas fa-user-plus me-2"></i> สมัครสมาชิก
@@ -127,16 +139,20 @@
                 </nav>
             </div>
             <div class="col-md-10 content">
-
                 @yield('content')
                 @yield('scripts')
             </div>
+            @include('footer')
         </div>
     </div>
 
-    @include('footer')
+
 
     <script>
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-collapsed');
+        });
         moment.locale('th');
         console.log(moment().format('LL')); // 25 เมษายน 2567
         document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {

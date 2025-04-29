@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
 @section('content')
 <div>
@@ -65,8 +65,8 @@
                                 <div class="col">
                                     <div class="card h-100 border-0 shadow-sm">
                                         <div class="position-relative">
-                                            <img alt="ภาพห้อง {{ $room->room_name }}" class="card-img-top" 
-                                                src="{{ $room->image ? asset('storage/' . $room->image) : asset('images/no-picture.jpg') }}" 
+                                            <img alt="ภาพห้อง {{ $room->room_name }}" class="card-img-top"
+                                                src="{{ $room->image ? asset('storage/' . $room->image) : asset('images/no-picture.jpg') }}"
                                                 style="height: 180px; object-fit: cover;"/>
                                             <div class="position-absolute top-0 end-0 m-2">
                                                 <span class="badge bg-{{ $room->status_id == 2 ? 'success' : 'danger' }}">
@@ -83,14 +83,14 @@
                                                 <i class="fas fa-users me-1"></i>ความจุ: {{ $room->capacity }} คน
                                             </p>
                                             <div class="d-flex gap-2">
-                                                <a href="#" class="btn btn-sm btn-outline-warning flex-grow-1" 
+                                                <a href="#" class="btn btn-sm btn-outline-warning flex-grow-1"
                                                    onclick="openEditRoomModal(
-                                                       '{{ $room->room_id }}', 
-                                                       '{{ $room->room_name }}', 
-                                                       '{{ $room->capacity }}', 
-                                                       '{{ $room->class }}', 
-                                                       '{{ $room->room_details }}', 
-                                                       '{{ $room->service_rates }}', 
+                                                       '{{ $room->room_id }}',
+                                                       '{{ $room->room_name }}',
+                                                       '{{ $room->capacity }}',
+                                                       '{{ $room->class }}',
+                                                       '{{ $room->room_details }}',
+                                                       '{{ $room->service_rates }}',
                                                        '{{ $room->image ? asset('storage/' . $room->image) : '' }}'
                                                    )">
                                                     <i class="fas fa-edit me-1"></i>แก้ไข

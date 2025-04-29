@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
 @section('content')
 <div>
@@ -79,7 +79,7 @@
             <div class="p-3 mb-4">
                 <h5>ดำเนินการเสร็จสิ้นล่าสุด</h5>
                 <div class="transaction-list">
-                    
+
                 </div>
             </div>
 
@@ -334,15 +334,15 @@
     .mobile-menu-toggle {
         display: block;
     }
-    
+
     .booking-card {
         min-width: 160px;
     }
-    
+
     .chart-container {
         height: 200px;
     }
-    
+
     .stat-card {
         margin-bottom: 15px;
     }
@@ -352,13 +352,13 @@
     .booking-card {
         min-width: 150px;
     }
-    
+
     .transaction-item .icon {
         width: 35px;
         height: 35px;
         font-size: 14px;
     }
-    
+
     .chart-container {
         height: 180px;
     }
@@ -369,26 +369,26 @@
         min-width: 140px;
         padding: 10px;
     }
-    
+
     .booking-card img {
         width: 80px;
         height: 80px;
     }
-    
+
     .stat-card {
         padding: 15px;
     }
-    
+
     .stat-card .icon {
         width: 40px;
         height: 40px;
         font-size: 16px;
     }
-    
+
     .stat-card h3 {
         font-size: 20px;
     }
-    
+
     .chart-container {
         height: 150px;
     }
