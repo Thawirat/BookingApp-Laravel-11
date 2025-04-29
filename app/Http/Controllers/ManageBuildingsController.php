@@ -18,18 +18,22 @@ class ManageBuildingsController extends Controller
         // If sub-admin, only show assigned buildings
         if (Auth::user()->role === 'sub-admin') {
             $query->whereHas('users', function ($q) {
-                $q->where('users.id', Auth::id());
+                $q->where('user_id', Auth::id());
             });
         }
 
         // Apply search if provided
         if ($request->has('search')) {
-            $query->where('building_name', 'like', '%'.$request->search.'%')
-                ->orWhere('citizen_save', 'like', '%'.$request->search.'%');
+            $query->where(function ($q) use ($request) {
+                $q->where('building_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('citizen_save', 'like', '%' . $request->search . '%');
+            });
         }
 
+        // >>> ต้อง clone ก่อน paginate
+        $buildingsQueryClone = clone $query;
         $buildings = $query->paginate(15);
-        $totalBuildings = $query->count();
+        $totalBuildings = $buildingsQueryClone->count();
 
         return view('dashboard.manage_buildings', compact('buildings', 'totalBuildings'));
     }
@@ -66,7 +70,6 @@ class ManageBuildingsController extends Controller
         $building->save();
 
         return redirect()->route('manage_rooms.index')->with('success', 'Building added successfully.');
-
     }
 
     public function update(Request $request, $id)

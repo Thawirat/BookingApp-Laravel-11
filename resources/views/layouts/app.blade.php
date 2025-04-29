@@ -19,7 +19,7 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/locale/th.js"></script>
-    
+
     <style>
         /* Loader Overlay */
         #loading-overlay {
@@ -89,17 +89,8 @@
                                 <i class="fas fa-info-circle me-2"></i>วิธีใช้งาน
                             </a>
                         </li>
-                        <!-- แดชบอร์ด (admin และ sub-admin) -->
-                        @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
-                            <li class="nav-item">
-                                <a href="{{ route('manage.buildings') }}" class="nav-link text-gray-700">
-                                    <i class="fas fa-building me-2"></i> อาคาร
-                                </a>
-                            </li>
-                        @endif
 
-                        <!-- แดชบอร์ด (admin เท่านั้น) -->
-                        @if (Auth::check() && Auth::user()->isAdmin())
+                        @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
                             <li class="nav-item">
                                 <a href="{{ route('dashboard') }}" class="nav-link text-gray-700">
                                     <i class="fas fa-tachometer-alt me-2"></i> แดชบอร์ด

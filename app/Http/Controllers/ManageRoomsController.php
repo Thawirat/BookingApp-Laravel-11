@@ -14,19 +14,31 @@ class ManageRoomsController extends Controller
 {
     public function index()
     {
-        // Fetch all buildings with pagination and search
-        $buildings = Building::when(request('search'), function ($query) {
-            $query->where('building_name', 'like', '%'.request('search').'%');
-        })
-            ->paginate(12);
+        $query = Building::query();
 
-        // Get room statistics
-        $rooms = Room::all();
+        if (Auth::user()->role === 'sub-admin') {
+            $query->whereHas('users', function ($q) {
+                $q->where('user_id', Auth::id());
+            });
+        }
+
+        if (request('search')) {
+            $query->where('building_name', 'like', '%' . request('search') . '%');
+        }
+
+        $query->withCount('rooms');
+
+        $buildingsQueryClone = clone $query;
+        $buildings = $query->paginate(12);
+
+        $totalBuildings = $buildingsQueryClone->count();
+        $totalRooms = $buildingsQueryClone->get()->sum('rooms_count');
+
+        // >>>> ตรงนี้แก้ใหม่
+        $buildingIds = $buildingsQueryClone->pluck('id');
+        $rooms = Room::whereIn('building_id', $buildingIds)->get();
+
         $status = Status::all();
-
-        // Get total counts
-        $totalBuildings = Building::count();
-        $totalRooms = Room::count();
 
         return view('dashboard.manage_rooms', compact(
             'buildings',
@@ -36,6 +48,8 @@ class ManageRoomsController extends Controller
             'totalRooms'
         ));
     }
+
+
 
     public function showRooms($buildingId)
     {
@@ -58,7 +72,7 @@ class ManageRoomsController extends Controller
         $rooms = Room::with(['building', 'status'])
             ->where('building_id', $building->id)
             ->when(request('search'), function ($query) {
-                $query->where('room_name', 'like', '%'.request('search').'%');
+                $query->where('room_name', 'like', '%' . request('search') . '%');
             })
             ->paginate(12);
 
@@ -133,18 +147,18 @@ class ManageRoomsController extends Controller
                             'name' => $image->getClientOriginalName(),
                             'error' => $image->getErrorMessage(),
                         ]);
-                        throw new \Exception('Invalid file upload: '.$image->getErrorMessage());
+                        throw new \Exception('Invalid file upload: ' . $image->getErrorMessage());
                     }
 
                     // Verify file extension
                     $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
                     $extension = strtolower($image->getClientOriginalExtension());
                     if (! in_array($extension, $allowedExtensions)) {
-                        throw new \Exception('Invalid file type. Allowed types: '.implode(', ', $allowedExtensions));
+                        throw new \Exception('Invalid file type. Allowed types: ' . implode(', ', $allowedExtensions));
                     }
 
                     // Generate unique filename with original extension
-                    $imageName = time().'_'.uniqid().'.'.$extension;
+                    $imageName = time() . '_' . uniqid() . '.' . $extension;
 
                     // Verify storage directory exists
                     $storagePath = storage_path('app/public/room_images');
@@ -160,7 +174,7 @@ class ManageRoomsController extends Controller
                         throw new \Exception('Failed to store image');
                     }
 
-                    $room->image = 'room_images/'.$imageName;
+                    $room->image = 'room_images/' . $imageName;
                     Log::info('Room image uploaded successfully:', [
                         'path' => $imagePath,
                         'size' => $image->getSize(),
@@ -168,12 +182,12 @@ class ManageRoomsController extends Controller
                         'storage' => $storagePath,
                     ]);
                 } catch (\Exception $e) {
-                    Log::error('Image upload failed: '.$e->getMessage(), [
+                    Log::error('Image upload failed: ' . $e->getMessage(), [
                         'file' => $image->getClientOriginalName(),
                         'error' => $e->getTraceAsString(),
                     ]);
 
-                    return redirect()->back()->with('error', 'Failed to upload image: '.$e->getMessage());
+                    return redirect()->back()->with('error', 'Failed to upload image: ' . $e->getMessage());
                 }
             }
 
@@ -183,7 +197,7 @@ class ManageRoomsController extends Controller
 
             return redirect()->route('manage_rooms.show', $room->building_id)->with('success', 'Room created successfully');
         } catch (\Exception $e) {
-            Log::error('Error creating room: '.$e->getMessage(), [
+            Log::error('Error creating room: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
                 'request' => $request->all(),
             ]);
@@ -200,7 +214,7 @@ class ManageRoomsController extends Controller
 
             return view('dashboard.edit_room', compact('room', 'status'));
         } catch (\Exception $e) {
-            Log::error('Error fetching room for edit: '.$e->getMessage());
+            Log::error('Error fetching room for edit: ' . $e->getMessage());
 
             return redirect()->back()->with('error', 'Failed to fetch room details');
         }
@@ -235,25 +249,25 @@ class ManageRoomsController extends Controller
                             'name' => $image->getClientOriginalName(),
                             'error' => $image->getErrorMessage(),
                         ]);
-                        throw new \Exception('Invalid file upload: '.$image->getErrorMessage());
+                        throw new \Exception('Invalid file upload: ' . $image->getErrorMessage());
                     }
 
                     // Verify file extension
                     $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
                     $extension = strtolower($image->getClientOriginalExtension());
                     if (! in_array($extension, $allowedExtensions)) {
-                        throw new \Exception('Invalid file type. Allowed types: '.implode(', ', $allowedExtensions));
+                        throw new \Exception('Invalid file type. Allowed types: ' . implode(', ', $allowedExtensions));
                     }
 
                     // Delete old image if exists
-                    if ($room->image && Storage::exists('public/'.$room->image)) {
-                        if (! Storage::delete('public/'.$room->image)) {
+                    if ($room->image && Storage::exists('public/' . $room->image)) {
+                        if (! Storage::delete('public/' . $room->image)) {
                             Log::warning('Failed to delete old image', ['path' => $room->image]);
                         }
                     }
 
                     // Generate unique filename with original extension
-                    $imageName = time().'_'.uniqid().'.'.$extension;
+                    $imageName = time() . '_' . uniqid() . '.' . $extension;
 
                     // Verify storage directory exists
                     $storagePath = storage_path('app/public/room_images');
@@ -269,7 +283,7 @@ class ManageRoomsController extends Controller
                         throw new \Exception('Failed to store image');
                     }
 
-                    $room->image = 'room_images/'.$imageName;
+                    $room->image = 'room_images/' . $imageName;
                     Log::info('Room image updated successfully:', [
                         'path' => $imagePath,
                         'size' => $image->getSize(),
@@ -277,12 +291,12 @@ class ManageRoomsController extends Controller
                         'storage' => $storagePath,
                     ]);
                 } catch (\Exception $e) {
-                    Log::error('Image update failed: '.$e->getMessage(), [
+                    Log::error('Image update failed: ' . $e->getMessage(), [
                         'file' => $image->getClientOriginalName(),
                         'error' => $e->getTraceAsString(),
                     ]);
 
-                    return redirect()->back()->with('error', 'Failed to update image: '.$e->getMessage());
+                    return redirect()->back()->with('error', 'Failed to update image: ' . $e->getMessage());
                 }
             }
 
@@ -293,7 +307,7 @@ class ManageRoomsController extends Controller
 
             return redirect()->route('manage_rooms.show', $room->building_id)->with('success', 'Room updated successfully!');
         } catch (\Exception $e) {
-            Log::error('Error updating room: '.$e->getMessage(), [
+            Log::error('Error updating room: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
                 'request' => $request->all(),
             ]);
@@ -309,7 +323,7 @@ class ManageRoomsController extends Controller
 
         // ลบรูปภาพ (ถ้ามี)
         if ($room->image) {
-            Storage::delete('public/'.$room->image);
+            Storage::delete('public/' . $room->image);
         }
 
         // ลบห้อง
@@ -336,7 +350,7 @@ class ManageRoomsController extends Controller
         $rooms = $query->whereIn('building_id', $buildings->pluck('id'))
             ->with(['building', 'status'])
             ->when($request->search, function ($query) use ($request) {
-                $query->where('room_name', 'like', '%'.$request->search.'%');
+                $query->where('room_name', 'like', '%' . $request->search . '%');
             })
             ->paginate(12);
 

@@ -117,7 +117,7 @@ Route::get('/register', function () {
 Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
 
 // Admin routes
-Route::middleware(['auth', 'can:admin-only'])->group(function () {
+Route::middleware(['auth', 'can:admin-or-subadmin'])->group(function () {
     // Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard.dashboard'); // Redirecting to the existing dashboard view
@@ -157,10 +157,6 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::put('/rooms/{room}', [ManageRoomsController::class, 'update'])->name('manage_rooms.update');
     // Route::delete('/manage_rooms/{room}', [ManageRoomsController::class, 'deleteRoom'])->name('manage_rooms.destroy');
     Route::delete('/manage_rooms/{room}', [ManageRoomsController::class, 'destroy'])->name('manage_rooms.destroy');
-    // User management routes
-    Route::get('/manage-users', [ManageUsersController::class, 'index'])->name('manage_users.index');
-    Route::put('/manage-users/{id}', [ManageUsersController::class, 'update'])->name('manage_users.update');
-    Route::delete('/manage-users/{id}', [ManageUsersController::class, 'destroy'])->name('manage_users.destroy');
     Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db');
     Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('booking_history');
 
@@ -168,6 +164,12 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
     Route::post('/manage-buildings', [ManageBuildingsController::class, 'store'])->name('manage.buildings.store');
     Route::resource('manage/buildings', ManageBuildingsController::class);
+});
+
+Route::middleware(['auth', 'can:admin-only'])->group(function () {
+    Route::get('/manage-users', [ManageUsersController::class, 'index'])->name('manage_users.index');
+    Route::put('/manage-users/{id}', [ManageUsersController::class, 'update'])->name('manage_users.update');
+    Route::delete('/manage-users/{id}', [ManageUsersController::class, 'destroy'])->name('manage_users.destroy');
 });
 
 // Profile routes
@@ -183,14 +185,14 @@ Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.in
 Route::post('/book-room/{id}', [BookingController::class, 'bookRoom'])->name('book.room'); // Route for booking a room
 
 // Sub-admin routes
-Route::middleware(['auth', 'sub-admin'])->group(function () {
-    // Building management
-    Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
-    Route::post('/manage-buildings', [ManageBuildingsController::class, 'store'])->name('manage.buildings.store');
-    Route::resource('manage/buildings', ManageBuildingsController::class);
-});
+// Route::middleware(['auth', 'sub-admin'])->group(function () {
+//     // Building management
+//     Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
+//     Route::post('/manage-buildings', [ManageBuildingsController::class, 'store'])->name('manage.buildings.store');
+//     Route::resource('manage/buildings', ManageBuildingsController::class);
+// });
 
-// Sub-admin room view route
-Route::middleware(['auth', 'sub-admin'])->group(function () {
-    Route::get('/sub-admin/rooms', [ManageRoomsController::class, 'subAdminRooms'])->name('sub_admin.rooms');
-});
+// // Sub-admin room view route
+// Route::middleware(['auth', 'sub-admin'])->group(function () {
+//     Route::get('/sub-admin/rooms', [ManageRoomsController::class, 'subAdminRooms'])->name('sub_admin.rooms');
+// });

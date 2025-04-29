@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate; // Import the Gate facade
+use App\Models\User;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -30,11 +31,20 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('admin-only', function ($user) {
-            return $user->isAdmin();
+            return $user->hasRole('admin');
+        });
+
+        // กำหนด Gate สำหรับ Sub-admin
+        Gate::define('sub-admin-only', function (User $user) {
+            return $user->hasRole('sub-admin');
         });
 
         Gate::define('user-only', function ($user) {
             return $user->isUser();
+        });
+
+        Gate::define('admin-or-subadmin', function ($user) {
+            return $user->isAdminOrSubAdmin();
         });
     }
 }

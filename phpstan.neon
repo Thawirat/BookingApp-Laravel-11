@@ -1,0 +1,17 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - app
+        - routes
+    excludePaths:
+        - tests
+        - database
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\.*#'
+        - '#Property App\\Models\\User::\$buildings does not accept value#'
+    bootstrap: phpstan-bootstrap.php

@@ -42,13 +42,15 @@ class Booking_dbController extends Controller
 
             $booking->delete();
         } catch (\Exception $e) {
-            Log::error('Failed to move booking to history: '.$e->getMessage());
+            Log::error('Failed to move booking to history: ' . $e->getMessage());
         }
     }
 
     public function index(Request $request)
     {
-        // สร้าง query ที่ไม่เชื่อมโยงกับตาราง rooms และ buildings
+        $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอินอยู่
+
+        // สร้าง query หลัก
         $query = DB::table('bookings')
             ->leftJoin('status', 'bookings.status_id', '=', 'status.status_id')
             ->leftJoin('users', 'bookings.user_id', '=', 'users.id')
@@ -58,13 +60,21 @@ class Booking_dbController extends Controller
                 'users.name as user_name'
             );
 
-        // ไม่แสดงรายการที่ดำเนินการเสร็จสิ้นแล้ว (status_id = 6)
+        // **สำคัญ**: ถ้าเป็น sub-admin ให้กรองอาคาร
+        if ($user->hasRole('sub-admin')) {
+            // สมมติว่ามี relation buildings แล้ว (ตาราง pivot building_user)
+            $buildingIds = $user->buildings()->pluck('buildings.id')->toArray();
+
+            $query->whereIn('bookings.building_id', $buildingIds);
+        }
+
+        // เงื่อนไข: ไม่แสดงที่เสร็จสิ้นแล้ว
         $query->where('bookings.status_id', '!=', 6);
 
-        // ตรวจสอบการจองที่สิ้นสุดวันแล้ว แต่ยังไม่ได้ทำเครื่องหมายว่าเสร็จสิ้น
+        // เรียกฟังก์ชันทำ auto-complete booking เก่า
         $this->autoCompletePastBookings();
 
-        // Search functionality
+        // ฟิลเตอร์ค้นหา (search)
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -74,7 +84,7 @@ class Booking_dbController extends Controller
             });
         }
 
-        // Calendar search - if date is selected in calendar
+        // ฟิลเตอร์ตามวันที่ใน calendar
         if ($request->has('booking_date')) {
             $bookingDate = $request->booking_date;
             $query->where(function ($q) use ($bookingDate) {
@@ -83,14 +93,15 @@ class Booking_dbController extends Controller
             });
         }
 
+        // เอาข้อมูลออกมา
         $bookings = $query->paginate(10);
 
-        // Count booking statistics
+        // คำนวณสถิติต่าง ๆ
         $totalBookings = Booking::count();
-        $pendingBookings = Booking::where('status_id', 3)->count(); // รอดำเนินการ
-        $confirmedBookings = Booking::where('status_id', 4)->count(); // ได้รับอนุมัติ
+        $pendingBookings = Booking::where('status_id', 3)->count();
+        $confirmedBookings = Booking::where('status_id', 4)->count();
 
-        // ดึงข้อมูลสถานะทั้งหมดเพื่อใช้ในการแสดงตัวเลือก
+        // ดึงข้อมูลสถานะทั้งหมด
         $statuses = DB::table('status')->get();
 
         return view('dashboard.booking_db', compact('bookings', 'totalBookings', 'pendingBookings', 'confirmedBookings', 'statuses'));

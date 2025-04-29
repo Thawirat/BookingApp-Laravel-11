@@ -13,7 +13,7 @@ class Building extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_buildings');
+        return $this->belongsToMany(User::class, 'user_buildings', 'building_id', 'user_id');
     }
 
     public function rooms()

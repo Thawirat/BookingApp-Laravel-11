@@ -66,11 +66,11 @@ class User extends Authenticatable
 
     public function isAdminOrSubAdmin()
     {
-        return in_array($this->role, ['admin', 'sub-admin']);
+        return $this->hasRole('admin') || $this->hasRole('sub-admin');
     }
 
     public function buildings()
     {
-        return $this->belongsToMany(Building::class, 'user_buildings');
+        return $this->belongsToMany(Building::class, 'user_buildings', 'user_id', 'building_id');
     }
 }
