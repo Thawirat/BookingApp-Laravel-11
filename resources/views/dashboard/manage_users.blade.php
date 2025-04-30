@@ -3,125 +3,126 @@
 @section('content')
 <div>
     <div class="col-md-10 content">
+        <!-- ส่วนหัว -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-         <h2>
-          จัดการผู้ใช้
-         </h2>
-         <div class="d-flex align-items-center">
-            <form action="{{ route('manage_users.index') }}" method="GET" class="d-flex">
-                <input class="search-bar" placeholder="ค้นหาผู้ใช้" type="text" name="search" value="{{ request('search') }}"/>
-                <button type="submit" class="icon-btn">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-         </div>
-        </div>
-        <div class="row mb-4">
-         <div class="col-md-4">
-          <div class="stat-card">
-           <i class="fas fa-users icon">
-           </i>
-           <div class="details">
-            <h3>
-             {{ $totalUsers }}
-            </h3>
-            <p>
-             จำนวนผู้ใช้ทั้งหมด
-            </p>
-           </div>
-          </div>
-         </div>
-         <div class="col-md-4">
-          <div class="stat-card">
-           <i class="fas fa-user-shield icon">
-           </i>
-           <div class="details">
-            <h3>
-             {{ $adminCount }}
-            </h3>
-            <p>
-             จำนวนผู้ใช้ระบบ
-            </p>
-           </div>
-          </div>
-         </div>
-         <div class="col-md-4">
-          <div class="stat-card">
-           <i class="fas fa-user icon">
-           </i>
-           <div class="details">
-            <h3>
-             {{ $regularUserCount }}
-            </h3>
-            <p>
-             จำนวนผู้ใช้ทั่วไป
-            </p>
-           </div>
-          </div>
-         </div>
-        </div>
-        <div class="row">
-         <div class="col-md-12">
-          <div class="card mb-4">
-           <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>
-             รายการผู้ใช้
-            </h5>
-           </div>
-           <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <table class="table table-striped">
-             <thead>
-              <tr>
-               <th>#</th>
-               <th>ชื่อผู้ใช้</th>
-               <th>อีเมล</th>
-               <th>บทบาท</th>
-               <th>การกระทำ</th>
-              </tr>
-             </thead>
-             <tbody>
-             @foreach($users as $user)
-              <tr>
-               <td>{{ (($users->currentPage() - 1) * $users->perPage()) + $loop->iteration }}</td>
-
-               <td>{{ $user->name }}</td>
-               <td>{{ $user->email }}</td>
-               <td>
-                @if($user->role === 'admin')
-                    <span class="badge bg-primary">ผู้ดูแลระบบหลัก</span>
-                @elseif($user->role === 'sub-admin')
-                    <span class="badge bg-info">ผู้ดูแลระบบย่อย</span>
-                @else
-                    <span class="badge bg-secondary">ผู้ใช้ทั่วไป</span>
-                @endif
-               </td>
-               <td>
-                <button type="button" class="btn btn-sm btn-warning" onclick="openEditUserModal({{ $user->id }})">
-                    <i class="fas fa-edit"></i> แก้ไข
-                </button>
-                <form action="{{ route('manage_users.destroy', $user->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('แน่ใจไม่ต้องการลบผู้ใช้นี้?')">
-                        <i class="fas fa-trash"></i> ลบ
+            <h2>จัดการผู้ใช้</h2>
+            <div class="d-flex align-items-center">
+                <form action="{{ route('manage_users.index') }}" method="GET" class="d-flex">
+                    <input class="search-bar" placeholder="ค้นหาผู้ใช้" type="text" name="search" value="{{ request('search') }}" />
+                    <button type="submit" class="icon-btn">
+                        <i class="fas fa-search"></i>
                     </button>
                 </form>
-               </td>
-              </tr>
-             @endforeach
-             </tbody>
-            </table>
-            <div class="d-flex justify-content-center mt-4">
-                {{ $users->appends(['search' => request('search')])->links('pagination::bootstrap-5') }}
             </div>
-           </div>
+        </div>
+
+        <!-- สถิติต่าง ๆ -->
+        <div class="row mb-4">
+            <!-- จำนวนผู้ใช้ทั้งหมด -->
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <i class="fas fa-users icon"></i>
+                    <div class="details">
+                        <h3>{{ $totalUsers }}</h3>
+                        <p>จำนวนผู้ใช้ทั้งหมด</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- จำนวนผู้ดูแลระบบ -->
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <i class="fas fa-user-shield icon"></i>
+                    <div class="details">
+                        <h3>{{ $adminCount }}</h3>
+                        <p>จำนวนผู้ใช้ระบบ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- จำนวนผู้ใช้ทั่วไป -->
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <i class="fas fa-user icon"></i>
+                    <div class="details">
+                        <h3>{{ $regularUserCount }}</h3>
+                        <p>จำนวนผู้ใช้ทั่วไป</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ตารางแสดงผู้ใช้ -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>รายการผู้ใช้</h5>
+                    </div>
+
+                    <div class="card-body">
+                        @if(session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>ชื่อผู้ใช้</th>
+                                    <th>อีเมล</th>
+                                    <th>บทบาท</th>
+                                    <th>การกระทำ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($users as $user)
+                                    <tr>
+                                        <td>{{ (($users->currentPage() - 1) * $users->perPage()) + $loop->iteration }}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>
+                                            @if($user->role === 'admin')
+                                                <span class="badge bg-primary">ผู้ดูแลระบบหลัก</span>
+                                            @elseif($user->role === 'sub-admin')
+                                                <span class="badge bg-info">ผู้ดูแลระบบย่อย</span>
+                                            @else
+                                                <span class="badge bg-secondary">ผู้ใช้ทั่วไป</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <!-- แก้ไขผู้ใช้ -->
+                                            <button type="button" class="btn btn-sm btn-warning" onclick="openEditUserModal({{ $user->id }})">
+                                                <i class="fas fa-edit"></i> แก้ไข
+                                            </button>
+
+                                            <!-- ลบผู้ใช้ -->
+                                            <form action="{{ route('manage_users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('แน่ใจไม่ต้องการลบผู้ใช้นี้?')">
+                                                    <i class="fas fa-trash"></i> ลบ
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        <!-- การแบ่งหน้าผลลัพธ์ -->
+                        <div class="d-flex justify-content-center mt-4">
+                            {{ $users->appends(['search' => request('search')])->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 @endsection
 <style>
    /* Main Layout Styles */

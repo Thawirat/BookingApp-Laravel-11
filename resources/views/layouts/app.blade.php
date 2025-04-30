@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="th">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>ระบบจองห้องออนไลน์มหาวิทยาลัยราชภัฏสกลนคร</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
 
@@ -56,25 +56,30 @@
             overflow-y: auto;
             transition: all 0.3s ease;
         }
+
         .content {
             margin-left: 220px;
             padding: 25px;
-            min-height: 100vh;
+            min-height: calc(100vh - 200px);
             transition: margin-left 0.3s;
         }
+
         @media (max-width: 991.98px) {
             .sidebar {
                 position: fixed;
                 left: -220px;
                 transition: left 0.3s;
             }
+
             .sidebar.sidebar-open {
                 left: 0;
             }
+
             .content {
                 margin-left: 0;
                 padding: 15px;
             }
+
             #toggleSidebar {
                 display: block;
                 position: fixed;
@@ -83,11 +88,13 @@
                 z-index: 200;
             }
         }
+
         @media (min-width: 992px) {
             #toggleSidebar {
                 display: none;
             }
         }
+
         body {
             font-family: 'Kanit', sans-serif;
             background-color: #f5f5f7;
@@ -97,6 +104,7 @@
             background-position: center;
             background-attachment: fixed;
         }
+
         /* ... (คง style อื่นๆ เดิมไว้) ... */
     </style>
     @stack('styles')
@@ -227,8 +235,8 @@
     </script>
     @stack('scripts')
 </body>
-</html>
 
+</html>
 
 <style>
     /* Main Layout Styles */

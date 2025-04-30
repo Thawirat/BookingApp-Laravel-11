@@ -1,5 +1,5 @@
 <footer class="bg-dark text-white py-5 mt-5 border-top border-secondary text-center">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center gy-4">
             <!-- ลิงก์สำคัญ -->
             <div class="col-md-3">
@@ -42,3 +42,4 @@
         transition: color 0.3s ease;
     }
 </style>
+
