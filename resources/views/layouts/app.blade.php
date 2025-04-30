@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 
@@ -40,7 +41,65 @@
             width: 4rem;
             height: 4rem;
         }
+
+        /* Fixed Sidebar Layout */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100vh;
+            background-color: #fff;
+            padding: 25px 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 25px;
+            min-height: 100vh;
+            transition: margin-left 0.3s;
+        }
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: fixed;
+                left: -220px;
+                transition: left 0.3s;
+            }
+            .sidebar.sidebar-open {
+                left: 0;
+            }
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            #toggleSidebar {
+                display: block;
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                z-index: 200;
+            }
+        }
+        @media (min-width: 992px) {
+            #toggleSidebar {
+                display: none;
+            }
+        }
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #f5f5f7;
+            color: #333;
+            background-image: url('{{ asset('images/bg-1.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        /* ... (คง style อื่นๆ เดิมไว้) ... */
     </style>
+    @stack('styles')
 </head>
 
 <body>
@@ -49,117 +108,106 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    <div class="container-fluid">
-        <button class="btn btn-outline-secondary d-md-none my-2" id="toggleSidebar">
-            <i class="fas fa-bars"></i> เมนู
-        </button>
-        <div class="row">
-            <div class="col-md-2 sidebar" id="sidebar">
-                <img src="{{ asset('images/snru-logo.jpeg') }}" alt="SNru Logo" style="width: 100%; height: auto;">
-                <!-- เมนูแนวตั้ง -->
-                <nav>
-                    <ul class="nav flex-column">
-                        {{-- เมนูทั่วไป --}}
+    <button class="btn btn-outline-secondary d-md-none my-2" id="toggleSidebar">
+        <i class="fas fa-bars"></i> เมนู
+    </button>
+    <div class="sidebar " id="sidebar">
+        <img src="{{ asset('images/snru-logo.jpeg') }}" alt="SNru Logo" style="width: 100%; height: auto;">
+        <!-- เมนูแนวตั้ง -->
+        <nav>
+            <ul class="nav flex-column">
+                {{-- เมนูทั่วไป --}}
+                <li class="nav-item">
+                    <a href="{{ route('index') }}" class="nav-link text-gray-700">
+                        <i class="fas fa-home me-2"></i> หน้าแรก
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700">
+                        <i class="fas fa-calendar-alt me-2"></i> ปฏิทินการจอง
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('booking.index') }}" class="nav-link text-gray-700">
+                        <i class="fas fa-door-open me-2"></i> จองห้อง
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('usage.index') }}" class="nav-link text-gray-700">
+                        <i class="fas fa-info-circle me-2"></i> วิธีใช้งาน
+                    </a>
+                </li>
+                {{-- เฉพาะผู้ดูแลระบบหรือผู้ดูแลอาคาร --}}
+                @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
+                    <hr>
+                    <h6 class="sidebar-heading text-white text-center py-2 px-3 mb-3"
+                        style="background-color: #343a40; border-radius: 0.25rem;">สำหรับผู้ดูแล</h6>
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard') }}" class="nav-link text-gray-700">
+                            <i class="fas fa-tachometer-alt me-2"></i> แดชบอร์ด
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('booking_db') }}" class="nav-link text-gray-700">
+                            <i class="fas fa-calendar-check me-2"></i> การจองห้อง
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('manage_rooms.index') }}" class="nav-link text-gray-700">
+                            <i class="fas fa-building me-2"></i> จัดการห้องและอาคาร
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('booking_history') }}" class="nav-link text-gray-700">
+                            <i class="fas fa-history me-2"></i> ประวัติการจองห้อง
+                        </a>
+                    </li>
+                    @if (Auth::user()->isAdmin())
                         <li class="nav-item">
-                            <a href="{{ route('index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-home me-2"></i> หน้าแรก
+                            <a href="{{ route('manage_users.index') }}" class="nav-link text-gray-700">
+                                <i class="fas fa-users-cog me-2"></i> จัดการผู้ใช้
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-calendar-alt me-2"></i> ปฏิทินการจอง
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('booking.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-door-open me-2"></i> จองห้อง
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('usage.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-info-circle me-2"></i> วิธีใช้งาน
-                            </a>
-                        </li>
-                        {{-- เฉพาะผู้ดูแลระบบหรือผู้ดูแลอาคาร --}}
-                        @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
-                            <hr>
-                            <h6 class="sidebar-heading text-white text-center py-2 px-3 mb-3"
-                                style="background-color: #343a40; border-radius: 0.25rem;">สำหรับผู้ดูแล</h6>
-                            <li class="nav-item">
-                                <a href="{{ route('dashboard') }}" class="nav-link text-gray-700">
-                                    <i class="fas fa-tachometer-alt me-2"></i> แดชบอร์ด
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('booking_db') }}" class="nav-link text-gray-700">
-                                    <i class="fas fa-calendar-check me-2"></i> การจองห้อง
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('manage_rooms.index') }}" class="nav-link text-gray-700">
-                                    <i class="fas fa-building me-2"></i> จัดการห้องและอาคาร
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('booking_history') }}" class="nav-link text-gray-700">
-                                    <i class="fas fa-history me-2"></i> ประวัติการจองห้อง
-                                </a>
-                            </li>
-                            @if (Auth::user()->isAdmin())
-                                <li class="nav-item">
-                                    <a href="{{ route('manage_users.index') }}" class="nav-link text-gray-700">
-                                        <i class="fas fa-users-cog me-2"></i> จัดการผู้ใช้
-                                    </a>
-                                </li>
-                            @endif
-                        @endif
-                        {{-- เมนูล็อกอิน/ล็อกเอาท์ --}}
-                        @if (Auth::check())
-                            <li class="nav-item">
-                                <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="nav-link text-danger border-0 bg-transparent">
-                                        <i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ
-                                    </button>
-                                </form>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a href="{{ route('login') }}" class="nav-link text-gray-700">
-                                    <i class="fas fa-sign-in-alt me-2"></i> เข้าสู่ระบบ
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('register') }}" class="nav-link text-gray-700">
-                                    <i class="fas fa-user-plus me-2"></i> สมัครสมาชิก
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
-            </div>
-            <div class="col-md-10 content">
-                @yield('content')
-                @yield('scripts')
-            </div>
-            @include('footer')
-        </div>
+                    @endif
+                @endif
+                {{-- เมนูล็อกอิน/ล็อกเอาท์ --}}
+                @if (Auth::check())
+                    <li class="nav-item">
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="nav-link text-danger border-0 bg-transparent">
+                                <i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ
+                            </button>
+                        </form>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a href="{{ route('login') }}" class="nav-link text-gray-700">
+                            <i class="fas fa-sign-in-alt me-2"></i> เข้าสู่ระบบ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('register') }}" class="nav-link text-gray-700">
+                            <i class="fas fa-user-plus me-2"></i> สมัครสมาชิก
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </nav>
     </div>
-
-
-
+    <div class="content">
+        @yield('content')
+        @yield('scripts')
+    </div>
+    @include('footer')
     <script>
+        // Sidebar toggle for mobile
         document.getElementById('toggleSidebar').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('sidebar-collapsed');
+            document.getElementById('sidebar').classList.toggle('sidebar-open');
         });
         moment.locale('th');
-        console.log(moment().format('LL')); // 25 เมษายน 2567
-        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
-            document.body.classList.toggle('sidebar-collapse');
-        });
+        // Loader overlay logic
         $(document).ready(function() {
-            // เมื่อคลิกที่ลิงค์ใดๆ ให้แสดง Loader
             $("a").on("click", function(event) {
                 let target = $(this).attr("target");
                 if (!target || target === "_self") {
@@ -169,8 +217,6 @@
                     });
                 }
             });
-
-            // เมื่อหน้าโหลดเสร็จ ให้ซ่อน Loader
             $(window).on("load", function() {
                 $("#loading-overlay").css({
                     "visibility": "hidden",
@@ -179,10 +225,10 @@
             });
         });
     </script>
-
+    @stack('scripts')
 </body>
-
 </html>
+
 
 <style>
     /* Main Layout Styles */
@@ -206,10 +252,26 @@
         height: 100vh;
         padding: 25px 20px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-        position: sticky;
+
         top: 0;
         z-index: 100;
         transition: all 0.3s ease;
+    }
+
+    .fixed-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        /* ให้สูงเท่าหน้าจอ */
+        overflow-y: auto;
+        /* ถ้าด้านในยาวให้เลื่อนเฉพาะในนี้ */
+        background-color: #f8f9fa;
+        /* หรือสีที่คุณใช้ */
+        width: 16.6666667%;
+        /* เท่ากับ col-md-2 (2/12) */
+        z-index: 1000;
+        /* ให้ลอยอยู่เหนือเนื้อหาอื่น */
     }
 
     .sidebar h4 {

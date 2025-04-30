@@ -136,18 +136,14 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold">เวลาเข้า</label>
-                                                <select name="check_in_time" id="check_in_time" class="form-control"
-                                                    required>
-                                                    <option value="">เลือกเวลาเข้า</option>
-                                                </select>
+                                                <input type="time" id="check_in_time" name="check_in_time"
+                                                    step="60" min="08:00" max="22:59">
                                                 <div class="form-text">เวลาเข้าต้องอยู่ระหว่าง 08:00 - 22:00 น.</div>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="form-label fw-semibold">เวลาออก</label>
-                                                <select name="check_out_time" id="check_out_time" class="form-control"
-                                                    required>
-                                                    <option value="">เลือกเวลาออก</option>
-                                                </select>
+                                                <input type="time" id="check_out_time" name="check_out_time"
+                                                    step="60" min="08:01" max="23:00">
                                                 <div class="form-text">เวลาออกต้องอยู่ระหว่าง 09:00 - 23:00 น.</div>
                                             </div>
                                         </div>
@@ -491,7 +487,8 @@
             // Create arrays for holidays and booked days
             const holidays = Object.keys(holidaysWithNames);
             const bookedDays = Object.keys(bookedDetails);
-
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
             // แก้ไขการกำหนดวันที่ล็อค
             const disabledDates = disabledDays;
 
@@ -504,7 +501,7 @@
                 format: 'D MMM YYYY',
                 lang: "th-TH",
                 autoApply: true,
-                minDate: new Date(),
+                minDate: today,
                 allowSingleDayRange: true,
                 tooltipText: {
                     one: '1 วัน',
@@ -546,7 +543,6 @@
                             }
                         });
                     });
-
                     picker.on('selected', (date1, date2) => {
                         console.log('date1:', date1);
                         console.log('date2:', date2);
@@ -650,18 +646,32 @@
                 }
                 return options.join('');
             }
+            const checkIn = checkInTime.value;
+            const checkOut = checkOutTime.value;
 
-            // Set up check-in times (08:00 - 22:00)
-            checkInTime.innerHTML = `
-        <option value="">เวลาเข้า</option>
-        ${generateTimeOptions(8, 22)}
-    `;
+            if (!checkIn || !checkOut) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'เวลา',
+                    text: 'กรุณาเลือกเวลาเข้าและเวลาออก',
+                    icon: 'warning',
+                    confirmButtonText: 'ตกลง'
+                });
+                return;
+            }
 
-            // Set up check-out times (09:00 - 23:00)
-            checkOutTime.innerHTML = `
-        <option value="">เวลาออก</option>
-        ${generateTimeOptions(9, 23)}
-    `;
+            if (checkIn >= checkOut) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'เวลาไม่ถูกต้อง',
+                    text: 'เวลาออกต้องมากกว่าเวลาเข้า',
+                    icon: 'warning',
+                    confirmButtonText: 'ตกลง'
+                });
+                return;
+            }
+            bookingStart.value = `${bookingStart.value}T${checkInTime.value}:00`;
+            bookingEnd.value = `${bookingEnd.value}T${checkOutTime.value}:00`;
 
             // When check-in time changes, update check-out time options
             checkInTime.addEventListener('change', function() {
@@ -811,6 +821,65 @@
                 const [h, m] = time.split(':').map(Number);
                 const newHour = (h + hours) % 24;
                 return `${String(newHour).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            }
+
+        });
+
+        // booking-form-fix.js
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const bankPaymentCheckbox = document.getElementById('bankPaymentCheckbox');
+            const bankPaymentDetails = document.getElementById('bankPaymentDetails');
+            const paymentSlip = document.getElementById('paymentSlip');
+            const fileName = document.getElementById('fileName');
+            const bookingForm = document.getElementById('bookingForm');
+            const checkInTime = document.getElementById('check_in_time');
+            const checkOutTime = document.getElementById('check_out_time');
+
+            // ป้องกัน error ถ้า element ไม่เจอ
+            if (bankPaymentCheckbox && bankPaymentDetails) {
+                bankPaymentCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        bankPaymentDetails.classList.remove('d-none');
+                    } else {
+                        bankPaymentDetails.classList.add('d-none');
+                    }
+                });
+            }
+
+            if (paymentSlip && fileName) {
+                paymentSlip.addEventListener('change', function() {
+                    fileName.innerText = this.files[0] ? this.files[0].name : "ยังไม่ได้เลือกไฟล์";
+                });
+            }
+
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', function(e) {
+                    const checkIn = checkInTime ? checkInTime.value : '';
+                    const checkOut = checkOutTime ? checkOutTime.value : '';
+
+                    if (!checkIn || !checkOut) {
+                        e.preventDefault();
+                        Swal.fire({
+                            title: 'เวลา',
+                            text: 'กรุณาเลือกเวลาเข้าและเวลาออก',
+                            icon: 'warning',
+                            confirmButtonText: 'ตกลง'
+                        });
+                        return;
+                    }
+
+                    if (checkIn >= checkOut) {
+                        e.preventDefault();
+                        Swal.fire({
+                            title: 'เวลาไม่ถูกต้อง',
+                            text: 'เวลาออกต้องมากกว่าเวลาเข้า',
+                            icon: 'warning',
+                            confirmButtonText: 'ตกลง'
+                        });
+                        return;
+                    }
+                });
             }
         });
     </script>
