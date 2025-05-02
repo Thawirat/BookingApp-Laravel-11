@@ -22,6 +22,7 @@ class Room extends Model
     protected $fillable = [
         'room_id',
         'room_name',
+        'room_type',
         'class',
         'room_details',
         'capacity',
@@ -45,4 +46,9 @@ class Room extends Model
     {
         return $this->belongsTo(Status::class, 'status_id');
     }
+    public function roomType()
+    {
+        return $this->belongsTo(RoomType::class, 'room_type');
+    }
+
 }

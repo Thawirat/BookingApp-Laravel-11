@@ -93,7 +93,7 @@
                                                         <i class="fas fa-edit me-1"></i>แก้ไข
                                                     </button>
                                                     <button class="btn btn-sm btn-outline-danger flex-grow-1"
-                                                        onclick="confirmDeleteBuilding('{{ $building->id }}')">
+                                                        onclick="confirmDeleteBuilding('{{ $building->id }}', '{{ $building->building_name }}')">
                                                         <i class="fas fa-trash me-1"></i>ลบ
                                                     </button>
                                                 @endif
@@ -115,117 +115,88 @@
             </div>
         </div>
     </div>
-    <!-- Add Building Modal -->
-    <div class="modal fade" id="addBuildingModal" tabindex="-1" role="dialog" aria-labelledby="addBuildingModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addBuildingModalLabel">เพิ่มอาคาร</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addBuildingForm" action="{{ route('manage.buildings.store') }}" method="POST"
-                        enctype="multipart/form-data">
+    <!-- Bootstrap 5 Modal: Add Building -->
+    <div class="modal fade" id="addBuildingModal" tabindex="-1" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow rounded-4">
+                <form id="addBuildingForm" action="{{ route('manage.buildings.store') }}" method="POST"
+                    enctype="multipart/form-data" class="p-3">
+                    @csrf
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="addBuildingModalLabel">เพิ่มอาคาร</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                    </div>
+                    <div class="modal-body">
 
-                        @csrf
-                        <div class="form-group">
-                            <label for="building_name">ชื่ออาคาร</label>
+                        <div class="mb-3">
+                            <label for="building_name" class="form-label">ชื่ออาคาร</label>
                             <input type="text" class="form-control" id="building_name" name="building_name" required>
                         </div>
-                        <div class="form-group">
-                            <label for="citizen_save">ชื่อผู้บันทึก</label>
+
+                        <div class="mb-3">
+                            <label for="citizen_save" class="form-label">ชื่อผู้บันทึก</label>
                             <input type="text" class="form-control" id="citizen_save" name="citizen_save" required>
                         </div>
-                        <div class="form-group">
-                            <label for="building_image">รูปภาพอาคาร</label>
+
+                        <div class="mb-3">
+                            <label for="building_image" class="form-label">อัปโหลดรูปภาพอาคาร</label>
                             <input type="file" class="form-control" id="building_image" name="image"
                                 accept="image/*">
-                            <small class="form-text text-muted">รองรับไฟล์รูปภาพ (jpeg, png, jpg, gif) ขนาดไม่เกิน
-                                2MB</small>
+                            <small class="form-text text-muted">รองรับไฟล์ jpeg, png, gif (ไม่เกิน 2MB)</small>
+                            <div id="addPreviewImage" class="mt-2"></div>
                         </div>
 
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                    <button type="button" class="btn btn-primary"
-                        onclick="document.getElementById('addBuildingForm').submit();">เพิ่มอาคาร</button>
-                </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="submit" class="btn btn-primary">เพิ่มอาคาร</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Edit Building Modal -->
-    <div class="modal fade" id="editBuildingModal" tabindex="-1" role="dialog"
-        aria-labelledby="editBuildingModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editBuildingModalLabel">แก้ไขอาคาร</h5>
-                    <button type="button" class="close" data-dismiss="modal="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="editBuildingForm" action="" method="POST" enctype="multipart/form-data">
+    <!-- Bootstrap 5 Modal: Edit Building -->
+    <div class="modal fade" id="editBuildingModal" tabindex="-1" aria-labelledby="editBuildingModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow rounded-4">
+                <form id="editBuildingForm" action="" method="POST" enctype="multipart/form-data" class="p-3">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="editBuildingModalLabel">แก้ไขอาคาร</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                    </div>
+                    <div class="modal-body">
 
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group">
-                            <label for="edit_building_name">ชื่ออาคาร</label>
+                        <div class="mb-3">
+                            <label for="edit_building_name" class="form-label">ชื่ออาคาร</label>
                             <input type="text" class="form-control" id="edit_building_name" name="building_name"
                                 required>
                         </div>
-                        <div class="form-group">
-                            <label for="edit_citizen_save">บันทึกโดย</label>
+
+                        <div class="mb-3">
+                            <label for="edit_citizen_save" class="form-label">ชื่อผู้บันทึก</label>
                             <input type="text" class="form-control" id="edit_citizen_save" name="citizen_save"
                                 required>
                         </div>
-                        <div class="form-group">
-                            <label for="edit_building_image">รูปภาพอาคาร</label>
+
+                        <div class="mb-3">
+                            <label for="edit_building_image" class="form-label">อัปโหลดรูปภาพอาคาร</label>
                             <input type="file" class="form-control" id="edit_building_image" name="image"
                                 accept="image/*">
-                            <small class="form-text text-muted">รองรับไฟล์รูปภาพ (jpeg, png, jpg, gif) ขนาดไม่เกิน
-                                2MB</small>
+                            <small class="form-text text-muted">หากไม่ต้องการเปลี่ยนภาพ ให้เว้นว่างไว้</small>
                             <div id="currentImage" class="mt-2"></div>
+                            <div id="editPreviewImage" class="mt-2"></div>
                         </div>
 
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                    <button type="button" class="btn btn-primary"
-                        onclick="document.getElementById('editBuildingForm').submit()">บันทึก</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog"
-        aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteConfirmationModalLabel">ยืนยันการลบ</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    คุณแน่ใจหรือไม่ที่จะลบอาคารนี้?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
-                    <form id="deleteForm" action="" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">ลบ</button>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -245,11 +216,38 @@
             $('#editBuildingModal').modal('show');
         }
 
-        function confirmDeleteBuilding(id) {
-            // Set form action
-            document.getElementById('deleteForm').action = `/manage/buildings/${id}`;
-            // Show Modal
-            $('#deleteConfirmationModal').modal('show');
+        function confirmDeleteBuilding(id, name) {
+            Swal.fire({
+                title: 'คุณแน่ใจหรือไม่?',
+                text: `คุณต้องการลบ "${name}" ใช่หรือไม่?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'ลบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/manage/buildings/${id}`;
+
+                    const csrf = document.createElement('input');
+                    csrf.type = 'hidden';
+                    csrf.name = '_token';
+                    csrf.value = '{{ csrf_token() }}';
+
+                    const method = document.createElement('input');
+                    method.type = 'hidden';
+                    method.name = '_method';
+                    method.value = 'DELETE';
+
+                    form.appendChild(csrf);
+                    form.appendChild(method);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
         }
     </script>
 @endsection

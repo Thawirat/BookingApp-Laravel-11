@@ -20,6 +20,7 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/locale/th.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         /* Loader Overlay */
@@ -217,18 +218,27 @@
         // Loader overlay logic
         $(document).ready(function() {
             $("a").on("click", function(event) {
+                let href = $(this).attr("href");
                 let target = $(this).attr("target");
-                if (!target || target === "_self") {
+
+                // เงื่อนไข: แสดง overlay เฉพาะลิงก์ที่เปลี่ยนหน้าเท่านั้น
+                if (
+                    href &&
+                    href !== "#" &&
+                    (!target || target === "_self") &&
+                    !href.startsWith("javascript:")
+                ) {
                     $("#loading-overlay").css({
-                        "visibility": "visible",
-                        "opacity": "1"
+                        visibility: "visible",
+                        opacity: "1"
                     });
                 }
             });
-            $(window).on("load", function() {
+
+            $(window).on("pageshow load", function() {
                 $("#loading-overlay").css({
-                    "visibility": "hidden",
-                    "opacity": "0"
+                    visibility: "hidden",
+                    opacity: "0"
                 });
             });
         });
