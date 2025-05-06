@@ -30,6 +30,7 @@ class Room extends Model
         'status_id',
         'building_id',
         'image',
+        'room_type_other',  // กรณีเลือก "อื่นๆ"
     ];
 
     public function bookings()

@@ -92,6 +92,7 @@
                                                        '{{ $room->room_name }}',
                                                        '{{ $room->capacity }}',
                                                        '{{ $room->room_type }}',
+                                                        '{{ $room->room_type_other ?? '' }}',
                                                        '{{ $room->room_details }}',
                                                        '{{ $room->service_rates }}',
                                                        '{{ $room->image ? asset('storage/' . $room->image) : '' }}',
@@ -153,7 +154,7 @@
                                 <option value="other">อื่น ๆ</option>
                             </select>
                             <input type="text" class="form-control shadow-sm mt-2 d-none" id="custom_room_type"
-                                name="custom_room_type" placeholder="ระบุประเภทห้องเอง">
+                                name="room_type_other" placeholder="ระบุประเภทห้องเอง">
                         </div>
                         <div class="form-group">
                             <label for="edit_class">ชั้นที่</label>
@@ -191,18 +192,15 @@
     </div>
 
     <script>
-        // แสดง/ซ่อน input ถ้าเลือก "อื่น ๆ"
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('room_type_select').addEventListener('change', function() {
-                const customInput = document.getElementById('custom_room_type');
-                if (this.value === 'other') {
-                    customInput.classList.remove('d-none');
-                    customInput.setAttribute('required', 'required');
-                } else {
-                    customInput.classList.add('d-none');
-                    customInput.removeAttribute('required');
-                }
-            });
+        document.getElementById('room_type_select').addEventListener('change', function() {
+            const customInput = document.getElementById('custom_room_type');
+            if (this.value === 'other') {
+                customInput.classList.remove('d-none');
+                customInput.required = true;
+            } else {
+                customInput.classList.add('d-none');
+                customInput.required = false;
+            }
         });
 
         function openAddRoomModal() {
@@ -220,13 +218,13 @@
             document.getElementById('room_details').value = '';
             document.getElementById('service_rates').value = '';
             document.getElementById('currentImage').innerHTML = '';
-            document.getElementById('status').value = '';
+            document.getElementById('status').value = '2';
 
             $('#roomModal').modal('show');
         }
 
-        function openEditRoomModal(roomId, roomName, capacity, roomTypeName, roomDetails, serviceRates, imageUrl,
-            roomClass, statusId) {
+        function openEditRoomModal(roomId, roomName, capacity, roomTypeName, roomTypeOther, roomDetails, serviceRates,
+            imageUrl, roomClass, statusId) {
             document.getElementById('roomModalLabel').innerText = 'แก้ไขห้อง';
             document.getElementById('submitBtn').innerText = 'อัปเดต';
             document.getElementById('roomForm').action = `/manage_rooms/${roomId}`;
@@ -238,61 +236,74 @@
             document.getElementById('service_rates').value = serviceRates;
             document.getElementById('status').value = statusId;
 
-            // เช็คว่า roomTypeName อยู่ใน list หรือเป็น custom
             const select = document.getElementById('room_type_select');
             const customInput = document.getElementById('custom_room_type');
-            const foundOption = Array.from(select.options).find(option => option.text === roomTypeName);
-            if (foundOption) {
-                select.value = foundOption.value;
-                customInput.classList.add('d-none');
-                customInput.value = '';
-            } else {
+
+            if (roomTypeName === 'other') {
                 select.value = 'other';
                 customInput.classList.remove('d-none');
-                customInput.value = roomTypeName;
+                customInput.value = roomTypeOther ?? ''; // ถ้าไม่มีค่าก็ใช้ค่าว่าง
+            } else {
+                select.value = roomTypeName;
+                customInput.classList.add('d-none');
+                customInput.value = '';
             }
-
             document.getElementById('currentImage').innerHTML = imageUrl ?
                 `<img src="${imageUrl}" alt="Current Image" style="max-width: 100%; height: auto;" class="mt-2" />` :
                 '<p class="text-muted mt-2">ไม่มีรูปภาพ</p>';
 
             $('#roomModal').modal('show');
-            document.getElementById('roomForm').addEventListener('submit', function(e) {
+
+            document.getElementById('roomForm').onsubmit = function(e) {
                 e.preventDefault();
 
                 const form = this;
                 const formData = new FormData(form);
 
-                // ตรวจสอบว่ามีการเปลี่ยนแปลงในแต่ละฟิลด์หรือไม่
-                // ตัวอย่าง: หาก `room_name` ไม่มีการเปลี่ยนแปลง จะไม่ส่งค่าไป
-                if (!document.getElementById('room_name').value) {
-                    formData.delete('room_name');
-                }
-                if (!document.getElementById('capacity').value) {
-                    formData.delete('capacity');
-                }
-                // เพิ่มเงื่อนไขสำหรับฟิลด์อื่น ๆ ที่ต้องการ
-
-                // ส่งข้อมูลที่อัปเดตไป
                 fetch(form.action, {
                         method: 'POST',
                         headers: {
+                            'Accept': 'application/json',
                             'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
                         },
                         body: formData
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(error => Promise.reject(error));
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
-                            // แสดงผลลัพธ์ หรือปิด modal
-                            alert("อัปเดตห้องสำเร็จ");
-                            $('#roomModal').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'สำเร็จ',
+                                text: 'อัปเดตห้องสำเร็จ',
+                                confirmButtonText: 'ตกลง'
+                            }).then(() => {
+                                $('#roomModal').modal('hide');
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด',
+                                text: data.message || "ไม่ทราบสาเหตุ",
+                                confirmButtonText: 'ปิด'
+                            });
                         }
                     })
                     .catch(error => {
                         console.error("Error updating room:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'เกิดข้อผิดพลาด',
+                            text: 'เกิดข้อผิดพลาดในการอัปเดตห้อง',
+                            confirmButtonText: 'ปิด'
+                        });
                     });
-            });
+            };
 
         }
 
