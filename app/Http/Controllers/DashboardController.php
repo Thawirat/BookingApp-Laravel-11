@@ -3,53 +3,91 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+
+
     public function index()
     {
-        // ดึงข้อมูลการจองล่าสุด 10 รายการ
-        $recentBookings = Booking::orderBy('created_at', 'desc')->take(10)->get();
+        $user = Auth::user();
 
-        // ดึงจำนวนห้องทั้งหมดจากฐานข้อมูล
-        $totalRooms = \App\Models\Room::count();
+        // ถ้าเป็น Sub-admin ให้กรองข้อมูลเฉพาะอาคารที่ตัวเองดูแล
+        if ($user->hasRole('sub-admin')) {
+            $buildingIds = $user->buildings->pluck('id'); // อาคารที่ดูแล
 
-        // ดึงจำนวนผู้ใช้ทั้งหมดจากฐานข้อมูล
-        $totalUsers = \App\Models\User::count();
+            $recentBookings = Booking::whereIn('building_id', $buildingIds)
+                ->orderBy('created_at', 'desc')->take(10)->get();
 
-        // ดึงจำนวนการจองห้องทั้งหมด
-        $totalBookings = \App\Models\Booking::count();
+            $monthlyBookings = Booking::whereIn('building_id', $buildingIds)
+                ->whereYear('created_at', date('Y'))
+                ->whereMonth('created_at', date('m'))
+                ->count();
 
-        // ดึงจำนวนการจองของเดือนปัจจุบัน
-        $monthlyBookings = Booking::whereYear('created_at', date('Y'))
-            ->whereMonth('created_at', date('m'))
-            ->count();
+            $weeklyStats = Booking::selectRaw('YEARWEEK(created_at, 1) as week, COUNT(*) as total')
+                ->whereIn('building_id', $buildingIds)
+                ->whereBetween('created_at', [now()->subWeeks(12), now()])
+                ->groupBy('week')
+                ->orderBy('week', 'asc')
+                ->get();
 
-        // ดึงสถิติการจองแยกตามเดือน
-        $weeklyStats = Booking::selectRaw('YEARWEEK(created_at, 1) as week, COUNT(*) as total')
-            ->whereBetween('created_at', [now()->subWeeks(12), now()]) // 12 สัปดาห์ย้อนหลัง
-            ->groupBy('week')
-            ->orderBy('week', 'asc')
-            ->get();
+            $totalRooms = \App\Models\Room::whereIn('building_id', $buildingIds)->count();
+            $totalBuildings = count($buildingIds); // จำนวนอาคารที่ผู้ใช้ดูแล
+            $totalUsers = 1; // หรือเฉพาะผู้ใช้ในอาคารที่ดูแลถ้าต้องการ
+            $totalBookings = Booking::whereIn('building_id', $buildingIds)->count();
+        } else {
+            // กรณี Admin เห็นทุกอย่าง
+            $recentBookings = Booking::orderBy('created_at', 'desc')->take(10)->get();
+            $monthlyBookings = Booking::whereYear('created_at', date('Y'))
+                ->whereMonth('created_at', date('m'))
+                ->count();
 
-        return view('dashboard.dashboard', compact('recentBookings', 'monthlyBookings', 'weeklyStats', 'totalRooms', 'totalUsers', 'totalBookings'));
+            $weeklyStats = Booking::selectRaw('YEARWEEK(created_at, 1) as week, COUNT(*) as total')
+                ->whereBetween('created_at', [now()->subWeeks(12), now()])
+                ->groupBy('week')
+                ->orderBy('week', 'asc')
+                ->get();
+
+            $totalRooms = \App\Models\Room::count();
+            $totalUsers = \App\Models\User::count();
+            $totalBookings = \App\Models\Booking::count();
+            $totalBuildings = \App\Models\Building::count(); // จำนวนอาคารทั้งหมด
+        }
+
+        return view('dashboard.dashboard', compact(
+            'recentBookings',
+            'monthlyBookings',
+            'weeklyStats',
+            'totalRooms',
+            'totalUsers',
+            'totalBookings',
+            'totalBuildings'
+        ));
     }
+
 
     public function showIndex()
     {
         // ดึงจำนวนห้องทั้งหมดจากฐานข้อมูล
-        $totalRooms = \App\Models\Room::count();
+        $user = Auth::user();
 
-        // ดึงจำนวนผู้ใช้ทั้งหมดจากฐานข้อมูล
-        $totalUsers = \App\Models\User::count();
+        if ($user->hasRole('sub-admin')) {
+            $buildingIds = $user->buildings->pluck('id');
 
-        // ดึงจำนวนการจองห้องทั้งหมด
-        $totalBookings = \App\Models\Booking::count();
+            $totalRooms = \App\Models\Room::whereIn('building_id', $buildingIds)->count();
+            $totalBookings = Booking::whereIn('building_id', $buildingIds)->count();
+            $totalBuildings = count($buildingIds);
+            $totalUsers = 1; // หรือกรองเฉพาะ user ที่อยู่ในอาคารนั้น
 
-        // ดึงจำนวนอาคารทั้งหมดจากฐานข้อมูล
-        $totalBuildings = \App\Models\Building::count();
+        } else {
+            $totalRooms = \App\Models\Room::count();
+            $totalBookings = \App\Models\Booking::count();
+            $totalBuildings = \App\Models\Building::count();
+            $totalUsers = \App\Models\User::count();
+            $totalBuildings = \App\Models\Building::count(); // จำนวนอาคารทั้งหมด
+        }
 
         return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings'));
-
     }
 }
