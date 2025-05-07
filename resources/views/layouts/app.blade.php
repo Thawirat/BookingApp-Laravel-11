@@ -106,6 +106,14 @@
             background-attachment: fixed;
         }
 
+        footer {
+            width: 100%;
+            margin: 0;
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+
         /* ... (คง style อื่นๆ เดิมไว้) ... */
     </style>
     @stack('styles')
