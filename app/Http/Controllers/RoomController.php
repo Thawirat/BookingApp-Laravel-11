@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Building;
 use App\Models\Room;
+use App\Models\RoomType;
 
 class RoomController extends Controller
 {
@@ -28,9 +29,11 @@ class RoomController extends Controller
     public function byType($type)
     {
         $rooms = Room::with(['building', 'status'])
-            ->where('class', $type)
+            ->where('room_type', $type)
             ->get();
-        $title = "ประเภทห้อง: $type";
+
+        $roomType = \App\Models\RoomType::find($type);
+        $title = $roomType ? "ประเภทห้อง: {$roomType->name}" : "ประเภทห้อง";
 
         return view('rooms.filtered', compact('rooms', 'title'));
     }

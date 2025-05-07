@@ -90,4 +90,8 @@ class DashboardController extends Controller
 
         return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings'));
     }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 }

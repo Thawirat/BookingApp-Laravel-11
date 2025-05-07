@@ -180,6 +180,7 @@ Route::middleware('auth')->group(function () {
     });
     Route::post('/profile/update', [RegisterController::class, 'update'])->name('profile.update');
     Route::post('/user/change-password', [UserController::class, 'changePassword'])->name('user.changePassword');
+    Route::get('/my-bookings', [\App\Http\Controllers\BookingStatusController::class, 'index'])->name('my-bookings');
 });
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 // Booking routes

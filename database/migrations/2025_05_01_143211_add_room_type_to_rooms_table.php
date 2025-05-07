@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('rooms', function (Blueprint $table) {
-            $table->string('room_type')->after('room_name')->nullable(); // หรือ default เป็น 'อื่นๆ'
+            $table->unsignedBigInteger('room_type')->after('room_name')->nullable(); // หรือ default เป็น 'อื่นๆ'
         });
     }
 

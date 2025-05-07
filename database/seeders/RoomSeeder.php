@@ -17,6 +17,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 10,
                 'room_id' => 1,
+                'room_type'=> 1,
                 'room_name' => 'ห้องประชุมสร้อยสุวรรณา',
                 'class' => '3',
                 'room_details' => 'ขนาด 200 ที่นั่ง',
@@ -29,6 +30,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 8,
                 'room_id' => 2,
+                'room_type'=> 1,
                 'room_name' => 'ห้องเรียนขนาดใหญ่',
                 'class' => '1',
                 'room_details' => 'ขนาด 120 ที่นั่ง',
@@ -41,6 +43,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 3,
                 'room_id' => 3,
+                'room_type'=> 1,
                 'room_name' => 'ห้องประชุม 327',
                 'class' => '1',
                 'room_details' => 'ขนาด 100 ที่นั่ง',
@@ -53,6 +56,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 5,
                 'room_id' => 4,
+                'room_type'=> 1,
                 'room_name' => 'ห้องประชุมราชพฤกษ์ใหญ่',
                 'class' => '1',
                 'room_details' => 'ขนาด 120 ที่นั่ง',
@@ -63,6 +67,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 5,
                 'room_id' => 5,
+                'room_type'=> 1,
                 'room_name' => 'ห้องเรียน 531',
                 'class' => '1',
                 'room_details' => 'ขนาด 35 ที่นั่ง',
@@ -73,6 +78,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 5,
                 'room_id' => 6,
+                'room_type'=> 1,
                 'room_name' => 'ห้องเรียน 533',
                 'class' => '1',
                 'room_details' => 'ขนาด 35 ที่นั่ง',
@@ -83,6 +89,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 5,
                 'room_id' => 7,
+                'room_type'=> 1,
                 'room_name' => 'ห้องเรียน 534',
                 'class' => '1',
                 'room_details' => 'ขนาด 35 ที่นั่ง',
@@ -93,6 +100,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 5,
                 'room_id' => 8,
+                'room_type'=> 1,
                 'room_name' => 'ห้องเรียน 541',
                 'class' => '1',
                 'room_details' => 'ขนาด 35 ที่นั่ง',
@@ -103,6 +111,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 5,
                 'room_id' => 9,
+                'room_type'=> 1,
                 'room_name' => 'ห้องปฏิบัติการคอมพิวเตอร์ 544',
                 'class' => '1',
                 'room_details' => 'ขนาด 35 ที่นั่ง',
@@ -113,6 +122,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 5,
                 'room_id' => 10,
+                'room_type'=> 1,
                 'room_name' => 'ห้องโถง 545',
                 'class' => '1',
                 'room_details' => 'ขนาด 35 ที่นั่ง',
@@ -125,6 +135,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 9,
                 'room_id' => 11,
+                'room_type'=> 1,
                 'room_name' => 'ห้องประชุมใหญ่',
                 'class' => '1',
                 'room_details' => 'ขนาด 120 ที่นั่ง',
@@ -135,6 +146,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 9,
                 'room_id' => 12,
+                'room_type'=> 1,
                 'room_name' => 'ห้องประชุมเล็ก',
                 'class' => '1',
                 'room_details' => 'ขนาด 25 ที่นั่ง',
@@ -147,6 +159,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 13,
                 'room_id' => 13,
+                'room_type'=> 1,
                 'room_name' => 'ห้องประชุม 13209',
                 'class' => '2',
                 'room_details' => 'ขนาด 150 ที่นั่ง',
@@ -157,6 +170,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 13,
                 'room_id' => 14,
+                'room_type'=> 1,
                 'room_name' => 'ห้องประชุม 13503',
                 'class' => '5',
                 'room_details' => 'ขนาด 15 ที่นั่ง',
@@ -169,6 +183,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 1,
                 'room_id' => 15,
+                'room_type'=> 1,
                 'room_name' => 'หอประชุมมหาวิจิราลงกรณ',
                 'class' => '1',
                 'room_details' => 'พื้นที่ 1,260 ตารางเมตร (ขนาด 2,500 ที่นั่ง)',
@@ -179,6 +194,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 1,
                 'room_id' => 16,
+                'room_type'=> 1,
                 'room_name' => 'หอประชุม 2',
                 'class' => '1',
                 'room_details' => 'การจัดแสดงนิทรรศการหรืองานอื่นๆ (พื้นที่ 939.10 ตารางเมตร)',
@@ -189,6 +205,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 1,
                 'room_id' => 17,
+                'room_type'=> 1,
                 'room_name' => 'หอประชุม 1',
                 'class' => '1',
                 'room_details' => 'การจัดอบรม/สัมมนา (ขนาด 1,200 ที่นั่ง)',
@@ -199,6 +216,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 1,
                 'room_id' => 18,
+                'room_type'=> 1,
                 'room_name' => 'หอประชุม 1',
                 'class' => '1',
                 'room_details' => 'การจัดแสดงนิทรรศการหรืองานอื่นๆ (พื้นที่ 836.50 ตารางเมตร)',
@@ -212,6 +230,7 @@ class RoomSeeder extends Seeder
             DB::table('rooms')->insert([
                 'building_id' => $room['building_id'],
                 'room_id' => $room['room_id'],
+                'room_type' => $room['room_type'],
                 'room_name' => $room['room_name'],
                 'class' => $room['class'],
                 'room_details' => $room['room_details'],

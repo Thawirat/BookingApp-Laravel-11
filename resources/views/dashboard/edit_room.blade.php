@@ -20,11 +20,6 @@
                             <img src="{{ asset('images/no-picture.jpg') }}" class="img-fluid" alt="Image not available">
                         </div>
                     @endif
-
-
-
-
-
                     <div class="text-center">
                         <label for="image" class="btn btn-sm btn-outline-primary mt-2">
                             <i class="fas fa-camera"></i> Change Image

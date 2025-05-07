@@ -25,12 +25,10 @@ class Booking extends Model
     {
         return $this->belongsTo(Room::class);
     }
-
     public function status()
     {
-        return $this->belongsTo(Status::class);
+        return $this->belongsTo(\App\Models\Status::class, 'status_id');
     }
-
     public function building()
     {
         return $this->belongsTo(Building::class);
