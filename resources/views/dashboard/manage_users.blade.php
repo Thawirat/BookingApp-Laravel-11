@@ -541,9 +541,3 @@ td:nth-child(9):contains('unpaid') {
     });
 </script>
 @endpush
-
-
-
-
-
-

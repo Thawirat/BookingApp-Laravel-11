@@ -30,16 +30,16 @@
                             <div class="day-events mt-1">
                                 @foreach($visibleBookings as $index => $booking)
                                     @if($index < 3)
-                                        <div class="event-item booking-item mb-1 p-1 rounded" 
+                                        <div class="event-item booking-item mb-1 p-1 rounded"
                                              style="background-color: {{ $booking->statusColor }}"
                                              data-booking-id="{{ $booking->id }}"
                                              data-bs-toggle="tooltip"
                                              data-bs-html="true"
                                              title="<strong>{{ $booking->room_name }}</strong><br>
                                                     {{ Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - {{ Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}<br>
-                                                    ผู้จอง: xxx">
+                                                    ผู้จอง: {{ $booking->external_name }}">
                                             <small class="text-white">
-                                                {{ Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} 
+                                                {{ Carbon\Carbon::parse($booking->booking_start)->format('H:i') }}
                                                 {{ Str::limit($booking->room_name, 15) }}
                                             </small>
                                         </div>
