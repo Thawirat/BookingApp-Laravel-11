@@ -1,170 +1,77 @@
-<!-- Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content profile-card">
-            <!-- Modal Body -->
-            <!-- ตรวจสอบว่า Auth::user() มีค่าและไม่เป็น null -->
-        <div class="modal-body text-center">
-            <!-- Avatar -->
-            <img 
-                src="{{ Auth::check() && Auth::user()->avatar_url ? Auth::user()->avatar_url : asset('images/profile-avatar.png') }}" 
-                alt="User Avatar"
-                class="profile-avatar"
-            >
-            <!-- User Name -->
-            <h3 class="profile-name">
-                {{ Auth::check() ? Auth::user()->name : 'Guest' }}
-            </h3>
+@extends('layouts.app')
 
-            <!-- User Information -->
-            <div class="profile-info">
-                <p>
-                    <strong>Email:</strong> {{ Auth::check() ? Auth::user()->email : 'Not logged in' }}
-                    <a href="#" class="edit-icon">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                </p>
-                <p>
-                    <strong>Phone:</strong> {{ Auth::check() && Auth::user()->phone ? Auth::user()->phone : 'ยังไม่ได้เพิ่มข้อมูล' }}
-                    <a href="#" class="edit-icon">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                </p>
-                <p>
-                    <strong>Address:</strong> {{ Auth::check() && Auth::user()->address ? Auth::user()->address : 'ยังไม่ได้เพิ่มข้อมูล' }}
-                    <a href="#" class="edit-icon">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                </p>
-                <p>
-                    <strong>Date of Birth:</strong> {{ Auth::check() && Auth::user()->dob ? Auth::user()->dob : 'ยังไม่ได้เพิ่มข้อมูล' }}
-                    <a href="#" class="edit-icon">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                </p>
-                <!-- Change Password -->
-                <p>
-                    <strong>Change Password:</strong>
-                    <a href="#" class="edit-icon" data-toggle="modal" data-target="#changePasswordModal">
-                        <i class="fas fa-lock"></i> แก้ไขรหัสผ่าน
-                    </a>
-                </p>
+@section('content')
+    <div class="max-w-4xl mx-auto mt-12 space-y-10 px-4">
+        <!-- Profile Section -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mx-auto max-w-lg">
+            <h2 class="text-2xl font-semibold text-gray-800 text-center mb-6">โปรไฟล์ของคุณ</h2>
+
+            <div class="flex flex-col items-center text-center mb-6">
+                <img src="{{ Auth::user()->avatar_url ?? asset('images/profile-avatar.png') }}" alt="User Avatar"
+                    class="w-36 h-36 rounded-full border-4 border-blue-500 object-cover shadow-lg mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">{{ Auth::user()->name ?? 'Guest' }}</h3>
+                <p class="text-gray-500 text-sm mt-1">บัญชีผู้ใช้งาน</p>
             </div>
+
+            <!-- Contact Information -->
+            <section class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">ข้อมูลการติดต่อ</h3>
+
+                <div class="flex justify-between items-center">
+                    <span><strong>Email:</strong> {{ Auth::user()->email }}</span>
+                    <a href="#" class="text-blue-600 hover:underline"><i class="fas fa-edit"></i></a>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span><strong>เบอร์โทร:</strong> {{ Auth::user()->phone ?? 'ยังไม่ได้เพิ่มข้อมูล' }}</span>
+                    <a href="#" class="text-blue-600 hover:underline"><i class="fas fa-edit"></i></a>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span><strong>ที่อยู่:</strong> {{ Auth::user()->address ?? 'ยังไม่ได้เพิ่มข้อมูล' }}</span>
+                    <a href="#" class="text-blue-600 hover:underline"><i class="fas fa-edit"></i></a>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span><strong>วันเกิด:</strong> {{ Auth::user()->dob ?? 'ยังไม่ได้เพิ่มข้อมูล' }}</span>
+                    <a href="#" class="text-blue-600 hover:underline"><i class="fas fa-edit"></i></a>
+                </div>
+            </section>
         </div>
 
+        <!-- Change Password Section -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mx-auto max-w-lg">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">เปลี่ยนรหัสผ่าน</h3>
 
-            <!-- Modal Footer -->
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                <button type="submit" class="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
-            </div>
-        </div>
-    </div>
-</div>
+            <form action="{{ route('user.changePassword') }}" method="POST" class="space-y-5">
+                @csrf
 
-<!-- Change Password Modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="changePasswordModalLabel">เปลี่ยนรหัสผ่าน</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Change Password Form -->
-                <form action="{{ route('user.changePassword') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label for="currentPassword">รหัสผ่านเดิม</label>
-                        <input type="password" class="form-control" id="currentPassword" name="current_password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="newPassword">รหัสผ่านใหม่</label>
-                        <input type="password" class="form-control" id="newPassword" name="new_password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">ยืนยันรหัสผ่านใหม่</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
-                <button type="submit" class="btn btn-primary">เปลี่ยนรหัสผ่าน</button>
-            </div>
-                </form>
+                <div class="space-y-4">
+                    <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-1">รหัสผ่านเดิม</label>
+                    <input type="password" id="currentPassword" name="current_password" required
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <div class="space-y-4">
+                    <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">รหัสผ่านใหม่</label>
+                    <input type="password" id="newPassword" name="new_password" required
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <div class="space-y-4">
+                    <label for="confirmPassword"
+                        class="block text-sm font-medium text-gray-700 mb-1">ยืนยันรหัสผ่านใหม่</label>
+                    <input type="password" id="confirmPassword" name="confirm_password" required
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <div class="text-right pt-4">
+                    <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition">
+                        บันทึกรหัสผ่านใหม่
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
-
-<!-- CSS -->
-<style>
-/* การ์ดโปรไฟล์ */
-.profile-card {
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    background-color: #fff;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-/* อวาตาร์ */
-.profile-avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin: 0 auto 15px auto;
-    border: 4px solid #007bff;
-    object-fit: cover;
-    display: block;
-}
-
-/* ชื่อผู้ใช้ */
-.profile-name {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-/* ข้อมูลผู้ใช้ */
-.profile-info {
-    text-align: left;
-    margin-top: 10px;
-}
-
-.profile-info p {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    font-size: 1rem;
-}
-
-.profile-info p strong {
-    flex: 1;
-    margin-right: 10px;
-}
-
-/* ไอคอนแก้ไข */
-.edit-icon {
-    margin-left: 10px;
-    color: #007bff;
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-.edit-icon:hover {
-    color: #0056b3;
-}
-
-/* Footer ของ Modal */
-.modal-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-</style>
+@endsection

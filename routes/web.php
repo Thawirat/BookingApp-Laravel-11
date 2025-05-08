@@ -24,6 +24,7 @@ use App\Http\Controllers\ManageUsersController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 
 // Public routes
 Route::get('/', function () {
@@ -186,15 +187,4 @@ Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.in
 // Booking routes
 Route::post('/book-room/{id}', [BookingController::class, 'bookRoom'])->name('book.room'); // Route for booking a room
 
-// Sub-admin routes
-// Route::middleware(['auth', 'sub-admin'])->group(function () {
-//     // Building management
-//     Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
-//     Route::post('/manage-buildings', [ManageBuildingsController::class, 'store'])->name('manage.buildings.store');
-//     Route::resource('manage/buildings', ManageBuildingsController::class);
-// });
-
-// // Sub-admin room view route
-// Route::middleware(['auth', 'sub-admin'])->group(function () {
-//     Route::get('/sub-admin/rooms', [ManageRoomsController::class, 'subAdminRooms'])->name('sub_admin.rooms');
-// });
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

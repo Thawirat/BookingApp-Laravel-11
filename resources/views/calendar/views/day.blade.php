@@ -37,7 +37,7 @@
                                         @endif
                                     </div>
                                     <div class="text-white mt-1">
-                                        <i class="fas fa-user"></i> xxx
+                                        <i class="fas fa-user"></i>{{ $booking->external_name }}
                                     </div>
                                 </div>
                             @endif

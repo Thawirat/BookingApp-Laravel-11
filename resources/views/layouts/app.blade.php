@@ -159,6 +159,11 @@
                         <i class="fas fa-info-circle me-2"></i> วิธีใช้งาน
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('profile.show') }}" class="nav-link text-gray-700">
+                        <i class="fas fa-user-circle"></i> โปรไฟล์
+                    </a>
+                </li>
                 {{-- เฉพาะผู้ดูแลระบบหรือผู้ดูแลอาคาร --}}
                 @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
                     <hr>
