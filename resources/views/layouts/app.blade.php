@@ -21,244 +21,122 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/locale/th.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-        /* Loader Overlay */
-        #loading-overlay {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s, opacity 0.3s ease-in-out;
-        }
-
-        .spinner-border {
-            width: 4rem;
-            height: 4rem;
-        }
-
-        /* Fixed Sidebar Layout */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 220px;
-            height: 100vh;
-            background-color: #fff;
-            padding: 25px 20px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-            z-index: 100;
-            overflow-y: auto;
-            transition: all 0.3s ease;
-        }
-
-        .content {
-            margin-left: 220px;
-            padding: 25px;
-            min-height: calc(100vh - 200px);
-            transition: margin-left 0.3s;
-        }
-
-        @media (max-width: 991.98px) {
-            .sidebar {
-                position: fixed;
-                left: -220px;
-                transition: left 0.3s;
-            }
-
-            .sidebar.sidebar-open {
-                left: 0;
-            }
-
-            .content {
-                margin-left: 0;
-                padding: 15px;
-            }
-
-            #toggleSidebar {
-                display: block;
-                position: fixed;
-                top: 10px;
-                left: 10px;
-                z-index: 200;
-            }
-        }
-
-        @media (min-width: 992px) {
-            #toggleSidebar {
-                display: none;
-            }
-        }
-
-        body {
-            font-family: 'Kanit', sans-serif;
-            background-color: #f5f5f7;
-            color: #333;
-            background-image: url('{{ asset('images/bg-1.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-        footer {
-            width: 100%;
-            margin: 0;
-            background-color: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-        }
-
-        /* ... (คง style อื่นๆ เดิมไว้) ... */
-    </style>
-    @stack('styles')
+    <script src="//unpkg.com/alpinejs" defer></script>
 </head>
 
 <body>
+
+    <!-- Loader -->
     <div id="loading-overlay">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    <button class="btn btn-outline-secondary d-md-none my-2" id="toggleSidebar">
-        <i class="fas fa-bars"></i> เมนู
+    <button class="btn btn-outline-secondary position-fixed m-3" id="toggleSidebar" style="z-index: 200;">
+        <i class="fas fa-bars"></i>
     </button>
-    <div class="sidebar " id="sidebar">
+    <div id="mobile-overlay"></div>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <!-- Toggle Sidebar Button -->
         <img src="{{ asset('images/snru-logo.jpeg') }}" alt="SNru Logo" style="width: 100%; height: auto;">
-        <!-- เมนูแนวตั้ง -->
         <nav>
             <ul class="nav flex-column">
-                {{-- เมนูทั่วไป --}}
                 <li class="nav-item">
-                    <a href="{{ route('index') }}" class="nav-link text-gray-700">
-                        <i class="fas fa-home me-2"></i> หน้าแรก
-                    </a>
+                    <a href="{{ route('index') }}" class="nav-link text-gray-700"><i class="fas fa-home me-2"></i>
+                        หน้าแรก</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700">
-                        <i class="fas fa-calendar-alt me-2"></i> ปฏิทินการจอง
-                    </a>
+                    <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700"><i
+                            class="fas fa-calendar-alt me-2"></i> ปฏิทินการจอง</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('booking.index') }}" class="nav-link text-gray-700">
-                        <i class="fas fa-door-open me-2"></i> จองห้อง
-                    </a>
+                    <a href="{{ route('booking.index') }}" class="nav-link text-gray-700"><i
+                            class="fas fa-door-open me-2"></i> จองห้อง</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('my-bookings') }}" class="nav-link text-gray-700">
-                        <i class="fas fa-calendar-check"></i> การจองของฉัน
-                    </a>
+                    <a href="{{ route('my-bookings') }}" class="nav-link text-gray-700"><i
+                            class="fas fa-calendar-check"></i> การจองของฉัน</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('usage.index') }}" class="nav-link text-gray-700">
-                        <i class="fas fa-info-circle me-2"></i> วิธีใช้งาน
-                    </a>
+                    <a href="{{ route('usage.index') }}" class="nav-link text-gray-700"><i
+                            class="fas fa-info-circle me-2"></i> วิธีใช้งาน</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('profile.show') }}" class="nav-link text-gray-700">
-                        <i class="fas fa-user-circle"></i> โปรไฟล์
-                    </a>
+                    <a href="{{ route('profile.show') }}" class="nav-link text-gray-700"><i
+                            class="fas fa-user-circle"></i> โปรไฟล์</a>
                 </li>
-                {{-- เฉพาะผู้ดูแลระบบหรือผู้ดูแลอาคาร --}}
+
                 @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
                     <hr>
                     <h6 class="sidebar-heading text-white text-center py-2 px-3 mb-3"
                         style="background-color: #343a40; border-radius: 0.25rem;">สำหรับผู้ดูแล</h6>
                     <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link text-gray-700">
-                            <i class="fas fa-tachometer-alt me-2"></i> แดชบอร์ด
-                        </a>
+                        <a href="{{ route('dashboard') }}" class="nav-link text-gray-700"><i
+                                class="fas fa-tachometer-alt me-2"></i> แดชบอร์ด</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('booking_db') }}" class="nav-link text-gray-700">
-                            <i class="fas fa-calendar-check me-2"></i> การจองห้อง
-                        </a>
+                        <a href="{{ route('booking_db') }}" class="nav-link text-gray-700"><i
+                                class="fas fa-calendar-check me-2"></i> การจองห้อง</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('manage_rooms.index') }}" class="nav-link text-gray-700">
-                            <i class="fas fa-building me-2"></i> จัดการห้องและอาคาร
-                        </a>
+                        <a href="{{ route('manage_rooms.index') }}" class="nav-link text-gray-700"><i
+                                class="fas fa-building me-2"></i> จัดการห้องและอาคาร</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('booking_history') }}" class="nav-link text-gray-700">
-                            <i class="fas fa-history me-2"></i> ประวัติการจองห้อง
-                        </a>
+                        <a href="{{ route('booking_history') }}" class="nav-link text-gray-700"><i
+                                class="fas fa-history me-2"></i> ประวัติการจอง</a>
                     </li>
                     @if (Auth::user()->isAdmin())
                         <li class="nav-item">
-                            <a href="{{ route('manage_users.index') }}" class="nav-link text-gray-700">
-                                <i class="fas fa-users-cog me-2"></i> จัดการผู้ใช้
-                            </a>
+                            <a href="{{ route('manage_users.index') }}" class="nav-link text-gray-700"><i
+                                    class="fas fa-users-cog me-2"></i> จัดการผู้ใช้</a>
                         </li>
                     @endif
                 @endif
-                {{-- เมนูล็อกอิน/ล็อกเอาท์ --}}
+
                 @if (Auth::check())
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
                             @csrf
-                            <button type="submit" class="nav-link text-danger border-0 bg-transparent">
-                                <i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ
-                            </button>
+                            <button type="submit" class="nav-link text-danger border-0 bg-transparent"><i
+                                    class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ</button>
                         </form>
                     </li>
                 @else
                     <li class="nav-item">
-                        <a href="{{ route('login') }}" class="nav-link text-gray-700">
-                            <i class="fas fa-sign-in-alt me-2"></i> เข้าสู่ระบบ
-                        </a>
+                        <a href="{{ route('login') }}" class="nav-link text-gray-700"><i
+                                class="fas fa-sign-in-alt me-2"></i> เข้าสู่ระบบ</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('register') }}" class="nav-link text-gray-700">
-                            <i class="fas fa-user-plus me-2"></i> สมัครสมาชิก
-                        </a>
+                        <a href="{{ route('register') }}" class="nav-link text-gray-700"><i
+                                class="fas fa-user-plus me-2"></i> สมัครสมาชิก</a>
                     </li>
                 @endif
             </ul>
         </nav>
     </div>
+    <!-- Content -->
     <div class="content">
         @yield('content')
         @yield('scripts')
     </div>
     @include('footer')
+
+    <!-- Scripts -->
     <script>
-        // Sidebar toggle for mobile
-        document.getElementById('toggleSidebar').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('sidebar-open');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('sidebar-open');
+            overlay.classList.toggle('active');
         });
-        moment.locale('th');
-        // Loader overlay logic
-        $(document).ready(function() {
-            $("a").on("click", function(event) {
-                let href = $(this).attr("href");
-                let target = $(this).attr("target");
 
-                // เงื่อนไข: แสดง overlay เฉพาะลิงก์ที่เปลี่ยนหน้าเท่านั้น
-                if (
-                    href &&
-                    href !== "#" &&
-                    (!target || target === "_self") &&
-                    !href.startsWith("javascript:")
-                ) {
-                    $("#loading-overlay").css({
-                        visibility: "visible",
-                        opacity: "1"
-                    });
-                }
-            });
-
-            $(window).on("pageshow load", function() {
-                $("#loading-overlay").css({
-                    visibility: "hidden",
-                    opacity: "0"
-                });
-            });
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('sidebar-open');
+            overlay.classList.remove('active');
         });
     </script>
     @stack('scripts')
@@ -267,7 +145,46 @@
 </html>
 
 <style>
-    /* Main Layout Styles */
+    /* Loader Overlay */
+    #loading-overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, opacity 0.3s ease-in-out;
+    }
+
+    .spinner-border {
+        width: 4rem;
+        height: 4rem;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -220px;
+        /* ซ่อนไว้ก่อน */
+        width: 220px;
+        height: 100vh;
+        background-color: #fff;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+        z-index: 1050;
+        overflow-y: auto;
+        transition: left 0.3s ease-in-out;
+        padding: 20px;
+    }
+
+    /* เปิด Sidebar */
+    .sidebar.sidebar-open {
+        left: 0;
+    }
+
     body {
         font-family: 'Kanit', sans-serif;
         background-color: #f5f5f7;
@@ -278,36 +195,16 @@
         background-attachment: fixed;
     }
 
+    footer {
+        width: 100%;
+        margin: 0;
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+    }
+
     .container-fluid {
         padding: 0;
-    }
-
-    /* Sidebar Styles */
-    .sidebar {
-        background-color: #fff;
-        height: 100vh;
-        padding: 25px 20px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-
-        top: 0;
-        z-index: 100;
-        transition: all 0.3s ease;
-    }
-
-    .fixed-sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        /* ให้สูงเท่าหน้าจอ */
-        overflow-y: auto;
-        /* ถ้าด้านในยาวให้เลื่อนเฉพาะในนี้ */
-        background-color: #f8f9fa;
-        /* หรือสีที่คุณใช้ */
-        width: 16.6666667%;
-        /* เท่ากับ col-md-2 (2/12) */
-        z-index: 1000;
-        /* ให้ลอยอยู่เหนือเนื้อหาอื่น */
     }
 
     .sidebar h4 {
@@ -379,8 +276,6 @@
         margin-bottom: 20px;
         font-size: clamp(20px, 5vw, 28px);
     }
-
-
 
     /* Search Section */
     .d-flex.align-items-center {
@@ -679,53 +574,6 @@
         }
     }
 
-    @media (max-width: 768px) {
-        .d-flex.justify-content-between.align-items-center.mb-4 {
-            flex-direction: column;
-            align-items: flex-start !important;
-        }
-
-        .d-flex.align-items-center {
-            margin-top: 15px;
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .search-bar {
-            width: 100%;
-        }
-
-        .sidebar {
-            height: auto;
-            position: relative;
-            padding: 15px 10px;
-        }
-
-        .card-header,
-        .card-body {
-            padding: 10px;
-        }
-
-        .table th,
-        .table td {
-            padding: 10px 8px;
-        }
-
-        .stat-card {
-            margin-bottom: 15px;
-        }
-
-        .icon-btn {
-            width: 35px;
-            height: 35px;
-        }
-
-        .profile-img {
-            width: 35px;
-            height: 35px;
-        }
-    }
-
     @media (max-width: 576px) {
         .content {
             padding: 15px 10px;
@@ -763,61 +611,27 @@
             width: 100%;
             text-align: center;
         }
-
-        /* Collapse sidebar on mobile */
-        .sidebar-collapse .sidebar {
-            transform: translateX(-100%);
-        }
-
-        /* Mobile menu toggle button */
-        .mobile-menu-toggle {
-            display: block;
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            background-color: #FFC107;
-            color: #333;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-        }
     }
 
-    /* Add mobile menu toggle visibility */
-    .mobile-menu-toggle {
+    /* Overlay */
+    #mobile-overlay {
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.3);
+        z-index: 1040;
     }
 
-    @media (max-width: 576px) {
-        .mobile-menu-toggle {
-            display: block;
-        }
+    /* แสดง overlay */
+    #mobile-overlay.active {
+        display: block;
     }
 
-    /* For extra small devices */
-    @media (max-width: 375px) {
-        .d-flex.align-items-center {
-            flex-direction: column;
-            align-items: flex-start !important;
-            height: auto;
-        }
-
-        .profile-img,
-        .icon-btn {
-            margin-top: 10px;
-            margin-left: 0;
-        }
-
-        form.d-flex {
-            width: 100%;
-            margin-right: 0;
-        }
-
-        /* Adjust status indicators for small screens */
-        td:nth-child(8),
-        td:nth-child(9) {
-            min-width: 80px;
-        }
+    /* Content ไม่ต้อง margin-left แล้ว */
+    .content {
+        padding: 25px;
     }
 </style>

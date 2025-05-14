@@ -6,3 +6,6 @@
 .status-color-3 { background-color: #DC3545; } /* Danger */
 .status-color-4 { background-color: #007BFF; } /* Primary */
 .status-color-5 { background-color: #6C757D; } /* Secondary */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

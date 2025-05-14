@@ -188,3 +188,7 @@ Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.in
 Route::post('/book-room/{id}', [BookingController::class, 'bookRoom'])->name('book.room'); // Route for booking a room
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+// routes/web.php
+Route::put('/user/profile', [UserController::class, 'update'])->name('user.updateProfile');
+Route::post('/user/change-password', [UserController::class, 'changePassword'])->name('user.changePassword');
+Route::post('/user/update-all', [UserController::class, 'updateAll'])->name('user.updateAll');

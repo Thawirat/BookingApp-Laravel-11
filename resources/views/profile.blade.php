@@ -1,77 +1,114 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-4xl mx-auto mt-12 space-y-10 px-4">
-        <!-- Profile Section -->
-        <div class="bg-white rounded-lg shadow-lg p-8 mx-auto max-w-lg">
-            <h2 class="text-2xl font-semibold text-gray-800 text-center mb-6">โปรไฟล์ของคุณ</h2>
+    <div class="container mt-5">
 
-            <div class="flex flex-col items-center text-center mb-6">
-                <img src="{{ Auth::user()->avatar_url ?? asset('images/profile-avatar.png') }}" alt="User Avatar"
-                    class="w-36 h-36 rounded-full border-4 border-blue-500 object-cover shadow-lg mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">{{ Auth::user()->name ?? 'Guest' }}</h3>
-                <p class="text-gray-500 text-sm mt-1">บัญชีผู้ใช้งาน</p>
+        <!-- Profile Card -->
+        <div class="card shadow-sm">
+            <div class="card-header text-center">
+                <h2><i class="fas fa-user-circle me-2 text-primary"></i> โปรไฟล์ของคุณ</h2>
             </div>
-
-            <!-- Contact Information -->
-            <section class="space-y-4">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">ข้อมูลการติดต่อ</h3>
-
-                <div class="flex justify-between items-center">
-                    <span><strong>Email:</strong> {{ Auth::user()->email }}</span>
-                    <a href="#" class="text-blue-600 hover:underline"><i class="fas fa-edit"></i></a>
-                </div>
-
-                <div class="flex justify-between items-center">
-                    <span><strong>เบอร์โทร:</strong> {{ Auth::user()->phone ?? 'ยังไม่ได้เพิ่มข้อมูล' }}</span>
-                    <a href="#" class="text-blue-600 hover:underline"><i class="fas fa-edit"></i></a>
-                </div>
-
-                <div class="flex justify-between items-center">
-                    <span><strong>ที่อยู่:</strong> {{ Auth::user()->address ?? 'ยังไม่ได้เพิ่มข้อมูล' }}</span>
-                    <a href="#" class="text-blue-600 hover:underline"><i class="fas fa-edit"></i></a>
-                </div>
-
-                <div class="flex justify-between items-center">
-                    <span><strong>วันเกิด:</strong> {{ Auth::user()->dob ?? 'ยังไม่ได้เพิ่มข้อมูล' }}</span>
-                    <a href="#" class="text-blue-600 hover:underline"><i class="fas fa-edit"></i></a>
-                </div>
-            </section>
+            <div class="card-body text-center">
+                <img src="{{ Auth::user()->avatar_url ?? asset('images/profile-avatar.png') }}" alt="User Avatar"
+                    class="rounded-circle border-4 border-primary mb-3" style="width: 150px; height: 150px;">
+                <h3>{{ Auth::user()->name ?? 'Guest' }}</h3>
+                <p>บัญชีผู้ใช้งาน</p>
+                <button class="btn btn-outline-primary" onclick="toggleEdit()">แก้ไขโปรไฟล์</button>
+            </div>
         </div>
 
-        <!-- Change Password Section -->
-        <div class="bg-white rounded-lg shadow-lg p-8 mx-auto max-w-lg">
-            <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">เปลี่ยนรหัสผ่าน</h3>
+        <!-- Editable Profile Section -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <form method="POST" action="{{ route('user.updateAll') }}" enctype="multipart/form-data" id="profileForm">
+                    @csrf
+                    @method('PUT')
 
-            <form action="{{ route('user.changePassword') }}" method="POST" class="space-y-5">
-                @csrf
+                    <!-- ข้อมูลโปรไฟล์ -->
+                    <h5 class="mb-3"><i class="fas fa-user-edit me-2 text-primary"></i>ข้อมูลโปรไฟล์</h5>
 
-                <div class="space-y-4">
-                    <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-1">รหัสผ่านเดิม</label>
-                    <input type="password" id="currentPassword" name="current_password" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i class="fas fa-user me-2 text-primary"></i>ชื่อผู้ใช้</label>
+                        <input type="text" name="name" value="{{ Auth::user()->name }}" class="form-control" readonly>
+                    </div>
 
-                <div class="space-y-4">
-                    <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">รหัสผ่านใหม่</label>
-                    <input type="password" id="newPassword" name="new_password" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i
+                                class="fas fa-image me-2 text-primary"></i>อัพโหลดรูปโปรไฟล์</label>
+                        <input type="file" name="avatar" class="form-control" disabled>
+                    </div>
 
-                <div class="space-y-4">
-                    <label for="confirmPassword"
-                        class="block text-sm font-medium text-gray-700 mb-1">ยืนยันรหัสผ่านใหม่</label>
-                    <input type="password" id="confirmPassword" name="confirm_password" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
+                    <hr>
+                    <h5 class="mb-3"><i class="fas fa-address-book me-2 text-primary"></i>ข้อมูลการติดต่อ</h5>
 
-                <div class="text-right pt-4">
-                    <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition">
-                        บันทึกรหัสผ่านใหม่
-                    </button>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i class="fas fa-envelope me-2 text-primary"></i>Email</label>
+                        <input type="email" name="email" value="{{ Auth::user()->email }}" class="form-control"
+                            readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i class="fas fa-phone-alt me-2 text-primary"></i>เบอร์โทร</label>
+                        <input type="text" name="phone" value="{{ Auth::user()->phone }}" class="form-control"
+                            readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i
+                                class="fas fa-map-marker-alt me-2 text-primary"></i>ที่อยู่</label>
+                        <input type="text" name="address" value="{{ Auth::user()->address }}" class="form-control"
+                            readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i class="fas fa-birthday-cake me-2 text-primary"></i>วันเกิด</label>
+                        <input type="date" name="dob" value="{{ Auth::user()->dob }}" class="form-control" readonly>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3"><i class="fas fa-key me-2 text-primary"></i>เปลี่ยนรหัสผ่าน
+                        (ไม่กรอกหากไม่ต้องการเปลี่ยน)</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i class="fas fa-lock me-2 text-primary"></i>รหัสผ่านเดิม</label>
+                        <input type="password" name="current_password" class="form-control" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i class="fas fa-key me-2 text-primary"></i>รหัสผ่านใหม่</label>
+                        <input type="password" name="new_password" class="form-control" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i
+                                class="fas fa-check-circle me-2 text-primary"></i>ยืนยันรหัสผ่านใหม่</label>
+                        <input type="password" name="confirm_password" class="form-control" readonly>
+                    </div>
+
+                    <div id="editButtons" class="d-none">
+                        <button type="submit" class="btn btn-success mt-3 me-2">บันทึกการเปลี่ยนแปลง</button>
+                        <button type="button" class="btn btn-secondary mt-3" onclick="toggleEdit(false)">ยกเลิก</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
+    <script>
+        function toggleEdit(enable = true) {
+            const form = document.getElementById('profileForm');
+            const inputs = form.querySelectorAll('input');
+            const editButtons = document.getElementById('editButtons');
+
+            inputs.forEach(input => {
+                if (input.type === 'file') {
+                    input.disabled = !enable;
+                } else {
+                    input.readOnly = !enable;
+                }
+            });
+
+            editButtons.classList.toggle('d-none', !enable);
+        }
+    </script>
 @endsection
