@@ -164,23 +164,6 @@ class BookingController extends Controller
                 return back()->withErrors(['message' => 'ช่วงเวลาที่เลือก已被预订']);
             }
 
-            // Check for overlapping bookings with time slots
-            // $existingBooking = Booking::where('room_id', $validated['room_id'])
-            //     ->where(function ($query) use ($bookingStart, $bookingEnd) {
-            //         $query->where(function ($q) use ($bookingStart, $bookingEnd) {
-            //             // Check if new booking overlaps with existing booking
-            //             $q->where(function ($inner) use ($bookingStart, $bookingEnd) {
-            //                 $inner->where('booking_start', '<', $bookingEnd)
-            //                     ->where('booking_end', '>', $bookingStart);
-            //             });
-            //         });
-            //     })
-            //     ->exists();
-
-            // if ($existingBooking) {
-            //     return back()->withErrors(['message' => 'ช่วงเวลาที่เลือกมีการจองแล้ว'])->withInput();
-            // }
-
             // คำนวณราคารวม
             $room = Room::find($validated['room_id']);
             $start = new \DateTime($validated['booking_start']);
@@ -196,7 +179,6 @@ class BookingController extends Controller
             $booking->status_id = 3; // สถานะรอการยืนยัน
             $booking->is_external = true;
             $booking->total_price = $totalPrice;
-            $booking->payment_status = 'pending';
             $booking->booking_start = $bookingStart;
             $booking->booking_end = $bookingEnd;
 
@@ -212,17 +194,20 @@ class BookingController extends Controller
                     if ($file->isValid()) {
                         $filePath = $file->store('payment_slips', 'public');
                         $booking->payment_slip = $filePath;
+                        $booking->payment_status = 'pending'; // มีการอัปโหลดสลิป → pending
                         Log::info('Payment slip saved successfully: ' . $filePath);
                     } else {
                         Log::warning('Invalid payment slip file.');
+                        $booking->payment_status = 'unpaid';
                     }
                 } catch (\Exception $e) {
                     Log::error('Error uploading payment slip: ' . $e->getMessage());
+                    $booking->payment_status = 'unpaid';
                 }
             } else {
                 Log::info('No payment slip provided in the request.');
+                $booking->payment_status = 'unpaid'; // ไม่มีสลิป → unpaid
             }
-
             $booking->save();
 
             // ส่งอีเมลแจ้งยืนยันการจอง...
@@ -279,6 +264,28 @@ class BookingController extends Controller
             Log::error('Cancel booking failed: ' . $e->getMessage());
 
             return back()->with('error', 'เกิดข้อผิดพลาดในการยกเลิกการจอง');
+        }
+    }
+    public function uploadSlip(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'payment_slip' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
+
+        try {
+            $file = $request->file('payment_slip');
+            $filePath = $file->store('payment_slips', 'public');
+
+            $booking->payment_slip = $filePath;
+            $booking->payment_status = 'pending'; // เปลี่ยนสถานะตามต้องการ
+            $booking->save();
+
+            Log::info("อัปโหลดสลิปสำเร็จสำหรับ booking ID: {$booking->id}");
+
+            return back()->with('success', 'อัปโหลดสลิปสำเร็จ');
+        } catch (\Exception $e) {
+            Log::error("อัปโหลดสลิปล้มเหลวสำหรับ booking ID {$booking->id}: " . $e->getMessage());
+            return back()->with('error', 'เกิดข้อผิดพลาดในการอัปโหลดสลิป');
         }
     }
 }

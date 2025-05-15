@@ -127,65 +127,6 @@
                 </div>
             </div>
 
-            <!-- Upcoming Holidays -->
-            <div class="card mb-4">
-                <div class=" card-header bg-warning text-white d-flex justify-content-between">
-                    <h4 class="mb-0">วันหยุดประจำปี 2568</h4> <!-- ปี พ.ศ. -->
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันขึ้นปีใหม่</span>
-                                    <span class="badge bg-primary rounded-pill">1 มกราคม 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันมาฆบูชา</span>
-                                    <span class="badge bg-primary rounded-pill">10 กุมภาพันธ์ 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันจักรี</span>
-                                    <span class="badge bg-primary rounded-pill">6 เมษายน 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันสงกรานต์</span>
-                                    <span class="badge bg-primary rounded-pill">13-15 เมษายน 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันแรงงานแห่งชาติ</span>
-                                    <span class="badge bg-primary rounded-pill">1 พฤษภาคม 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันเฉลิมพระชนมพรรษา ร.10</span>
-                                    <span class="badge bg-primary rounded-pill">28 กรกฎาคม 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันแม่แห่งชาติ</span>
-                                    <span class="badge bg-primary rounded-pill">12 สิงหาคม 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันปิยมหาราช</span>
-                                    <span class="badge bg-primary rounded-pill">23 ตุลาคม 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันพ่อแห่งชาติ/วันชาติ</span>
-                                    <span class="badge bg-primary rounded-pill">5 ธันวาคม 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>วันสิ้นปี</span>
-                                    <span class="badge bg-primary rounded-pill">31 ธันวาคม 2568</span> <!-- ปี พ.ศ. -->
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Contact & FAQ -->
             <div class="row g-4 mb-4">
                 <div class="col-md-6">
@@ -216,8 +157,7 @@
                                             ทำการจองห้องได้ล่วงหน้ากี่วัน?
                                         </button>
                                     </h2>
-                                    <div id="faq1" class="accordion-collapse collapse"
-                                        data-bs-parent="#faqAccordion">
+                                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             สามารถทำการจองล่วงหน้าได้ไม่เกิน 30 วัน
                                         </div>
@@ -230,8 +170,7 @@
                                             มีค่าใช้จ่ายในการจองห้องหรือไม่?
                                         </button>
                                     </h2>
-                                    <div id="faq2" class="accordion-collapse collapse"
-                                        data-bs-parent="#faqAccordion">
+                                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             ค่าใช้จ่ายขึ้นอยู่กับประเภทห้องและระยะเวลาการใช้งาน
                                             โปรดตรวจสอบราคาในหน้ารายละเอียดห้อง
