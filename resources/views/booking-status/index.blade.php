@@ -46,8 +46,9 @@
                                         $statusClass =
                                             [
                                                 'paid' => 'bg-success',
-                                                'pending' => 'bg-warning text-dark',
-                                                'unpaid' => 'bg-secondary',
+                                                'pending' => 'bg-info text-dark',
+                                                'unpaid' => 'bg-warning text-dark',
+                                                'cancelled' => 'bg-danger',
                                             ][$booking->payment_status] ?? 'bg-secondary';
 
                                         $statusText =
@@ -55,6 +56,7 @@
                                                 'paid' => 'ชำระแล้ว',
                                                 'pending' => 'รอตรวจสอบ',
                                                 'unpaid' => 'ยังไม่ชำระ',
+                                                'cancelled' => 'ยกเลิก',
                                             ][$booking->payment_status] ?? 'ยังไม่ชำระ';
                                     @endphp
                                     <span class="badge {{ $statusClass }}">{{ $statusText }}</span>
@@ -68,6 +70,12 @@
                                                 <button class="dropdown-item" data-bs-toggle="modal"
                                                     data-bs-target="#paymentModal{{ $booking->id }}">
                                                     <i class="bi bi-wallet2 me-2"></i>ดู/อัปโหลดหลักฐานชำระเงิน
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item text-danger"
+                                                    onclick="confirmCancel({{ $booking->id }})">
+                                                    <i class="bi bi-x-circle me-2"></i>ยกเลิกการจอง
                                                 </button>
                                             </li>
                                         </ul>
@@ -191,3 +199,27 @@
         @endif
     </div>
 @endsection
+<script>
+    function confirmCancel(bookingId) {
+        Swal.fire({
+            title: 'คุณแน่ใจหรือไม่?',
+            text: "การยกเลิกนี้จะไม่สามารถย้อนกลับได้!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ใช่, ยกเลิก!',
+            cancelButtonText: 'ไม่',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/booking/${bookingId}/cancel`; // ปรับ route ตามจริง
+                form.innerHTML = `
+                @csrf
+                @method('PATCH')
+            `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        })
+    }
+</script>

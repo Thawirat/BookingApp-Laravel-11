@@ -41,6 +41,12 @@
     <div class="sidebar" id="sidebar">
         <!-- Toggle Sidebar Button -->
         <img src="{{ asset('images/snru-logo.jpeg') }}" alt="SNru Logo" style="width: 100%; height: auto;">
+        @if (auth()->check())
+            <div class="p-3 border-bottom ">
+                <strong>{{ auth()->user()->name }}</strong><br>
+                <small class="text-muted">{{ auth()->user()->email }}</small>
+            </div>
+        @endif
         <nav>
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -65,7 +71,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('profile.show') }}" class="nav-link text-gray-700"><i
-                            class="fas fa-user-circle"></i> โปรไฟล์</a>
+                            class="fas fa-user-circle"></i> โปรไฟล์ของฉัน</a>
                 </li>
 
                 @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())

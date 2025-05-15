@@ -157,3 +157,4 @@ Route::put('/user/profile', [UserController::class, 'update'])->name('user.updat
 Route::post('/user/change-password', [UserController::class, 'changePassword'])->name('user.changePassword');
 Route::post('/user/update-all', [UserController::class, 'updateAll'])->name('user.updateAll');
 Route::post('/payment/upload/{booking}', [BookingController::class, 'uploadSlip'])->name('booking.uploadSlip');
+Route::patch('/booking/{id}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');

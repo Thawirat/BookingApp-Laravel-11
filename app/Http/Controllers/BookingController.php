@@ -252,7 +252,7 @@ class BookingController extends Controller
 
             // ตรวจสอบว่าผู้ใช้มีสิทธิ์ยกเลิกการจองนี้หรือไม่
             if (auth()->check() && $booking->user_id == auth()->id()) {
-                $booking->status_id = 4; // สถานะยกเลิก
+                $booking->status_id = 5; // สถานะยกเลิก
                 $booking->payment_status = 'cancelled';
                 $booking->save();
 
