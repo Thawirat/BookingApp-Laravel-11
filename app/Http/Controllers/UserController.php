@@ -14,14 +14,20 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $request->validate([
+            'name' => 'required|string|max:255',
             'email' => 'required|email',
             'phone' => 'nullable|string',
             'address' => 'nullable|string',
-            'dob' => 'nullable|date',
+            'email' => 'required|email',
+            'phone_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'user_type' => 'nullable|in:internal,external',
+            'position' => 'nullable|string|max:100',
+            'department' => 'nullable|string|max:100',
         ]);
 
         $user = Auth::user();
-        $user->update($request->only('email', 'phone', 'address', 'dob'));
+        $user->update($request->only('name','email', 'phone', 'address', 'phone_number', 'address', 'user_type', 'position', 'department'));
 
         return back()->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
     }
@@ -48,7 +54,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         // อัปเดตโปรไฟล์
-        $user->update($request->only(['name', 'email', 'phone', 'address', 'dob']));
+        $user->update($request->only(['name', 'email', 'phone', 'address', 'phone_number', 'address', 'user_type', 'position', 'department']));
 
         if ($request->hasFile('avatar')) {
             // Upload & save avatar logic here

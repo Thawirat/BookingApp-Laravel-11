@@ -26,13 +26,14 @@
                             <li><strong>วันที่สิ้นสุด:</strong>
                                 {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}</li>
                             <li><strong>วัตถุประสงค์:</strong> {{ $booking->reason ?? 'ไม่ระบุ' }}</li>
-                            <li><strong>จำนวนผู้เข้าร่วม:</strong> {{ $booking->attendees ?? 'ไม่ระบุ' }} คน</li>
+                            <li><strong>จำนวนผู้เข้าร่วม:</strong> {{ $booking->participant_count ?? 'ไม่ระบุ' }} คน</li>
+                            <li><strong>รายละเอียดเพิ่มเติม:</strong> {{ $booking->booker_info ?? 'ไม่ระบุ' }}</li>
                             <li><strong>สถานะการชำระเงิน:</strong>
                                 <span
                                     class="badge dropdown-toggle
                                     @if ($booking->payment_status == 'paid') bg-success
                                     @elseif($booking->payment_status == 'pending') bg-info text-dark
-                                    @elseif($booking->payment_status == 'cancelled') bg-danger 
+                                    @elseif($booking->payment_status == 'cancelled') bg-danger
                                     @else bg-warning text-dark @endif"
                                     role="button" data-bs-toggle="dropdown" aria-expanded="false"
                                     style="cursor: pointer;">
@@ -53,7 +54,8 @@
                             <li><strong>ชื่อผู้จอง:</strong> {{ $booking->external_name }}</li>
                             <li><strong>อีเมล:</strong> {{ $booking->external_email }}</li>
                             <li><strong>โทรศัพท์:</strong> {{ $booking->external_phone }}</li>
-                            <li><strong>หน่วยงาน/แผนก:</strong> {{ $booking->department ?? 'ไม่ระบุ' }}</li>
+                            <li><strong>ตำแหน่ง:</strong> {{ $booking->external_position ?? 'ไม่ระบุ' }}</li>
+                            <li><strong>ที่อยู่/หน่วยงาน:</strong> {{ $booking->external_address ?? 'ไม่ระบุ' }}</li>
                         </ul>
                     </div>
                     <!-- Room Info -->

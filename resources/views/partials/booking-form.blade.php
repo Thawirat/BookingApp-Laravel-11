@@ -71,17 +71,47 @@
                                                 class="text-danger">*</span></label>
                                         @if (auth()->check())
                                             <input class="form-control" type="tel" name="external_phone"
-                                                value="{{ auth()->user()->phone ?? '' }}"
-                                                {{ auth()->user()->phone ? '' : '' }}>
+                                                value="{{ auth()->user()->phone_number ?? '' }}"
+                                                {{ auth()->user()->phone_number ? '' : '' }}>
                                         @else
                                             <input class="form-control" type="tel" name="external_phone" required>
                                         @endif
                                     </div>
-
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">ตำแหน่ง <span
+                                                class="text-danger">*</span></label>
+                                        @if (auth()->check())
+                                            <input class="form-control" type="text" name="external_position"
+                                                value="{{ auth()->user()->department ?? '' }}">
+                                        @else
+                                            <input class="form-control" type="text" name="external_position" required>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">ที่อยู่/หน่วยงาน <span
+                                                class="text-danger">*</span></label>
+                                        @if (auth()->check())
+                                            <input class="form-control" type="text" name="external_address"
+                                                value="{{ auth()->user()->address ?? '' }}">
+                                        @else
+                                            <input class="form-control" type="text" name="external_address" required>
+                                        @endif
+                                    </div>
                                     <!-- Reason -->
                                     <div class="col-md-12">
-                                        <label class="form-label fw-semibold">เหตุผลในการจอง</label>
+                                        <label class="form-label fw-semibold">วัตถุประสงค์</label>
                                         <textarea name="reason" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-semibold">รายละเอียดเพิ่มเติม(ถ้ามี)</label>
+                                        <textarea name="booker_info" class="form-control" rows="3" placeholder="ระบุรายละเอียดเพิ่มเติม"></textarea>
+                                    </div>
+                                    <!-- จำนวนผู้เข้าร่วม -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">จำนวนผู้เข้าร่วม <span
+                                                class="text-danger">*</span></label>
+                                        <input class="form-control" type="number" name="participant_count"
+                                            min="1" required>
                                     </div>
                                 </div>
 
@@ -95,7 +125,8 @@
                                             </div>
                                             <div class="h4 mx-3 text-warning">→</div>
                                             <div>
-                                                <div class="h5 fw-bold mb-1" id="checkOutDate">กรุณาเลือกวันเช็คเอาท์</div>
+                                                <div class="h5 fw-bold mb-1" id="checkOutDate">กรุณาเลือกวันเช็คเอาท์
+                                                </div>
                                                 <div class="small text-muted">เช็คเอาท์</div>
                                             </div>
                                         </div>

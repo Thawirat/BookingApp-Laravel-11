@@ -39,10 +39,12 @@ class Booking extends Model
         'external_name',
         'external_email',
         'external_phone',
+        'external_position',
+        'external_address',
         'building_id',
         'room_id',
-        'room_name', // ✅ เพิ่ม
-        'building_name', // ✅ เพิ่ม
+        'room_name',
+        'building_name',
         'booking_start',
         'booking_end',
         'status_id',
@@ -51,14 +53,11 @@ class Booking extends Model
         'total_price',
         'payment_status',
         'is_external',
-        'fullname',
-        'phone',
-        'email',
         'status',
-        'department',
         'payment_slip',
-        'attendees',
-        'purpose',
+        'participant_count',
+        'booker_info',
+
 
     ];
 }

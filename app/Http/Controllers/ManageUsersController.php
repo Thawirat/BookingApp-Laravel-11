@@ -91,4 +91,15 @@ class ManageUsersController extends Controller
 
         return response()->json(['buildings' => $buildings]);
     }
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+        ]);
+    }
 }

@@ -128,6 +128,8 @@ class BookingController extends Controller
                 'external_name' => 'required|string|max:255',
                 'external_email' => 'required|email|max:255',
                 'external_phone' => 'required|string|max:20',
+                'external_position' => 'required|string|max:255',
+                'external_address' => 'required|string|max:255',
                 'booking_start' => 'required|date|after:today',
                 'booking_end' => 'required|date|after:booking_start',
                 'check_in_time' => [
@@ -144,6 +146,9 @@ class BookingController extends Controller
                 ],
                 'reason' => 'nullable|string',
                 'payment_slip' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                'participant_count' => 'nullable|integer|min:1',
+                'purpose' => 'nullable|string',
+                'booker_info' => 'nullable|string'
             ]);
 
             // Combine date and time for booking start and end

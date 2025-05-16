@@ -136,6 +136,8 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::get('/manage-users', [ManageUsersController::class, 'index'])->name('manage_users.index');
     Route::put('/manage-users/{id}', [ManageUsersController::class, 'update'])->name('manage_users.update');
     Route::delete('/manage-users/{id}', [ManageUsersController::class, 'destroy'])->name('manage_users.destroy');
+    Route::middleware('auth')->get('/api/users/{id}', [ManageUsersController::class, 'show']);
+    Route::middleware('auth')->get('/api/users/{id}/buildings', [ManageUsersController::class, 'getUserBuildings']);
 });
 
 // Profile routes
@@ -158,3 +160,4 @@ Route::post('/user/change-password', [UserController::class, 'changePassword'])-
 Route::post('/user/update-all', [UserController::class, 'updateAll'])->name('user.updateAll');
 Route::post('/payment/upload/{booking}', [BookingController::class, 'uploadSlip'])->name('booking.uploadSlip');
 Route::patch('/booking/{id}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
+Route::put('/user/update-all', [UserController::class, 'update'])->name('user.updateAll');

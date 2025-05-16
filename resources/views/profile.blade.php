@@ -28,14 +28,26 @@
                     <h5 class="mb-3"><i class="fas fa-user-edit me-2 text-primary"></i>ข้อมูลโปรไฟล์</h5>
 
                     <div class="mb-3">
-                        <label class="form-label ms-1"><i class="fas fa-user me-2 text-primary"></i>ชื่อผู้ใช้</label>
+                        <label class="form-label d-flex align-items-center ps-2">
+                            <i class="fas fa-user me-2 text-primary"></i>
+                            <span>ชื่อผู้ใช้</span>
+                        </label>
                         <input type="text" name="name" value="{{ Auth::user()->name }}" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i class="fas fa-users me-2 text-primary"></i>ประเภทผู้ใช้งาน</label>
+                        <select name="user_type" class="form-select" disabled>
+                            <option value="internal" {{ Auth::user()->user_type == 'internal' ? 'selected' : '' }}>
+                                บุคลากรภายใน</option>
+                            <option value="external" {{ Auth::user()->user_type == 'external' ? 'selected' : '' }}>
+                                บุคคลภายนอก</option>
+                        </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label ms-1"><i
-                                class="fas fa-image me-2 text-primary"></i>อัพโหลดรูปโปรไฟล์</label>
-                        <input type="file" name="avatar" class="form-control" disabled>
+                        <label class="form-label ms-1"><i class="fas fa-briefcase me-2 text-primary"></i>ตำแหน่ง</label>
+                        <input type="text" name="position" value="{{ Auth::user()->position }}" class="form-control"
+                            readonly>
                     </div>
 
                     <hr>
@@ -48,9 +60,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label ms-1"><i class="fas fa-phone-alt me-2 text-primary"></i>เบอร์โทร</label>
-                        <input type="text" name="phone" value="{{ Auth::user()->phone }}" class="form-control"
+                        <label class="form-label ms-1"><i class="fas fa-building me-2 text-primary"></i>หน่วยงาน</label>
+                        <input type="text" name="department" value="{{ Auth::user()->department }}" class="form-control"
                             readonly>
+                    </div>
+
+                    <!-- เบอร์โทร (แก้ชื่อ field จาก phone เป็น phone_number) -->
+                    <div class="mb-3">
+                        <label class="form-label ms-1"><i class="fas fa-phone-alt me-2 text-primary"></i>เบอร์โทร</label>
+                        <input type="text" name="phone_number" value="{{ Auth::user()->phone_number }}"
+                            class="form-control" readonly>
                     </div>
 
                     <div class="mb-3">
@@ -59,12 +78,6 @@
                         <input type="text" name="address" value="{{ Auth::user()->address }}" class="form-control"
                             readonly>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label ms-1"><i class="fas fa-birthday-cake me-2 text-primary"></i>วันเกิด</label>
-                        <input type="date" name="dob" value="{{ Auth::user()->dob }}" class="form-control" readonly>
-                    </div>
-
                     <hr class="my-4">
                     <h5 class="mb-3"><i class="fas fa-key me-2 text-primary"></i>เปลี่ยนรหัสผ่าน
                         (ไม่กรอกหากไม่ต้องการเปลี่ยน)</h5>
@@ -99,7 +112,10 @@
             const form = document.getElementById('profileForm');
             const inputs = form.querySelectorAll('input');
             const editButtons = document.getElementById('editButtons');
-
+            const selects = form.querySelectorAll('select');
+            selects.forEach(select => {
+                select.disabled = !enable;
+            });
             inputs.forEach(input => {
                 if (input.type === 'file') {
                     input.disabled = !enable;
