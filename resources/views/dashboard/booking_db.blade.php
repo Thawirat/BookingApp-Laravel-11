@@ -114,172 +114,146 @@
                                                         {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
                                                     </small>
                                                 </td>
-                                                <td>
-                                                    <div class="payment-status-container">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="dropdown">
-                                                                <span
-                                                                    class="badge dropdown-toggle
-                                                                    @if ($booking->payment_status == 'paid') bg-success
-                                                                    @elseif($booking->payment_status == 'pending') bg-info text-dark
-                                                                    @elseif($booking->payment_status == 'cancelled') bg-danger 
-                                                                    @else bg-warning text-dark @endif"
-                                                                    role="button" data-bs-toggle="dropdown"
-                                                                    aria-expanded="false" style="cursor: pointer;">
-                                                                    {{ match ($booking->payment_status) {
-                                                                        'unpaid' => 'ยังไม่ชำระ',
-                                                                        'paid' => 'ชำระเงินแล้ว',
-                                                                        'pending' => 'รอตรวจสอบ',
-                                                                        'cancelled' => 'ยกเลิกการชำระ',
-
-                                                                    } }}
-                                                                </span>
-                                                                <ul class="dropdown-menu">
-                                                                    <li>
-                                                                        <button class="dropdown-item" data-bs-toggle="modal"
-                                                                            data-bs-target="#paymentSlipModal{{ $booking->id }}">
-                                                                            <i
-                                                                                class="fas fa-file-invoice me-2"></i>ดูสลิปการชำระ
-                                                                        </button>
-                                                                    </li>
-                                                                    <li>
-                                                                        <hr class="dropdown-divider">
-                                                                    </li>
-                                                                    <li>
-                                                                        <form
-                                                                            action="{{ route('booking.confirm-payment', $booking->id) }}"
-                                                                            method="POST">
-                                                                            @csrf
-                                                                            <input type="hidden" name="payment_status"
-                                                                                value="paid">
-                                                                            <button type="submit"
-                                                                                class="dropdown-item text-success">
-                                                                                <i
-                                                                                    class="fas fa-check-circle me-2"></i>ชำระครบถ้วน
-                                                                            </button>
-                                                                        </form>
-                                                                    </li>
-                                                                    <li>
-                                                                        <form
-                                                                            action="{{ route('booking.confirm-payment', $booking->id) }}"
-                                                                            method="POST">
-                                                                            @csrf
-                                                                            <input type="hidden" name="payment_status"
-                                                                                value="partial">
-                                                                            <button type="submit"
-                                                                                class="dropdown-item text-warning">
-                                                                                <i
-                                                                                    class="fas fa-exclamation-circle me-2"></i>ชำระบางส่วน
-                                                                            </button>
-                                                                        </form>
-                                                                    </li>
-                                                                    <li>
-                                                                        <form
-                                                                            action="{{ route('booking.confirm-payment', $booking->id) }}"
-                                                                            method="POST">
-                                                                            @csrf
-                                                                            <input type="hidden" name="payment_status"
-                                                                                value="cancelled">
-                                                                            <button type="submit"
-                                                                                class="dropdown-item text-danger">
-                                                                                <i
-                                                                                    class="fas fa-times-circle me-2"></i>ยกเลิกการชำระ
-                                                                            </button>
-                                                                        </form>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
                                                 <td class="text-center">
+                                                    {{-- ป้ายสถานะการชำระ --}}
                                                     <span
                                                         class="badge
-                                                @if ($booking->status_id == 1) bg-info
-                                                @elseif($booking->status_id == 2) bg-warning
-                                                @elseif($booking->status_id == 3) bg-danger
-                                                @elseif($booking->status_id == 4) bg-success
-                                                @else bg-secondary @endif"
+                                                        @if ($booking->payment_status == 'paid') bg-success
+                                                        @elseif($booking->payment_status == 'pending') bg-info text-dark
+                                                        @elseif($booking->payment_status == 'cancelled') bg-danger
+                                                        @else bg-warning text-dark @endif"
                                                         data-bs-toggle="tooltip" data-bs-placement="top"
-                                                        title="อนุมัติโดย: {{ $booking->approver_name ?? 'ยังไม่มีผู้อนุมัติ' }}">
-                                                        {{ $booking->status_name }}
+                                                        title="สถานะการชำระเงิน">
+                                                        {{ match ($booking->payment_status) {
+                                                            'unpaid' => 'ยังไม่ชำระ',
+                                                            'paid' => 'ชำระเงินแล้ว',
+                                                            'pending' => 'รอตรวจสอบ',
+                                                            'cancelled' => 'ยกเลิกการชำระ',
+                                                        } }}
                                                     </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <div class="btn-group">
-                                                        <a href="#" class="btn btn-outline-info btn-sm view-details"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#detailsModal{{ $booking->id }}">
-                                                            <i class="fas fa-eye"></i> รายละเอียด
-                                                        </a>
+
+                                                    {{-- ปุ่ม dropdown เปลี่ยนสถานะ --}}
+                                                    <div class="btn-group mt-2">
                                                         <button type="button"
-                                                            class="btn btn-primary btn-sm dropdown-toggle"
+                                                            class="btn btn-sm btn-primary dropdown-toggle"
                                                             data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <i class="fas fa-edit"></i> เปลี่ยนสถานะ
+                                                            <i class="fas fa-wallet"></i> เปลี่ยนสถานะ
                                                         </button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <form
-                                                                    action="{{ route('booking.update-status', $booking->id) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    @method('PATCH')
-                                                                    <input type="hidden" name="status_id"
-                                                                        value="4">
-                                                                    <button type="submit"
-                                                                        class="dropdown-item text-success">
-                                                                        <i class="fas fa-check-circle"></i> อนุมัติการจอง
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                            <li>
-                                                                <form
-                                                                    action="{{ route('booking.update-status', $booking->id) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    @method('PATCH')
-                                                                    <input type="hidden" name="status_id"
-                                                                        value="5">
-                                                                    <button type="submit"
-                                                                        class="dropdown-item text-danger">
-                                                                        <i class="fas fa-times-circle"></i> ยกเลิกการจอง
-                                                                    </button>
-                                                                </form>
+                                                                <button class="dropdown-item" data-bs-toggle="modal"
+                                                                    data-bs-target="#paymentSlipModal{{ $booking->id }}">
+                                                                    <i class="fas fa-file-invoice me-2"></i> ดูสลิปการชำระ
+                                                                </button>
                                                             </li>
                                                             <li>
                                                                 <hr class="dropdown-divider">
                                                             </li>
                                                             <li>
                                                                 <form
-                                                                    action="{{ route('booking.update-status', $booking->id) }}"
+                                                                    action="{{ route('booking.confirm-payment', $booking->id) }}"
                                                                     method="POST">
                                                                     @csrf
-                                                                    @method('PATCH')
-                                                                    <input type="hidden" name="status_id"
-                                                                        value="3">
+                                                                    <input type="hidden" name="payment_status"
+                                                                        value="paid">
                                                                     <button type="submit"
-                                                                        class="dropdown-item text-warning">
-                                                                        <i class="fas fa-clock"></i> รอดำเนินการ
+                                                                        class="dropdown-item text-success">
+                                                                        <i class="fas fa-check-circle me-2"></i> ชำระครบถ้วน
                                                                     </button>
                                                                 </form>
                                                             </li>
                                                             <li>
                                                                 <form
-                                                                    action="{{ route('booking.update-status', $booking->id) }}"
+                                                                    action="{{ route('booking.confirm-payment', $booking->id) }}"
                                                                     method="POST">
                                                                     @csrf
-                                                                    @method('PATCH')
-                                                                    <input type="hidden" name="status_id"
-                                                                        value="6">
+                                                                    <input type="hidden" name="payment_status"
+                                                                        value="partial">
                                                                     <button type="submit"
-                                                                        class="dropdown-item text-secondary">
-                                                                        <i class="fas fa-check-double"></i>
-                                                                        ดำเนินการเสร็จสิ้น
+                                                                        class="dropdown-item text-warning">
+                                                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                                                        ชำระบางส่วน
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                            <li>
+                                                                <form
+                                                                    action="{{ route('booking.confirm-payment', $booking->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="payment_status"
+                                                                        value="cancelled">
+                                                                    <button type="submit"
+                                                                        class="dropdown-item text-danger">
+                                                                        <i class="fas fa-times-circle me-2"></i>
+                                                                        ยกเลิกการชำระ
                                                                     </button>
                                                                 </form>
                                                             </li>
                                                         </ul>
                                                     </div>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <div class="d-flex flex-column align-items-center gap-2">
+                                                        {{-- ป้ายสถานะ --}}
+                                                        <span
+                                                            class="badge
+                                                                @if ($booking->status_id == 1) bg-info
+                                                                @elseif($booking->status_id == 2) bg-warning
+                                                                @elseif($booking->status_id == 3) bg-danger
+                                                                @elseif($booking->status_id == 4) bg-success
+                                                                @else bg-secondary @endif"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="อนุมัติโดย: {{ $booking->approver_name ?? 'ยังไม่มีผู้อนุมัติ' }}">
+                                                            {{ $booking->status_name }}
+                                                        </span>
+                                                        {{-- ปุ่มเปลี่ยนสถานะ --}}
+                                                        <div class="dropdown">
+                                                            <button type="button"
+                                                                class="btn btn-primary btn-sm dropdown-toggle"
+                                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="fas fa-edit"></i> เปลี่ยนสถานะ
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                @foreach (\App\Enums\BookingStatus::options() as $status => $info)
+                                                                    <li>
+                                                                        <form
+                                                                            action="{{ route('booking.update-status', $booking->id) }}"
+                                                                            method="POST">
+                                                                            @csrf
+                                                                            @method('PATCH')
+                                                                            <input type="hidden" name="status_id"
+                                                                                value="{{ $status }}">
+                                                                            <button type="submit"
+                                                                                class="dropdown-item {{ $info['class'] }}">
+                                                                                <i class="{{ $info['icon'] }}"></i>
+                                                                                {{ $info['label'] }}
+                                                                            </button>
+                                                                        </form>
+                                                                    </li>
+                                                                    @if ($loop->iteration === 2)
+                                                                        <li>
+                                                                            <hr class="dropdown-divider">
+                                                                        </li>
+                                                                    @endif
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="btn-group">
+                                                        <a href="#" class="btn btn-outline-info btn-sm view-details"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#detailsModal{{ $booking->id }}">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    </div>
+                                                    <a href="{{ route('bookingslip.download.pdf', $booking->id) }}"
+                                                        class="btn btn-outline-danger btn-sm">
+                                                        <i class="fas fa-file-pdf me-1"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                             @include('booking-status.modal')

@@ -30,23 +30,28 @@ class MoveCompletedBookingsToHistory extends Command
         foreach ($completedBookings as $booking) {
             // สร้างบันทึกใหม่ในตารางประวัติ
             BookingHistory::create([
-                'booking_id' => $booking->id,
-                'user_id' => $booking->user_id,
-                'room_id' => $booking->room_id,
-                'external_name' => $booking->external_name,
-                'external_email' => $booking->external_email,
-                'external_phone' => $booking->external_phone,
-                'booking_date' => $booking->booking_date,
-                'start_time' => $booking->start_time,
-                'end_time' => $booking->end_time,
-                'purpose' => $booking->purpose,
-                'status_id' => $booking->status_id,
-                'payment_status' => $booking->payment_status,
-                'amount' => $booking->amount,
-                'moved_to_history_at' => now(),
+                'booking_id'      => $booking->id,
+                'user_id'         => $booking->user_id,
+                'external_name'   => $booking->external_name,
+                'external_email'  => $booking->external_email,
+                'external_phone'  => $booking->external_phone,
+                'building_id'     => $booking->building_id,
+                'building_name'   => optional($booking->building)->name,
+                'room_id'         => $booking->room_id,
+                'room_name'       => optional($booking->room)->name,
+                'booking_start'   => $booking->booking_start,
+                'booking_end'     => $booking->booking_end,
+                'status_id'       => $booking->status_id,
+                'status_name'     => optional($booking->status)->name,
+                'reason'          => $booking->reason,
+                'total_price'     => $booking->amount,
+                'payment_status'  => $booking->payment_status,
+                'is_external'     => $booking->is_external,
+                'created_at'      => now(),
+                'updated_at'      => now(),
             ]);
 
-            // เปลี่ยนสถานะเป็น "จบแล้ว" (สถานะ ID 4)
+            // เปลี่ยนสถานะเป็น "จบแล้ว" (status_id = 6)
             $booking->status_id = 6;
             $booking->save();
 

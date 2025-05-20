@@ -95,14 +95,12 @@
 </head>
 
 <body>
-    <div class="logo">
-        <img src="{{ public_path('logo.png') }}" alt="University Logo">
-    </div>
-
     <div class="doc-number">
         เลขที่หนังสือ: ศธ. {{ date('Y') }}/{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}
     </div>
-
+    <div class="logo">
+        <img src="{{ public_path('images/snru.png') }}" alt="University Logo">
+    </div>
     <h3>รายละเอียดการจองห้องประชุม<br>{{ $booking->room_name }}</h3>
 
     <div class="section">

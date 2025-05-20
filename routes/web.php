@@ -161,4 +161,5 @@ Route::post('/user/update-all', [UserController::class, 'updateAll'])->name('use
 Route::post('/payment/upload/{booking}', [BookingController::class, 'uploadSlip'])->name('booking.uploadSlip');
 Route::patch('/booking/{id}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
 Route::put('/user/update-all', [UserController::class, 'update'])->name('user.updateAll');
-Route::get('/bookings/{id}/pdf', [BookingController::class, 'downloadBookingPdf'])->name('bookings.download.pdf');
+Route::get('/bookings/{id}/booking-pdf', [BookingController::class, 'downloadBookingPdf'])->name('bookings.download.pdf');
+Route::get('/bookings/{id}/slip-pdf', [BookingController::class, 'downloadSlipPdf'])->name('bookingslip.download.pdf');

@@ -302,4 +302,10 @@ class BookingController extends Controller
         $pdf = Pdf::loadView('booking-status.pdf-report', compact('booking'));
         return $pdf->download('บันทึกการจอง' . $booking->room_name . '.pdf');
     }
+    public function downloadSlipPdf($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $pdf = Pdf::loadView('booking.slip', compact('booking'));
+        return $pdf->download('ใบเสร็จรับเงินเลขที่' . $booking->id . '.pdf');
+    }
 }
