@@ -18,6 +18,7 @@
                             <th>สถานะ</th>
                             <th>สถานะการชำระเงิน</th>
                             <th>รายละเอียด</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,6 +89,12 @@
                                         data-bs-target="#detailsModal{{ $booking->id }}">
                                         <i class="fas fa-eye"></i>
                                     </button>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ route('bookings.download.pdf', $booking->id) }}"
+                                        class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-file-pdf me-1"></i>
+                                    </a>
                                 </td>
                                 @include('booking-status.modal')
                             </tr>

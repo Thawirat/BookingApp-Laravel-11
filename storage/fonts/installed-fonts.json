@@ -1,0 +1,10 @@
+{
+    "THSarabun": {
+        "normal": "C:\\Users\\Pc-001\\Documents\\Laravel WebApp\\e-borrow_app-main\\storage\\fonts\/THSarabun_normal_f1f6b4ec507bc3a8dafa329b2f141ae9",
+        "bold": "THSarabun_bold_0e6ca8257ff075d365b3bbd4056c2bba"
+    },
+    "thsarabun": {
+        "normal": "C:\\Users\\PC-001\\Documents\\Laravel\\BookingApp-Laravel-11\\storage\\fonts\/thsarabun_normal_c9079e3c80765aa70beb262621023fcf",
+        "bold": "thsarabun_bold_14efe7f6da855a725f0a8dec5f3a904c"
+    }
+}

@@ -8,6 +8,7 @@ use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BookingController extends Controller
 {
@@ -292,5 +293,13 @@ class BookingController extends Controller
             Log::error("อัปโหลดสลิปล้มเหลวสำหรับ booking ID {$booking->id}: " . $e->getMessage());
             return back()->with('error', 'เกิดข้อผิดพลาดในการอัปโหลดสลิป');
         }
+    }
+
+    public function downloadBookingPdf($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        $pdf = Pdf::loadView('booking-status.pdf-report', compact('booking'));
+        return $pdf->download('บันทึกการจอง' . $booking->room_name . '.pdf');
     }
 }
