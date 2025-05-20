@@ -18,6 +18,8 @@ class Booking_dbController extends Controller
         try {
             $booking = Booking::findOrFail($id);
 
+            Log::info("Preparing to copy booking {$booking->id} to history");
+
             DB::table('booking_history')->insert([
                 'booking_id' => $booking->id,
                 'user_id' => $booking->user_id,
@@ -40,9 +42,13 @@ class Booking_dbController extends Controller
                 'updated_at' => now(),
             ]);
 
-            $booking->delete();
+            Log::info("Booking {$booking->id} copied to history successfully.");
+
+            // ❌ ไม่ลบจาก bookings แล้ว
+            // $booking->delete();
+
         } catch (\Exception $e) {
-            Log::error('Failed to move booking to history: ' . $e->getMessage());
+            Log::error('Failed to copy booking to history: ' . $e->getMessage());
         }
     }
 
