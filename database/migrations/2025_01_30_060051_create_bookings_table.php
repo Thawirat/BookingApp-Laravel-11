@@ -29,7 +29,7 @@ return new class extends Migration
             $table->dateTime('booking_end'); // เวลาสิ้นสุดการจอง
             $table->text('reason')->nullable(); // เหตุผลในการจอง
             $table->decimal('total_price', 10, 2)->nullable(); // ค่าบริการรวม (ถ้ามี)
-            $table->enum('payment_status', ['pending', 'paid', 'cancelled'])->default('pending'); // สถานะการชำระเงิน
+            $table->string('payment_status')->nullable();
             $table->boolean('is_external')->default(false); // ระบุว่าผู้จองเป็นบุคคลภายนอกหรือไม่
             $table->timestamps(); // วันที่สร้างและอัปเดต
             $table->string('payment_slip')->nullable(); // เส้นทางไฟล์สลิปการโอนเงิน
@@ -42,9 +42,7 @@ return new class extends Migration
             $table->foreign(['building_id', 'room_id'])->references(['building_id', 'room_id'])->on('rooms')->onDelete('cascade');
 
             $table->foreign('status_id')->references('status_id')->on('status')->onDelete('cascade');
-
         });
-
     }
 
     /**

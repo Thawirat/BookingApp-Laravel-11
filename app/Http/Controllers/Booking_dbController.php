@@ -18,6 +18,12 @@ class Booking_dbController extends Controller
         try {
             $booking = Booking::findOrFail($id);
 
+            // ป้องกันการบันทึกซ้ำ
+            $alreadyMoved = DB::table('booking_history')->where('booking_id', $booking->id)->exists();
+            if ($alreadyMoved) {
+                Log::info("Booking {$booking->id} already exists in history. Skipping.");
+                return;
+            }
             Log::info("Preparing to copy booking {$booking->id} to history");
 
             DB::table('booking_history')->insert([
@@ -40,12 +46,13 @@ class Booking_dbController extends Controller
                 'is_external' => $booking->is_external,
                 'created_at' => now(),
                 'updated_at' => now(),
+                'moved_to_history_at' => now(),
             ]);
 
             Log::info("Booking {$booking->id} copied to history successfully.");
 
             // ❌ ไม่ลบจาก bookings แล้ว
-            // $booking->delete();
+            $booking->delete();
 
         } catch (\Exception $e) {
             Log::error('Failed to copy booking to history: ' . $e->getMessage());
@@ -58,6 +65,7 @@ class Booking_dbController extends Controller
 
         // สร้าง query หลัก
         $query = DB::table('bookings')
+            ->whereNull('deleted_at')
             ->leftJoin('status', 'bookings.status_id', '=', 'status.status_id')
             ->leftJoin('users', 'bookings.user_id', '=', 'users.id')
             ->select(
@@ -75,7 +83,7 @@ class Booking_dbController extends Controller
         }
 
         // เงื่อนไข: ไม่แสดงที่เสร็จสิ้นแล้ว
-        $query->where('bookings.status_id', '!=', 6);
+        $query->whereNotIn('bookings.status_id', [5, 6]);
 
         // เรียกฟังก์ชันทำ auto-complete booking เก่า
         $this->autoCompletePastBookings();
@@ -124,7 +132,7 @@ class Booking_dbController extends Controller
         $booking->save();
 
         // ตรวจสอบว่าสถานะเป็น 6 และเรียกใช้ moveToHistory
-        if ($status->status_id == 6) {
+        if (in_array($status->status_id, [5, 6])) {
             $this->moveToHistory($id);
             Log::info("Booking {$id} moved to history."); // ล็อกข้อความเพื่อตรวจสอบ
         }

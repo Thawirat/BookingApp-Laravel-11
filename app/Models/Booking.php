@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
+     use SoftDeletes;
+
     protected $casts = [
         'created_at' => 'datetime',
         'booking_end' => 'datetime',
@@ -57,6 +60,7 @@ class Booking extends Model
         'payment_slip',
         'participant_count',
         'booker_info',
+        'delete_at',
 
 
     ];
