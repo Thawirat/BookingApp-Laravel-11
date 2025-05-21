@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\BookingHistory;
+
 
 class BookingController extends Controller
 {
@@ -248,6 +250,19 @@ class BookingController extends Controller
         }
 
         return view('dashboard.my_bookings', compact('bookings'));
+    }
+    public function myHistory()
+    {
+        if (auth()->check()) {
+            $bookings = BookingHistory::where('user_id', auth()->id())
+                ->orderBy('moved_to_history_at', 'desc') // หรือ created_at ถ้าไม่มี field นี้
+                ->paginate(10);
+        } else {
+            return redirect()->route('login')
+                ->with('error', 'กรุณาเข้าสู่ระบบเพื่อดูประวัติการจองของคุณ');
+        }
+
+        return view('booking-status.myhistory', compact('bookings'));
     }
 
     // ยกเลิกการจอง

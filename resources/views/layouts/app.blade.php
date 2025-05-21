@@ -66,6 +66,10 @@
                             class="fas fa-calendar-check"></i> การจองของฉัน</a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('bookings.history') }}" class="nav-link text-gray-700"><i
+                            class="fas fa-history me-2"></i> ประวัติการจอง</a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('usage.index') }}" class="nav-link text-gray-700"><i
                             class="fas fa-info-circle me-2"></i> วิธีใช้งาน</a>
                 </li>
