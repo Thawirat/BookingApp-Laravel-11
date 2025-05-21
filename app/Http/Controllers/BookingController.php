@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\BookingHistory;
+use Illuminate\Support\Facades\DB;
 
 
 class BookingController extends Controller
@@ -269,19 +270,50 @@ class BookingController extends Controller
     public function cancel($id)
     {
         try {
-            $booking = Booking::findOrFail($id);
-
+            $booking = Booking::with(['building', 'room', 'status'])->findOrFail($id);
             // ตรวจสอบว่าผู้ใช้มีสิทธิ์ยกเลิกการจองนี้หรือไม่
             if (auth()->check() && $booking->user_id == auth()->id()) {
-                $booking->status_id = 5; // สถานะยกเลิก
+                // กำหนดสถานะ
+                $booking->status_id = 5; // ยกเลิก
                 $booking->payment_status = 'cancelled';
                 $booking->save();
 
-                return back()->with('success', 'ยกเลิกการจองเรียบร้อยแล้ว');
+                // ย้ายข้อมูลไปยัง booking_history
+                DB::beginTransaction();
+
+                BookingHistory::create([
+                    'booking_id' => $booking->id,
+                    'user_id' => $booking->user_id,
+                    'external_name' => $booking->external_name,
+                    'external_email' => $booking->external_email,
+                    'external_phone' => $booking->external_phone,
+                    'building_id' => $booking->building_id,
+                    'building_name' => $booking->building_name,
+                    'room_id' => $booking->room_id,
+                    'room_name' => $booking->room_name,
+                    'booking_start' => $booking->booking_start,
+                    'booking_end' => $booking->booking_end,
+                    'status_id' => $booking->status_id,
+                    'status_name' => $booking->status->status_name ?? 'ยกเลิก',
+                    'reason' => $booking->reason,
+                    'total_price' => $booking->total_price,
+                    'payment_status' => $booking->payment_status,
+                    'is_external' => $booking->is_external,
+                    'created_at' => $booking->created_at,
+                    'updated_at' => $booking->updated_at,
+                    'moved_to_history_at' => now(),
+                ]);
+
+                $booking->delete(); // soft delete ถ้าใช้ softDeletes
+
+                DB::commit();
+
+                return back()->with('success', 'ยกเลิกการจองเรียบร้อยแล้ว และย้ายไปยังประวัติการจอง');
             } else {
                 return back()->with('error', 'คุณไม่มีสิทธิ์ยกเลิกการจองนี้');
             }
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Cancel booking failed: ' . $e->getMessage());
 
             return back()->with('error', 'เกิดข้อผิดพลาดในการยกเลิกการจอง');
