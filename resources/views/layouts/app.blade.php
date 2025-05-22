@@ -43,7 +43,7 @@
         <img src="{{ asset('images/snru-logo.jpeg') }}" alt="SNru Logo" style="width: 100%; height: auto;">
         @if (auth()->check())
             <div class="p-3 border-bottom ">
-                <strong>{{ auth()->user()->name }}</strong><br>
+                <strong class="text text-center">{{ auth()->user()->name }}</strong><br>
                 <small class="text-muted">{{ auth()->user()->email }}</small>
             </div>
         @endif
