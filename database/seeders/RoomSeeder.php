@@ -30,7 +30,7 @@ class RoomSeeder extends Seeder
             [
                 'building_id' => 8,
                 'room_id' => 2,
-                'room_type'=> 1,
+                'room_type'=> 2,
                 'room_name' => 'ห้องเรียนขนาดใหญ่',
                 'class' => '1',
                 'room_details' => 'ขนาด 120 ที่นั่ง',
@@ -234,7 +234,7 @@ class RoomSeeder extends Seeder
                 'room_name' => $room['room_name'],
                 'class' => $room['class'],
                 'room_details' => $room['room_details'],
-                'image' => $faker->imageUrl(640, 480, 'room'),
+                'image' => null,
                 'capacity' => $room['capacity'],
                 'service_rates' => $room['service_rates'],
                 'status_id' => $room['status_id'],

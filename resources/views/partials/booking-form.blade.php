@@ -15,7 +15,6 @@
                         <div class="card-body p-4">
                             <form action="{{ route('booking.store') }}" method="POST" id="bookingForm"
                                 enctype="multipart/form-data" onsubmit="return handleFormSubmit(event);">
-
                                 @csrf
                                 <!-- Hidden inputs -->
                                 <input type="hidden" name="room_id" value="{{ $room->room_id }}">
@@ -114,7 +113,6 @@
                                             min="1" required>
                                     </div>
                                 </div>
-
                                 <!-- Date Selection Box -->
                                 <div class="card border-0 shadow-sm mt-4 mb-3">
                                     <div class="card-body p-4 text-center">
@@ -184,8 +182,6 @@
                                         </p>
                                     </div>
                                 </div>
-
-
                                 <!-- Action Buttons -->
                                 <div class="d-flex justify-content-between">
                                     <button type="button" class="btn btn-danger px-4">
@@ -199,157 +195,10 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Room Info and Booking Summary -->
                 <div class="col-lg-4">
-                    <!-- Room Info Card -->
-                    <div class="card shadow rounded-lg border-0 mb-4">
-                        <div class="card-header bg-white py-3 border-bottom">
-                            <h4 class="mb-0 fw-bold">ข้อมูลห้องพัก</h4>
-                        </div>
-                        <div class="card-body p-4">
-                            <!-- Room Image -->
-                            <div class="mb-4">
-                                @if (isset($room->image))
-                                    <img src="{{ asset($room->image) }}" alt="{{ $room->room_name }}"
-                                        class="img-fluid rounded-lg shadow-sm">
-                                @else
-                                    <div class="bg-light rounded-lg d-flex align-items-center justify-content-center py-5">
-                                        <span class="text-muted"><i class="bi bi-image me-2"></i>ไม่มีรูปภาพ</span>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <!-- Room Details -->
-                            <div class="mb-3">
-                                <!-- Building -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">อาคาร:</span>
-                                    <span>{{ $room->building->building_name ?? 'ไม่ระบุ' }}</span>
-                                </div>
-
-                                <!-- Room Name -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">ชื่อห้อง:</span>
-                                    <span class="fw-bold">{{ $room->room_name }}</span>
-                                </div>
-
-                                <!-- Floor -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">ชั้น:</span>
-                                    <span>{{ $room->class }}</span>
-                                </div>
-
-                                <!-- Capacity -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">ความจุ:</span>
-                                    <span>{{ $room->capacity ?? '-' }} คน</span>
-                                </div>
-
-                                <!-- Details -->
-                                <div class="py-2">
-                                    <div class="text-muted mb-1">รายละเอียด:</div>
-                                    <p class="mb-0">{{ $room->room_details }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Booking Summary Card -->
-                    <div class="card shadow rounded-lg border-0">
-                        <div class="card-header bg-white py-3 border-bottom">
-                            <h4 class="mb-0 fw-bold">สรุปการจอง</h4>
-                        </div>
-                        <div class="card-body p-4">
-                            <!-- Price Summary -->
-                            <div class="mb-4">
-                                <!-- Rate -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">อัตราค่าบริการ:</span>
-                                    <span class="fw-bold">{{ number_format($room->service_rates ?? 0, 2) }} บาท/วัน</span>
-                                </div>
-
-                                <!-- Days -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">จำนวนวัน:</span>
-                                    <span id="totalDays">0 วัน</span>
-                                </div>
-
-                                <!-- Check-in time -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">เวลาเข้า:</span>
-                                    <span>08:00 น.</span>
-                                </div>
-
-                                <!-- Check-out time -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">เวลาออก:</span>
-                                    <span>23:00 น.</span>
-                                </div>
-
-                                <!-- Service Fee -->
-                                <div class="d-flex justify-content-between py-2 border-bottom">
-                                    <span class="text-muted">ค่าบริการทั้งหมด:</span>
-                                    <span id="serviceFee">0 บาท</span>
-                                </div>
-
-                                <!-- Total Price -->
-                                <div class="d-flex justify-content-between py-3">
-                                    <span class="fw-bold">ราคารวมทั้งสิ้น:</span>
-                                    <span class="fw-bold text-warning h5 mb-0" id="totalPrice">0 บาท</span>
-                                </div>
-                            </div>
-
-                            <!-- Bank Payment -->
-                            <div class="mb-3">
-                                <div class="form-check mb-3">
-                                    <input type="checkbox" id="bankPaymentCheckbox" class="form-check-input">
-                                    <label for="bankPaymentCheckbox" class="form-check-label fw-semibold">
-                                        <i class="bi bi-bank me-1"></i>ชำระผ่านธนาคาร
-                                    </label>
-                                </div>
-
-                                <!-- Bank Payment Details -->
-                                <div id="bankPaymentDetails" class="d-none p-3 bg-light rounded-3 text-center">
-                                    <h5 class="fw-bold mb-3">โอนเงินผ่านธนาคาร</h5>
-
-                                    <!-- QR Code -->
-                                    <img src="{{ asset('images/apple-icon.png') }}" alt="QR Code ธนาคาร"
-                                        class="img-fluid rounded-lg shadow-sm mb-3" style="max-width: 160px;">
-
-                                    <!-- Bank Details -->
-                                    <div class="text-start bg-white p-3 rounded-3 mb-3">
-                                        <p class="mb-1"><span class="text-muted">ชื่อบัญชี:</span> <span
-                                                class="fw-semibold">บริษัท ABC จำกัด</span></p>
-                                        <p class="mb-1"><span class="text-muted">ธนาคาร:</span> <span
-                                                class="fw-semibold">ไทยพาณิชย์</span></p>
-                                        <p class="mb-0"><span class="text-muted">เลขบัญชี:</span> <span
-                                                class="fw-semibold">123-456-7890</span></p>
-                                    </div>
-
-                                    <!-- Upload Slip Button -->
-                                    <div class="mt-3">
-                                        <label for="paymentSlip"
-                                            class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-upload me-2"></i>อัปโหลดสลิป
-                                        </label>
-                                        <input type="file" id="paymentSlip" name="payment_slip" class="d-none"
-                                            accept="image/*,application/pdf" form="bookingForm">
-                                        <div id="fileName" class="small text-muted mt-2">ยังไม่ได้เลือกไฟล์</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Note -->
-                            <div class="bg-light p-3 rounded-3 small">
-                                <p class="mb-0 text-primary">
-                                    <i class="bi bi-info-circle-fill me-1"></i>
-                                    <span class="fw-semibold">หมายเหตุ:</span>
-                                    ราคาอาจมีการเปลี่ยนแปลงตามนโยบายและระยะเวลาที่จอง
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    @include('partials.room-info')
+                    @include('partials.booking-summary')
                 </div>
             </div>
         </div>
@@ -483,49 +332,247 @@
             });
         });
     </script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Define the variables from PHP data using JSON encoding
-            const toggleButton = document.getElementById('toggleCalendar');
-            const checkInDate = document.getElementById('checkInDate');
-            const checkOutDate = document.getElementById('checkOutDate');
-            const bookingStart = document.getElementById('booking_start');
-            const bookingEnd = document.getElementById('booking_end');
-            const totalDays = document.getElementById('totalDays');
-            const serviceFee = document.getElementById('serviceFee');
-            const totalPrice = document.getElementById('totalPrice');
-            const bankPaymentCheckbox = document.getElementById('bankPaymentCheckbox');
-            const bankPaymentDetails = document.getElementById('bankPaymentDetails');
-            const paymentSlip = document.getElementById('paymentSlip');
-            const fileName = document.getElementById('fileName');
-            const bookingForm = document.getElementById('bookingForm');
-            const checkInTime = document.getElementById('check_in_time');
-            const checkOutTime = document.getElementById('check_out_time');
+            // DOM Elements - เลือกครั้งเดียวแล้วเก็บไว้ใช้
+            const elements = {
+                toggleButton: document.getElementById('toggleCalendar'),
+                checkInDate: document.getElementById('checkInDate'),
+                checkOutDate: document.getElementById('checkOutDate'),
+                bookingStart: document.getElementById('booking_start'),
+                bookingEnd: document.getElementById('booking_end'),
+                totalDays: document.getElementById('totalDays'),
+                serviceFee: document.getElementById('serviceFee'),
+                totalPrice: document.getElementById('totalPrice'),
+                bankPaymentCheckbox: document.getElementById('bankPaymentCheckbox'),
+                bankPaymentDetails: document.getElementById('bankPaymentDetails'),
+                paymentSlip: document.getElementById('paymentSlip'),
+                fileName: document.getElementById('fileName'),
+                bookingForm: document.getElementById('bookingForm'),
+                checkInTime: document.getElementById('check_in_time'),
+                checkOutTime: document.getElementById('check_out_time')
+            };
 
-            // Get room service rate for calculations
-            //const serviceRate = {{ $room->service_rates ?? 0 }};
-            const serviceRate = parseFloat({{ $room->service_rates ?? 0 }});
-            if (isNaN(serviceRate)) {
+            // Configuration - รวมข้อมูล config ไว้ที่เดียว
+            const config = {
+                serviceRate: parseFloat({{ $room->service_rates ?? 0 }}),
+                holidaysWithNames: @json($holidaysWithNames),
+                bookedDetails: @json($bookedDetails),
+                disabledDays: @json($disabledDays),
+                bookedTimeSlots: @json($bookedTimeSlots ?? [])
+            };
+
+            // Validation
+            if (isNaN(config.serviceRate)) {
                 console.error('serviceRate is not a valid number');
                 return;
             }
-            // Convert PHP arrays to JavaScript
-            const holidaysWithNames = @json($holidaysWithNames);
-            const bookedDetails = @json($bookedDetails);
-            const disabledDays = @json($disabledDays);
 
-            // Create arrays for holidays and booked days
-            const holidays = Object.keys(holidaysWithNames);
-            const bookedDays = Object.keys(bookedDetails);
+            // Utility Functions
+            const utils = {
+                formatDate: (date) => {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                },
+
+                formatThaiDateWithTime: (date, timeStr) => {
+                    const dateStr = date.toLocaleDateString('th-TH', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                    return `${dateStr} (${timeStr} น.)`;
+                },
+
+                numberWithCommas: (x) => {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
+
+                addHours: (time, hours) => {
+                    const [h, m] = time.split(':').map(Number);
+                    const newHour = (h + hours) % 24;
+                    return `${String(newHour).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                },
+
+                showAlert: (title, text) => {
+                    Swal.fire({
+                        title: title,
+                        text: text,
+                        icon: 'warning',
+                        confirmButtonText: 'ตกลง'
+                    });
+                }
+            };
+
+            // Time Management Functions
+            const timeManager = {
+                generateAvailableTimeSlots: (bookedSlots) => {
+                    const allSlots = [];
+                    let currentTime = '08:00';
+
+                    while (currentTime <= '22:00') {
+                        const endTime = utils.addHours(currentTime, 1);
+                        const isAvailable = !timeManager.isTimeSlotBooked(currentTime, endTime,
+                            bookedSlots);
+
+                        if (isAvailable) {
+                            allSlots.push({
+                                start: currentTime,
+                                end: endTime
+                            });
+                        }
+                        currentTime = endTime;
+                    }
+                    return allSlots;
+                },
+
+                isTimeSlotBooked: (start, end, bookedSlots) => {
+                    return bookedSlots.some(booking => {
+                        return (start < booking.end && end > booking.start);
+                    });
+                },
+
+                updateAvailableTimeSlots: (selectedDate) => {
+                    const dateBookings = config.bookedTimeSlots[selectedDate] || [];
+
+                    // Reset time inputs
+                    elements.checkInTime.innerHTML = '<option value="">เลือกเวลาเข้า</option>';
+                    elements.checkOutTime.innerHTML = '<option value="">เลือกเวลาออก</option>';
+
+                    // Generate and populate available time slots
+                    const timeSlots = timeManager.generateAvailableTimeSlots(dateBookings);
+                    timeSlots.forEach(slot => {
+                        if (slot.end < '23:00') {
+                            const option = document.createElement('option');
+                            option.value = slot.start;
+                            option.textContent = `${slot.start} น.`;
+                            elements.checkInTime.appendChild(option);
+                        }
+                    });
+                },
+
+                updateCheckInOutDisplay: () => {
+                    const checkInSpan = document.getElementById('checkInTime');
+                    const checkOutSpan = document.getElementById('checkOutTime');
+
+                    if (checkInSpan && checkOutSpan) {
+                        checkInSpan.innerText = elements.checkInTime.value ?
+                            `${elements.checkInTime.value} น.` : '-';
+                        checkOutSpan.innerText = elements.checkOutTime.value ?
+                            `${elements.checkOutTime.value} น.` : '-';
+                    }
+                }
+            };
+
+            // Price Calculator
+            const priceCalculator = {
+                updatePricing: (days) => {
+                    const totalServiceFee = days * config.serviceRate;
+                    const formattedPrice = utils.numberWithCommas(totalServiceFee.toFixed(2)) + ' บาท';
+
+                    elements.totalDays.innerText = days + ' วัน';
+                    elements.serviceFee.innerText = formattedPrice;
+                    elements.totalPrice.innerText = formattedPrice;
+                }
+            };
+            // Date Display Manager - จัดการการแสดงวันที่และเวลา
+            const dateDisplayManager = {
+                currentSelectedDates: {
+                    start: null,
+                    end: null
+                },
+
+                updateDateDisplay: (startDate, endDate = null) => {
+                    // เก็บวันที่ที่เลือกไว้
+                    dateDisplayManager.currentSelectedDates.start = startDate;
+                    dateDisplayManager.currentSelectedDates.end = endDate;
+
+                    // อัปเดต display
+                    dateDisplayManager.refreshDisplay();
+                },
+
+                refreshDisplay: () => {
+                    const {
+                        start,
+                        end
+                    } = dateDisplayManager.currentSelectedDates;
+                    if (!start) return;
+
+                    const checkInTime = elements.checkInTime.value;
+                    const checkOutTime = elements.checkOutTime.value;
+
+                    if (checkInTime && checkOutTime) {
+                        // ถ้าเลือกเวลาแล้ว แสดงวันที่พร้อมเวลา
+                        elements.checkInDate.innerText = utils.formatThaiDateWithTime(
+                            start, checkInTime);
+                        elements.checkOutDate.innerText = utils.formatThaiDateWithTime(
+                            end || start, checkOutTime);
+                    } else {
+                        // ถ้ายังไม่เลือกเวลา แสดงแค่วันที่พร้อมข้อความรอเลือกเวลา
+                        const startDateStr = start.toLocaleDateString('th-TH', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+                        const endDateStr = (end || start).toLocaleDateString('th-TH', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+
+                        elements.checkInDate.innerText =
+                            `${startDateStr} (รอเลือกเวลา)`;
+                        elements.checkOutDate.innerText = `${endDateStr} (รอเลือกเวลา)`;
+                    }
+                }
+            };
+
+            // Form Validation
+            const validator = {
+                validateDateSelection: () => {
+                    if (!elements.bookingStart.value || !elements.bookingEnd.value) {
+                        alert('กรุณาเลือกวันที่จอง');
+                        return false;
+                    }
+                    return true;
+                },
+
+                validateTimeSelection: () => {
+                    const checkIn = elements.checkInTime.value;
+                    const checkOut = elements.checkOutTime.value;
+
+                    if (!checkIn || !checkOut) {
+                        utils.showAlert('เวลา', 'กรุณาเลือกเวลาเข้าและเวลาออก');
+                        return false;
+                    }
+
+                    if (checkIn >= checkOut) {
+                        utils.showAlert('เวลาไม่ถูกต้อง', 'เวลาออกต้องมากกว่าเวลาเข้า');
+                        return false;
+                    }
+
+                    return true;
+                },
+
+                validatePaymentSlip: () => {
+                    if (elements.bankPaymentCheckbox.checked && !elements.paymentSlip.files[0]) {
+                        alert('กรุณาอัปโหลดสลิปการโอนเงิน');
+                        return false;
+                    }
+                    return true;
+                }
+            };
+
+            // Calendar Setup
+            const holidays = Object.keys(config.holidaysWithNames);
+            const bookedDays = Object.keys(config.bookedDetails);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            // แก้ไขการกำหนดวันที่ล็อค
-            const disabledDates = disabledDays;
 
             const picker = new Litepicker({
-                // Rest of the picker configuration remains the same
-                element: toggleButton,
+                element: elements.toggleButton,
                 singleMode: false,
                 numberOfMonths: 2,
                 numberOfColumns: 2,
@@ -538,379 +585,148 @@
                     one: '1 วัน',
                     other: 'วัน'
                 },
-                lockDays: disabledDates,
-                // Rest of code remains the same...
-
-
-                // Rest of the event listeners and code...
-
                 setup: (picker) => {
                     picker.on('render', () => {
                         document.querySelectorAll('.container__days .day-item').forEach(day => {
                             const date = day.getAttribute('data-time');
                             if (date) {
                                 const dateObj = new Date(parseInt(date));
-                                // ใช้ toLocaleDateString เพื่อแก้ปัญหา timezone
-                                const year = dateObj.getFullYear();
-                                const month = String(dateObj.getMonth() + 1).padStart(2,
-                                    '0');
-                                const dayNumber = String(dateObj.getDate()).padStart(2,
-                                    '0');
-                                const formattedDate = `${year}-${month}-${dayNumber}`;
+                                const formattedDate = utils.formatDate(dateObj);
 
-                                // กำหนด class สำหรับวันหยุด
                                 if (holidays.includes(formattedDate)) {
                                     day.classList.add('is-holiday');
-                                    day.setAttribute('data-tooltip', holidaysWithNames[
-                                        formattedDate]);
+                                    day.setAttribute('data-tooltip', config
+                                        .holidaysWithNames[formattedDate]);
                                 }
 
-                                // กำหนด class สำหรับวันที่จองแล้ว
                                 if (bookedDays.includes(formattedDate)) {
                                     day.classList.add('is-booked');
-                                    day.setAttribute('data-tooltip', bookedDetails[
-                                        formattedDate]);
+                                    day.setAttribute('data-tooltip', config
+                                        .bookedDetails[formattedDate]);
                                 }
                             }
                         });
                     });
-                    picker.on('selected', (date1, date2) => {
-                        console.log('date1:', date1);
-                        console.log('date2:', date2);
 
-                        // ดึง Date object จริงๆ ออกมาจาก date1 และ date2
+                    picker.on('selected', (date1, date2) => {
                         const realDate1 = date1.dateInstance;
                         const realDate2 = date2 ? date2.dateInstance : null;
 
-                        // ตรวจสอบว่า realDate1 และ realDate2 เป็น Date object ที่ถูกต้อง
-                        if (!(realDate1 instanceof Date) || isNaN(realDate1.getTime())) {
-                            console.error('date1 is not a valid Date object');
-                            return;
-                        }
+                        if (!(realDate1 instanceof Date) || isNaN(realDate1.getTime())) return;
                         if (realDate2 && (!(realDate2 instanceof Date) || isNaN(realDate2
-                                .getTime()))) {
-                            console.error('date2 is not a valid Date object');
-                            return;
-                        }
+                                .getTime()))) return;
 
-                        // แปลงวันที่เป็น string format YYYY-MM-DD
-                        const formatDate = (date) => {
-                            const year = date.getFullYear();
-                            const month = String(date.getMonth() + 1).padStart(2, '0');
-                            const day = String(date.getDate()).padStart(2, '0');
-                            return `${year}-${month}-${day}`;
-                        };
+                        // Update booking dates
+                        elements.bookingStart.value = utils.formatDate(realDate1);
+                        elements.bookingEnd.value = realDate2 ? utils.formatDate(realDate2) :
+                            utils.formatDate(realDate1);
 
-                        // ใช้ local date เพื่อหลีกเลี่ยงปัญหา timezone
-                        bookingStart.value = formatDate(realDate1);
-                        bookingEnd.value = realDate2 ? formatDate(realDate2) : formatDate(
-                            realDate1);
+                        // Update available time slots first
+                        timeManager.updateAvailableTimeSlots(utils.formatDate(realDate1));
 
-                        // ส่วนแสดงผลเหมือนเดิม
-                        checkInDate.innerText = realDate1.toLocaleDateString('th-TH', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric'
-                        }) + ' (08:00 น.)';
-                        checkOutDate.innerText = (realDate2 ? realDate2.toLocaleDateString(
-                            'th-TH', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric'
-                            }) : realDate1.toLocaleDateString('th-TH', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric'
-                        })) + ' (23:00 น.)';
+                        // Update display - ใช้เวลาที่เลือกจริงหรือแสดงข้อความรอเลือก
+                        dateDisplayManager.updateDateDisplay(realDate1, realDate2);
 
-                        // คำนวณจำนวนวัน
+                        // Calculate days and update pricing
                         let days = 1;
                         if (realDate2) {
-                            const oneDay = 24 * 60 * 60 * 1000; // จำนวนมิลลิวินาทีใน 1 วัน
-                            const firstDate = realDate1.getTime(); // แปลงเป็น timestamp
-                            const secondDate = realDate2.getTime(); // แปลงเป็น timestamp
-                            days = Math.round(Math.abs((secondDate - firstDate) / oneDay)) + 1;
+                            const oneDay = 24 * 60 * 60 * 1000;
+                            days = Math.round(Math.abs((realDate2.getTime() - realDate1
+                                .getTime()) / oneDay)) + 1;
                         }
 
-                        totalDays.innerText = days + ' วัน';
-                        const totalServiceFee = days * serviceRate;
-                        serviceFee.innerText = numberWithCommas(totalServiceFee.toFixed(2)) +
-                            ' บาท';
-                        totalPrice.innerText = numberWithCommas(totalServiceFee.toFixed(2)) +
-                            ' บาท';
-
-                        // Update available time slots
-                        const selectedDate = formatDate(realDate1);
-                        updateAvailableTimeSlots(selectedDate);
+                        priceCalculator.updatePricing(days);
                     });
                 }
             });
 
-            // แก้ไขส่วนการส่งฟอร์ม
-            bookingForm.addEventListener('submit', function(e) {
-                // ตรวจสอบว่ามีการเลือกวันที่หรือไม่
-                if (!bookingStart.value || !bookingEnd.value) {
-                    e.preventDefault();
-                    alert('กรุณาเลือกวันที่จอง');
-                    return;
-                }
+            // Event Listeners - รวมไว้ที่เดียวและไม่ซ้ำกัน
+            const setupEventListeners = () => {
+                // Calendar toggle
+                elements.toggleButton.addEventListener('click', () => picker.show());
 
-                // เพิ่มเวลาเข้ากับวันที่
-                bookingStart.value = `${bookingStart.value}T${checkInTime.value}:00`;
-                bookingEnd.value = `${bookingEnd.value}T${checkOutTime.value}:00`;
-
-                // เช็คว่าถ้าเลือกชำระผ่านธนาคาร แต่ไม่อัปโหลดสลิป
-                if (bankPaymentCheckbox.checked && !paymentSlip.files[0]) {
-                    e.preventDefault();
-                    alert('กรุณาอัปโหลดสลิปการโอนเงิน');
-                    return;
-                }
-            });
-            // ส่วน ปิด
-
-            // Generate time slots from 08:00 to 23:00
-            function generateTimeOptions(startHour, endHour) {
-                const options = [];
-                for (let hour = startHour; hour <= endHour; hour++) {
-                    const timeString = hour.toString().padStart(2, '0') + ':00';
-                    options.push(`<option value="${timeString}">${timeString} น.</option>`);
-                }
-                return options.join('');
-            }
-            const checkIn = checkInTime.value;
-            const checkOut = checkOutTime.value;
-
-            if (!checkIn || !checkOut) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'เวลา',
-                    text: 'กรุณาเลือกเวลาเข้าและเวลาออก',
-                    icon: 'warning',
-                    confirmButtonText: 'ตกลง'
-                });
-                return;
-            }
-
-            if (checkIn >= checkOut) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'เวลาไม่ถูกต้อง',
-                    text: 'เวลาออกต้องมากกว่าเวลาเข้า',
-                    icon: 'warning',
-                    confirmButtonText: 'ตกลง'
-                });
-                return;
-            }
-            bookingStart.value = `${bookingStart.value}T${checkInTime.value}:00`;
-            bookingEnd.value = `${bookingEnd.value}T${checkOutTime.value}:00`;
-
-            // When check-in time changes, update check-out time options
-            checkInTime.addEventListener('change', function() {
-                const checkInValue = this.value;
-                const selectedDate = bookingStart.value.split('T')[0]; // วันที่ที่เลือกไว้
-
-                if (!checkInValue || !selectedDate) return;
-
-                const bookedSlots = @json($bookedTimeSlots ?? []);
-                const dateBookings = bookedSlots[selectedDate] || [];
-
-                const allSlots = generateAvailableTimeSlots(dateBookings);
-
-                // รีเซ็ต check-out options
-                checkOutTime.innerHTML = '<option value="">เลือกเวลาออก</option>';
-
-                // หา slot ที่เริ่มหลังจากเวลา check-in และไม่ชนกับการจอง
-                allSlots.forEach(slot => {
-                    if (slot.start > checkInValue) {
-                        const option = document.createElement('option');
-                        option.value = slot.start;
-                        option.textContent = `${slot.start} น.`;
-                        checkOutTime.appendChild(option);
+                // Bank payment toggle
+                elements.bankPaymentCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        elements.bankPaymentDetails.classList.remove('d-none');
+                    } else {
+                        elements.bankPaymentDetails.classList.add('d-none');
                     }
                 });
 
-                checkOutTime.disabled = false;
-            });
+                // File upload display
+                elements.paymentSlip.addEventListener('change', function() {
+                    elements.fileName.innerText = this.files[0] ? this.files[0].name :
+                        "ยังไม่ได้เลือกไฟล์";
+                });
 
-            // Validate time selection
-            bookingForm.addEventListener('submit', function(e) {
-                const checkIn = checkInTime.value;
-                const checkOut = checkOutTime.value;
+                // Check-in time change
+                elements.checkInTime.addEventListener('change', function() {
+                    const checkInValue = this.value;
+                    const selectedDate = elements.bookingStart.value.split('T')[0];
 
-                if (!checkIn || !checkOut) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: 'เวลา',
-                        text: 'กรุณาเลือกเวลาเข้าและเวลาออก',
-                        icon: 'warning',
-                        confirmButtonText: 'ตกลง'
+                    if (!checkInValue || !selectedDate) return;
+
+                    const dateBookings = config.bookedTimeSlots[selectedDate] || [];
+                    const allSlots = timeManager.generateAvailableTimeSlots(dateBookings);
+
+                    // Reset check-out options
+                    elements.checkOutTime.innerHTML = '<option value="">เลือกเวลาออก</option>';
+
+                    // Add available check-out times
+                    allSlots.forEach(slot => {
+                        if (slot.start > checkInValue) {
+                            const option = document.createElement('option');
+                            option.value = slot.start;
+                            option.textContent = `${slot.start} น.`;
+                            elements.checkOutTime.appendChild(option);
+                        }
                     });
-                    return;
-                }
 
-                const checkInHour = parseInt(checkIn.split(':')[0]);
-                const checkOutHour = parseInt(checkOut.split(':')[0]);
+                    elements.checkOutTime.disabled = false;
 
-                if (checkInHour >= checkOutHour) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: 'เวลาไม่ถูกต้อง',
-                        text: 'เวลาออกต้องมากกว่าเวลาเข้า',
-                        icon: 'warning',
-                        confirmButtonText: 'ตกลง'
-                    });
-                    return;
-                }
-            });
+                    // อัปเดต display ทั้งหมดเมื่อเลือกเวลา
+                    timeManager.updateCheckInOutDisplay();
+                    dateDisplayManager.refreshDisplay();
+                });
 
-            // โหลดค่าจาก input ถ้า
-            if (bookingStart.value && bookingEnd.value) {
-                // แปลงวันที่ให้เป็น local time เพื่อแก้ปัญหา timezone
-                let startParts = bookingStart.value.split('T')[0]; // ดึงเฉพาะส่วนวันที่ YYYY-MM-DD
-                let endParts = bookingEnd.value.split('T')[0]; // ดึงเฉพาะส่วนวันที่ YYYY-MM-DD
+                // Time display updates
+                elements.checkOutTime.addEventListener('change', function() {
+                    timeManager.updateCheckInOutDisplay();
+                    dateDisplayManager.refreshDisplay();
+                });
 
+                // Form submission - รวมทุก validation ไว้ที่เดียว
+                elements.bookingForm.addEventListener('submit', function(e) {
+                    // Validate all required fields
+                    if (!validator.validateDateSelection() ||
+                        !validator.validateTimeSelection() ||
+                        !validator.validatePaymentSlip()) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // Add time to booking dates
+                    elements.bookingStart.value =
+                        `${elements.bookingStart.value}T${elements.checkInTime.value}:00`;
+                    elements.bookingEnd.value =
+                        `${elements.bookingEnd.value}T${elements.checkOutTime.value}:00`;
+                });
+            };
+
+            // Initialize
+            setupEventListeners();
+            timeManager.updateCheckInOutDisplay();
+
+            // Load existing dates if available
+            if (elements.bookingStart.value && elements.bookingEnd.value) {
+                let startParts = elements.bookingStart.value.split('T')[0];
+                let endParts = elements.bookingEnd.value.split('T')[0];
                 let startDate = new Date(startParts + 'T00:00:00');
                 let endDate = new Date(endParts + 'T00:00:00');
 
                 picker.setDateRange(startDate, endDate);
                 picker.render();
-            }
-
-            toggleButton.addEventListener('click', function() {
-                picker.show();
-            });
-
-            // เมื่อเลือก "ชำระผ่านธนาคาร"
-            bankPaymentCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    bankPaymentDetails.classList.remove('d-none'); // แสดง QR Code + อัปโหลดสลิป
-                } else {
-                    bankPaymentDetails.classList.add('d-none'); // ซ่อนทั้งหมด
-                }
-            });
-
-            // แสดงชื่อไฟล์ที่เลือก
-            paymentSlip.addEventListener('change', function() {
-                fileName.innerText = this.files[0] ? this.files[0].name : "ยังไม่ได้เลือกไฟล์";
-            });
-
-            // ฟังก์ชันแปลงตัวเลขเป็นรูปแบบมีจุลภาค
-            function numberWithCommas(x) {
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
-
-            // Add new function to update available time slots
-            function updateAvailableTimeSlots(selectedDate) {
-                const bookedSlots = @json($bookedTimeSlots ?? []);
-                const dateBookings = bookedSlots[selectedDate] || [];
-
-                // Reset time inputs
-                checkInTime.innerHTML = '<option value="">เลือกเวลาเข้า</option>';
-                checkOutTime.innerHTML = '<option value="">เลือกเวลาออก</option>';
-
-                // Generate available time slots
-                const timeSlots = generateAvailableTimeSlots(dateBookings);
-
-                // Populate check-in time options
-                timeSlots.forEach(slot => {
-                    if (slot.end < '23:00') {
-                        const option = document.createElement('option');
-                        option.value = slot.start;
-                        option.textContent = `${slot.start} น.`;
-                        checkInTime.appendChild(option);
-                    }
-                });
-            }
-
-            function generateAvailableTimeSlots(bookedSlots) {
-                const allSlots = [];
-                let currentTime = '08:00';
-
-                while (currentTime <= '22:00') {
-                    const endTime = addHours(currentTime, 1);
-                    const isAvailable = !isTimeSlotBooked(currentTime, endTime, bookedSlots);
-
-                    if (isAvailable) {
-                        allSlots.push({
-                            start: currentTime,
-                            end: endTime
-                        });
-                    }
-                    currentTime = endTime;
-                }
-
-                return allSlots;
-            }
-
-            function isTimeSlotBooked(start, end, bookedSlots) {
-                return bookedSlots.some(booking => {
-                    return (start < booking.end && end > booking.start);
-                });
-            }
-
-            function addHours(time, hours) {
-                const [h, m] = time.split(':').map(Number);
-                const newHour = (h + hours) % 24;
-                return `${String(newHour).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-            }
-
-        });
-
-        // booking-form-fix.js
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const bankPaymentCheckbox = document.getElementById('bankPaymentCheckbox');
-            const bankPaymentDetails = document.getElementById('bankPaymentDetails');
-            const paymentSlip = document.getElementById('paymentSlip');
-            const fileName = document.getElementById('fileName');
-            const bookingForm = document.getElementById('bookingForm');
-            const checkInTime = document.getElementById('check_in_time');
-            const checkOutTime = document.getElementById('check_out_time');
-
-            // ป้องกัน error ถ้า element ไม่เจอ
-            if (bankPaymentCheckbox && bankPaymentDetails) {
-                bankPaymentCheckbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        bankPaymentDetails.classList.remove('d-none');
-                    } else {
-                        bankPaymentDetails.classList.add('d-none');
-                    }
-                });
-            }
-
-            if (paymentSlip && fileName) {
-                paymentSlip.addEventListener('change', function() {
-                    fileName.innerText = this.files[0] ? this.files[0].name : "ยังไม่ได้เลือกไฟล์";
-                });
-            }
-
-            if (bookingForm) {
-                bookingForm.addEventListener('submit', function(e) {
-                    const checkIn = checkInTime ? checkInTime.value : '';
-                    const checkOut = checkOutTime ? checkOutTime.value : '';
-
-                    if (!checkIn || !checkOut) {
-                        e.preventDefault();
-                        Swal.fire({
-                            title: 'เวลา',
-                            text: 'กรุณาเลือกเวลาเข้าและเวลาออก',
-                            icon: 'warning',
-                            confirmButtonText: 'ตกลง'
-                        });
-                        return;
-                    }
-
-                    if (checkIn >= checkOut) {
-                        e.preventDefault();
-                        Swal.fire({
-                            title: 'เวลาไม่ถูกต้อง',
-                            text: 'เวลาออกต้องมากกว่าเวลาเข้า',
-                            icon: 'warning',
-                            confirmButtonText: 'ตกลง'
-                        });
-                        return;
-                    }
-                });
             }
         });
     </script>

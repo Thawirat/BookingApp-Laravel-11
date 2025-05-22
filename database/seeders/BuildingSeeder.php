@@ -27,7 +27,7 @@ class BuildingSeeder extends Seeder
                 'id' => $building['id'], // กำหนด ID เอง
                 'building_name' => $building['building_name'],
                 'citizen_save' => $building['citizen_save'],
-                'image' => $faker->imageUrl(640, 480, 'building'), // สร้าง URL รูปภาพตัวอย่าง
+                'image' => null, // สร้าง URL รูปภาพตัวอย่าง
                 'created_at' => now(),
                 'updated_at' => now(),
                 'date_save' => now(),
