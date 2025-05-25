@@ -9,31 +9,38 @@
             <div class="table-responsive">
                 <table class="table table-hover align-middle table-bordered shadow-sm">
                     <thead class="table-light">
-                        <tr class="text-center">
-                            <th>ห้อง</th>
-                            <th>อาคาร</th>
-                            <th>วันที่จอง</th>
-                            <th>เริ่มต้น</th>
-                            <th>สิ้นสุด</th>
-                            <th>สถานะ</th>
-                            <th>การชำระเงิน</th>
-                            <th>รายละเอียด</th>
-                            <th></th>
+                        <tr>
+                            <th class="text-center">ลำดับที่</th>
+                            <th class="text-center">รหัสการจอง</th>
+                            <th class="text-center">ชื่อห้อง</th>
+                            <th class="text-center">อาคาร</th>
+                            <th class="text-center">วันที่จอง</th>
+                            <th class="text-center">วันที่เริ่มต้น-สิ้นสุด</th>
+                            <th class="text-center">สถานะ</th>
+                            <th class="text-center">การชำระเงิน</th>
+                            <th class="text-center">รายละเอียด</th>
+                            <th class="text-center"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($bookings as $booking)
                             <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $booking->id }}</td>
                                 <td class="text-center">{{ $booking->room_name ?? '-' }}</td>
                                 <td class="text-center">{{ $booking->building_name ?? '-' }}</td>
                                 <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($booking->crated_add)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($booking->crated_add)->addyear(543)->format('d/m/Y') }}
                                 </td>
                                 <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y H:i') }}
-                                </td>
-                                <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y H:i') }}
+                                    <div><strong>เริ่ม:</strong>
+                                        วันที่
+                                        {{ \Carbon\Carbon::parse($booking->booking_start)->addYears(543)->format('d/m/Y เวลา H:i') }}
+                                        น.</div>
+                                    <div><strong>สิ้นสุด:</strong>
+                                        วันที่
+                                        {{ \Carbon\Carbon::parse($booking->booking_end)->addYears(543)->format('d/m/Y เวลา H:i') }}
+                                        น.</div>
                                 </td>
                                 <td class="text-center">
                                     <span

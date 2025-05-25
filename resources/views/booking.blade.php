@@ -73,7 +73,7 @@
                                 class="card-img-top" alt="รูปภาพห้อง {{ $room->room_name }}"
                                 style="height: 200px; object-fit: cover;">
 
-                            <div class="card-body">
+                            <div class="card-body ps-3 pe-3 pt-3 pb-3">
                                 <h5 class="fw-bold">{{ $room->room_name }}</h5>
                                 <p class="text-muted mb-1">อาคาร {{ $room->building->building_name }} ชั้น
                                     {{ $room->class }}</p>
@@ -100,9 +100,10 @@
                 @foreach ($popularRooms as $room)
                     <div class="col-md-3"> {{-- Changed from col-md-4 to col-md-3 --}}
                         <div class="card shadow-sm">
-                            <img src="{{ $room->image ? asset('storage/' . $room->image) : '/api/placeholder/400/200' }}"
-                                class="card-img-top" alt="Room Image">
-                            <div class="card-body">
+                            <img src="{{ $room->image ? asset('storage/' . $room->image) : asset('images/no-picture.jpg') }}"
+                                class="card-img-top" alt="รูปภาพห้อง {{ $room->room_name }}"
+                                style="height: 200px; object-fit: cover;">
+                            <div class="card-body ps-3 pe-3 pt-3 pb-3">
                                 <h5 class="fw-bold">{{ $room->room_name }}</h5>
                                 <p class="text-muted mb-1">อาคาร {{ $room->building->building_name }} ชั้น
                                     {{ $room->class }}</p>

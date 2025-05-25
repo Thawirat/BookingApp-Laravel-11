@@ -40,6 +40,7 @@
                                     {{ match ($booking->payment_status) {
                                         'unpaid' => 'ยังไม่ชำระ',
                                         'paid' => 'ชำระเงินแล้ว',
+                                        'partial' => 'ชำระบางส่วน',
                                         'pending' => 'รอตรวจสอบ',
                                         'cancelled' => 'ยกเลิกการชำระ',
                                     } }}

@@ -70,19 +70,19 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th class="text-center">#</th>
-                                            <th>รหัสการจอง</th>
-                                            <th>ผู้จองห้อง</th>
-                                            <th>เบอร์โทรศัพท์</th>
-                                            <th>วันเวลาที่จอง</th>
-                                            <th>วันเวลาที่สิ้นสุดจอง</th>
-                                            <th>สถานะการชำระเงิน</th>
+                                            <th class="text-center">รหัสการจอง</th>
+                                            <th class="text-center">ผู้จองห้อง</th>
+                                            <th class="text-center">เบอร์โทรศัพท์</th>
+                                            <th class="text-center">วันเวลาที่จอง</th>
+                                            <th class="text-center">วันเวลาที่สิ้นสุดจอง</th>
+                                            <th class="text-center">สถานะการชำระเงิน</th>
                                             <th class="text-center">สถานะการอนุมัติ</th>
                                             <th class="text-center">การดำเนินการ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse($bookings as $booking)
-                                            <tr>
+                                            <tr class="text-center">
                                                 <td class="text-center">
                                                     {{ ($bookings->currentPage() - 1) * $bookings->perPage() + $loop->iteration }}
                                                 </td>
@@ -115,132 +115,10 @@
                                                     </small>
                                                 </td>
                                                 <td class="text-center">
-                                                    {{-- ป้ายสถานะการชำระ --}}
-                                                    <span
-                                                        class="badge
-                                                        @if ($booking->payment_status == 'paid') bg-success
-                                                        @elseif($booking->payment_status == 'pending') bg-info text-dark
-                                                        @elseif($booking->payment_status == 'cancelled') bg-danger
-                                                        @else bg-warning text-dark @endif"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                                        title="สถานะการชำระเงิน">
-                                                        {{ match ($booking->payment_status) {
-                                                            'unpaid' => 'ยังไม่ชำระ',
-                                                            'paid' => 'ชำระเงินแล้ว',
-                                                            'pending' => 'รอตรวจสอบ',
-                                                            'cancelled' => 'ยกเลิกการชำระ',
-                                                        } }}
-                                                    </span>
-
-                                                    {{-- ปุ่ม dropdown เปลี่ยนสถานะ --}}
-                                                    <div class="btn-group mt-2">
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-primary dropdown-toggle"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <i class="fas fa-wallet"></i> เปลี่ยนสถานะ
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <button class="dropdown-item" data-bs-toggle="modal"
-                                                                    data-bs-target="#paymentSlipModal{{ $booking->id }}">
-                                                                    <i class="fas fa-file-invoice me-2"></i> ดูสลิปการชำระ
-                                                                </button>
-                                                            </li>
-                                                            <li>
-                                                                <hr class="dropdown-divider">
-                                                            </li>
-                                                            <li>
-                                                                <form
-                                                                    action="{{ route('booking.confirm-payment', $booking->id) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    <input type="hidden" name="payment_status"
-                                                                        value="paid">
-                                                                    <button type="submit"
-                                                                        class="dropdown-item text-success">
-                                                                        <i class="fas fa-check-circle me-2"></i> ชำระครบถ้วน
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                            <li>
-                                                                <form
-                                                                    action="{{ route('booking.confirm-payment', $booking->id) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    <input type="hidden" name="payment_status"
-                                                                        value="partial">
-                                                                    <button type="submit"
-                                                                        class="dropdown-item text-warning">
-                                                                        <i class="fas fa-exclamation-circle me-2"></i>
-                                                                        ชำระบางส่วน
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                            <li>
-                                                                <form
-                                                                    action="{{ route('booking.confirm-payment', $booking->id) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    <input type="hidden" name="payment_status"
-                                                                        value="cancelled">
-                                                                    <button type="submit"
-                                                                        class="dropdown-item text-danger">
-                                                                        <i class="fas fa-times-circle me-2"></i>
-                                                                        ยกเลิกการชำระ
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                                    @include('component-dropdown.payment', ['booking' => $booking,])
                                                 </td>
-
                                                 <td class="text-center">
-                                                    <div class="d-flex flex-column align-items-center gap-2">
-                                                        {{-- ป้ายสถานะ --}}
-                                                        <span
-                                                            class="badge
-                                                                @if ($booking->status_id == 1) bg-info
-                                                                @elseif($booking->status_id == 2) bg-warning
-                                                                @elseif($booking->status_id == 3) bg-danger
-                                                                @elseif($booking->status_id == 4) bg-success
-                                                                @else bg-secondary @endif"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top"
-                                                            title="อนุมัติโดย: {{ $booking->approver_name ?? 'ยังไม่มีผู้อนุมัติ' }}">
-                                                            {{ $booking->status_name }}
-                                                        </span>
-                                                        {{-- ปุ่มเปลี่ยนสถานะ --}}
-                                                        <div class="dropdown">
-                                                            <button type="button"
-                                                                class="btn btn-primary btn-sm dropdown-toggle"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="fas fa-edit"></i> เปลี่ยนสถานะ
-                                                            </button>
-                                                            <ul class="dropdown-menu">
-                                                                @foreach (\App\Enums\BookingStatus::options() as $status => $info)
-                                                                    <li>
-                                                                        <form
-                                                                            action="{{ route('booking.update-status', $booking->id) }}"
-                                                                            method="POST">
-                                                                            @csrf
-                                                                            @method('PATCH')
-                                                                            <input type="hidden" name="status_id"
-                                                                                value="{{ $status }}">
-                                                                            <button type="submit"
-                                                                                class="dropdown-item {{ $info['class'] }}">
-                                                                                <i class="{{ $info['icon'] }}"></i>
-                                                                                {{ $info['label'] }}
-                                                                            </button>
-                                                                        </form>
-                                                                    </li>
-                                                                    @if ($loop->iteration === 2)
-                                                                        <li>
-                                                                            <hr class="dropdown-divider">
-                                                                        </li>
-                                                                    @endif
-                                                                @endforeach
-                                                            </ul>
-                                                        </div>
-                                                    </div>
+                                                    @include('component-dropdown.accept', ['booking' => $booking,])
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
@@ -257,92 +135,7 @@
                                                 </td>
                                             </tr>
                                             @include('booking-status.modal')
-                                            <!-- Modal สำหรับแสดงสลิปการชำระเงิน -->
-                                            <div class="modal fade" id="paymentSlipModal{{ $booking->id }}"
-                                                tabindex="-1" aria-labelledby="paymentSlipModalLabel{{ $booking->id }}"
-                                                aria-modal="true" role="dialog">
-                                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-light">
-                                                            <h2 class="modal-title h5"
-                                                                id="paymentSlipModalLabel{{ $booking->id }}">
-                                                                <i class="fas fa-file-invoice me-2"></i>สลิปการชำระเงิน
-                                                            </h2>
-                                                            <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal"
-                                                                aria-label="ปิดหน้าต่างสลิปการชำระเงิน"></button>
-                                                        </div>
-                                                        <div class="modal-body text-center">
-                                                            <div class="payment-slip-container">
-                                                                @if ($booking->payment_slip && Storage::disk('public')->exists('payment_slips/' . basename($booking->payment_slip)))
-                                                                    <div
-                                                                        style="max-width: 100%; overflow: auto; margin: 0 auto;">
-                                                                        <img src="{{ Storage::url($booking->payment_slip) }}"
-                                                                            alt="สลิปการชำระเงินสำหรับการจองหมายเลข {{ $booking->id }}"
-                                                                            class="img-fluid rounded shadow-sm mb-3"
-                                                                            style="max-height: 60vh; width: auto; display: block; margin: 0 auto;">
-                                                                    </div>
-                                                                @else
-                                                                    <div class="alert alert-warning" role="alert">
-                                                                        <i
-                                                                            class="fas fa-exclamation-triangle me-2"></i>ไม่พบสลิปการชำระเงิน
-                                                                    </div>
-                                                                @endif
-
-                                                                <div class="payment-details bg-light p-3 rounded">
-                                                                    <div class="row">
-                                                                        <div class="col-md-6">
-                                                                            <strong>เลขที่การจอง:</strong>
-                                                                            <span
-                                                                                class="badge bg-secondary">{{ $booking->id }}</span>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <strong>วันที่ชำระ:</strong>
-                                                                            {{ \Carbon\Carbon::parse($booking->updated_at)->format('d/m/Y H:i') }}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row mt-2">
-                                                                        <div class="col-md-6">
-                                                                            <strong>ยอดชำระ:</strong>
-                                                                            {{ number_format($booking->total_price, 2) }}
-                                                                            บาท
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <strong>สถานะ:</strong>
-                                                                            <span
-                                                                                class="badge
-                                                                    @if ($booking->payment_status == 'paid') bg-success
-                                                                    @elseif($booking->payment_status == 'partial') bg-warning
-                                                                    @elseif($booking->payment_status == 'cancelled') bg-danger
-                                                                    @else bg-secondary @endif">
-                                                                                {{ match ($booking->payment_status) {
-                                                                                    'paid' => 'ชำระครบถ้วน',
-                                                                                    'partial' => 'ชำระบางส่วน',
-                                                                                    'cancelled' => 'ยกเลิกการชำระ',
-                                                                                    default => 'รอการชำระ',
-                                                                                } }}
-                                                                            </span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">
-                                                                <i class="fas fa-times me-2"></i>ปิด
-                                                            </button>
-                                                            @if ($booking->payment_slip && Storage::disk('public')->exists('payment_slips/' . basename($booking->payment_slip)))
-                                                                <a href="{{ Storage::url($booking->payment_slip) }}"
-                                                                    target="_blank" class="btn btn-primary"
-                                                                    download="สลิปการชำระเงิน_{{ $booking->id }}.jpg">
-                                                                    <i class="fas fa-download me-2"></i>ดาวน์โหลด
-                                                                </a>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @include('booking.payment-slip')
                                         @empty
                                             <tr>
                                                 <td colspan="8" class="text-center py-4 text-muted">

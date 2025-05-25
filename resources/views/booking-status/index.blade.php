@@ -2,38 +2,45 @@
 
 @section('content')
     <div class="container py-4">
-        <h2 class="mb-4 text-primary fw-bold">
-            <i class="fas fa-calendar-check me-2"></i>สถานะการจองห้องของฉัน
+        <h2 class="mb-4 text-primary fw-bold d-flex align-items-center">
+            <i class="fas fa-calendar-check me-2 fs-4"></i> สถานะการจองห้องของฉัน
         </h2>
         @if ($bookings->count())
             <div class="table-responsive">
                 <table class="table table-hover align-middle table-bordered shadow-sm">
-                    <thead class="table-light">
-                        <tr class="text-center">
-                            <th>ห้อง</th>
-                            <th>อาคาร</th>
-                            <th>วันที่จอง</th>
-                            <th>เริ่มต้น</th>
-                            <th>สิ้นสุด</th>
-                            <th>สถานะ</th>
-                            <th>สถานะการชำระเงิน</th>
-                            <th>รายละเอียด</th>
-                            <th></th>
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th class="text-center">ลำดับที่</th>
+                            <th class="text-center">รหัสการจอง</th>
+                            <th class="text-center">ห้อง</th>
+                            <th class="text-center">อาคาร</th>
+                            <th class="text-center">วันที่จอง</th>
+                            <th class="text-center">วันที่เริ่มต้น-สิ้นสุด</th>
+                            <th class="text-center">สถานะ</th>
+                            <th class="text-center">สถานะการชำระเงิน</th>
+                            <th class="text-center">รายละเอียด</th>
+                            <th class="text-center">PDF</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($bookings as $booking)
                             <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $booking->id }}</td>
                                 <td class="text-center">{{ $booking->room_name ?? '-' }}</td>
                                 <td class="text-center">{{ $booking->building_name ?? '-' }}</td>
                                 <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($booking->crated_add)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($booking->created_at)->addYears(543)->format('d/m/Y') }}
                                 </td>
                                 <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y H:i') }}
-                                </td>
-                                <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y H:i') }}
+                                    <div><strong>เริ่ม:</strong>
+                                        วันที่
+                                        {{ \Carbon\Carbon::parse($booking->booking_start)->addYears(543)->format('d/m/Y เวลา H:i') }}
+                                        น.</div>
+                                    <div><strong>สิ้นสุด:</strong>
+                                        วันที่
+                                        {{ \Carbon\Carbon::parse($booking->booking_end)->addYears(543)->format('d/m/Y เวลา H:i') }}
+                                        น.</div>
                                 </td>
                                 <td class="text-center">
                                     <span
@@ -41,7 +48,6 @@
                                         {{ $booking->status->status_name }}
                                     </span>
                                 </td>
-                                {{-- สถานะการชำระเงิน --}}
                                 <td class="text-center">
                                     @php
                                         $statusClass =
@@ -61,8 +67,8 @@
                                             ][$booking->payment_status] ?? 'ยังไม่ชำระ';
                                     @endphp
                                     <span class="badge {{ $statusClass }}">{{ $statusText }}</span>
-                                    <div class="dropdown mt-2" data-bs-popper="static">
-                                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                                    <div class="dropdown mt-2">
+                                        <button class="btn btn-sm btn-light border dropdown-toggle" type="button"
                                             data-bs-toggle="dropdown" aria-expanded="false">
                                             จัดการชำระเงิน
                                         </button>
@@ -82,7 +88,6 @@
                                         </ul>
                                     </div>
                                     @include('booking-status.slip-for-status')
-                                </td>
                                 </td>
                                 <td class="text-center">
                                     <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
@@ -112,6 +117,7 @@
         @endif
     </div>
 @endsection
+
 <script>
     function confirmCancel(bookingId) {
         Swal.fire({
@@ -125,11 +131,11 @@
             if (result.isConfirmed) {
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/booking/${bookingId}/cancel`; // ปรับ route ตามจริง
+                form.action = `/booking/${bookingId}/cancel`;
                 form.innerHTML = `
-                @csrf
-                @method('PATCH')
-            `;
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="_method" value="PATCH">
+                `;
                 document.body.appendChild(form);
                 form.submit();
             }

@@ -136,26 +136,23 @@
                                         <input type="hidden" name="booking_start" id="booking_start">
                                         <input type="hidden" name="booking_end" id="booking_end">
 
-                                        <!-- Holiday notes -->
-                                        <div class="mt-4 text-start">
+                                        <div class="md-4 text-start">
                                             <h6 class="fw-bold mb-2">หมายเหตุ:</h6>
-                                            <div class="d-flex align-items-center mb-2">
+                                            <!-- วันหยุดนักขัตฤกษ์ -->
+                                            <div class="d-flex align-items-center md-6">
                                                 <span class="d-inline-block rounded-circle me-2"
                                                     style="width: 16px; height: 16px; background-color: #fef08a;"></span>
-                                                <span class="small">วันหยุดนักขัตฤกษ์ (ไม่สามารถจองได้)</span>
+                                                <span class="small">วันหยุดนักขัตฤกษ์</span>
                                             </div>
-                                            <div class="d-flex align-items-center">
+                                            <!-- วันที่มีการจองแล้ว -->
+                                            <div class="d-flex align-items-center md-6">
                                                 <span class="d-inline-block rounded-circle me-2"
                                                     style="width: 16px; height: 16px; background-color: #bfdbfe;"></span>
-                                                <span class="small">วันที่มีการจองแล้ว (ไม่สามารถจองได้)</span>
+                                                <span class="small">วันที่มีการจองแล้ว
+                                                    (สามารถจองได้หากช่วงเวลาไม่ซ้อนกัน)</span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- Add this in the time selection box -->
-                                <div class="alert alert-info mb-3">
-                                    <i class="bi bi-info-circle me-2"></i>
-                                    สามารถจองห้องเดียวกันในวันเดียวกันได้ หากช่วงเวลาไม่ทับซ้อนกัน
                                 </div>
                                 <!-- Time Selection Box -->
                                 <div class="card border-0 shadow-sm mb-4">
@@ -203,12 +200,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Litepicker -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css">
-    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
     <style>
         /* Font family */
         body {
@@ -286,8 +277,6 @@
             color: #333 !important;
         }
     </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const bookingForm = document.getElementById('bookingForm');
