@@ -344,7 +344,7 @@
 
             // Configuration - รวมข้อมูล config ไว้ที่เดียว
             const config = {
-                serviceRate: parseFloat({{ $room->service_rates ?? 0 }}),
+                serviceRate: parseFloat({{ $room->service_rates ?? 0 }}), // ค่าบริการต่อชั่วโมง
                 holidaysWithNames: @json($holidaysWithNames),
                 bookedDetails: @json($bookedDetails),
                 disabledDays: @json($disabledDays),
@@ -385,6 +385,33 @@
                     return `${String(newHour).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
                 },
 
+                // คำนวณชั่วโมงรวมระหว่างวันที่และเวลา
+                calculateTotalHours: (startDate, startTime, endDate, endTime) => {
+                    const start = new Date(`${startDate}T${startTime}:00`);
+                    const end = new Date(`${endDate}T${endTime}:00`);
+
+                    const diffMs = end.getTime() - start.getTime();
+                    const diffHours = Math.ceil(diffMs / (1000 * 60 * 60)); // ปัดขึ้นเป็นชั่วโมง
+
+                    return Math.max(1, diffHours); // อย่างน้อย 1 ชั่วโมง
+                },
+
+                // แปลงชั่วโมงเป็นรูปแบบ "X วัน Y ชั่วโมง"
+                formatDurationDisplay: (totalHours) => {
+                    if (totalHours < 24) {
+                        return `${totalHours} ชั่วโมง`;
+                    } else {
+                        const days = Math.floor(totalHours / 24);
+                        const hours = totalHours % 24;
+
+                        if (hours === 0) {
+                            return `${days} วัน`;
+                        } else {
+                            return `${days} วัน ${hours} ชั่วโมง`;
+                        }
+                    }
+                },
+
                 showAlert: (title, text) => {
                     Swal.fire({
                         title: title,
@@ -404,7 +431,7 @@
                     while (currentTime <= '22:00') {
                         const endTime = utils.addHours(currentTime, 1);
                         const isAvailable = !timeManager.isTimeSlotBooked(currentTime, endTime,
-                            bookedSlots);
+                        bookedSlots);
 
                         if (isAvailable) {
                             allSlots.push({
@@ -452,21 +479,89 @@
                         checkOutSpan.innerText = elements.checkOutTime.value ?
                             `${elements.checkOutTime.value} น.` : '-';
                     }
+                },
+
+                // ฟังก์ชันใหม่: สร้างตัวเลือกเวลาออกที่ครอบคลุมหลายวัน
+                generateCheckOutOptions: (startDate, startTime, endDate) => {
+                    const options = [];
+                    const currentDate = new Date(startDate);
+                    const finalDate = new Date(endDate);
+
+                    while (currentDate <= finalDate) {
+                        const dateStr = utils.formatDate(currentDate);
+                        const dateBookings = config.bookedTimeSlots[dateStr] || [];
+                        const availableSlots = timeManager.generateAvailableTimeSlots(dateBookings);
+
+                        availableSlots.forEach(slot => {
+                            // ถ้าเป็นวันเดียวกับวันเริ่ม ให้เลือกเวลาหลังจากเวลาเริ่มเท่านั้น
+                            if (dateStr === startDate && slot.start <= startTime) {
+                                return;
+                            }
+
+                            // ถ้าเป็นวันสุดท้าย ให้เลือกเวลาก่อน 23:00
+                            if (dateStr === utils.formatDate(finalDate) && slot.start >= '23:00') {
+                                return;
+                            }
+
+                            const displayDate = currentDate.toLocaleDateString('th-TH', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                            });
+
+                            options.push({
+                                value: `${dateStr}T${slot.start}`,
+                                text: `${displayDate} ${slot.start} น.`,
+                                date: dateStr,
+                                time: slot.start
+                            });
+                        });
+
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+
+                    return options;
                 }
             };
 
-            // Price Calculator
+            // Price Calculator - แก้ไขให้คำนวณตามชั่วโมง
             const priceCalculator = {
-                updatePricing: (days) => {
-                    const totalServiceFee = days * config.serviceRate;
-                    const formattedPrice = utils.numberWithCommas(totalServiceFee.toFixed(2)) + ' บาท';
+                updatePricing: () => {
+                    const startDate = elements.bookingStart.value;
+                    const endDate = elements.bookingEnd.value;
+                    const startTime = elements.checkInTime.value;
+                    const endTime = elements.checkOutTime.value;
 
-                    elements.totalDays.innerText = days + ' วัน';
+                    if (!startDate || !endDate || !startTime || !endTime) {
+                        elements.totalDays.innerText = '-';
+                        elements.serviceFee.innerText = '-';
+                        elements.totalPrice.innerText = '-';
+                        return;
+                    }
+
+                    // แยกเวลาออกจาก endTime ถ้ามีรูปแบบ "dateT time"
+                    let actualEndDate = endDate;
+                    let actualEndTime = endTime;
+
+                    if (endTime.includes('T')) {
+                        const [date, time] = endTime.split('T');
+                        actualEndDate = date;
+                        actualEndTime = time;
+                    }
+
+                    const totalHours = utils.calculateTotalHours(startDate, startTime, actualEndDate,
+                        actualEndTime);
+                    const totalServiceFee = totalHours * config.serviceRate;
+                    const formattedPrice = utils.numberWithCommas(totalServiceFee.toFixed(2)) + ' บาท';
+                    const durationText = utils.formatDurationDisplay(totalHours);
+
+                    elements.totalDays.innerText = durationText;
                     elements.serviceFee.innerText = formattedPrice;
                     elements.totalPrice.innerText = formattedPrice;
                 }
             };
-            // Date Display Manager - จัดการการแสดงวันที่และเวลา
+
+            // Date Display Manager - แก้ไขให้แสดงข้อมูลชั่วโมง
             const dateDisplayManager = {
                 currentSelectedDates: {
                     start: null,
@@ -474,11 +569,8 @@
                 },
 
                 updateDateDisplay: (startDate, endDate = null) => {
-                    // เก็บวันที่ที่เลือกไว้
                     dateDisplayManager.currentSelectedDates.start = startDate;
                     dateDisplayManager.currentSelectedDates.end = endDate;
-
-                    // อัปเดต display
                     dateDisplayManager.refreshDisplay();
                 },
 
@@ -493,13 +585,20 @@
                     const checkOutTime = elements.checkOutTime.value;
 
                     if (checkInTime && checkOutTime) {
-                        // ถ้าเลือกเวลาแล้ว แสดงวันที่พร้อมเวลา
-                        elements.checkInDate.innerText = utils.formatThaiDateWithTime(
-                            start, checkInTime);
-                        elements.checkOutDate.innerText = utils.formatThaiDateWithTime(
-                            end || start, checkOutTime);
+                        // แยกเวลาออกถ้ามีรูปแบบ "dateT time"
+                        let displayEndDate = end || start;
+                        let displayEndTime = checkOutTime;
+
+                        if (checkOutTime.includes('T')) {
+                            const [date, time] = checkOutTime.split('T');
+                            displayEndDate = new Date(date);
+                            displayEndTime = time;
+                        }
+
+                        elements.checkInDate.innerText = utils.formatThaiDateWithTime(start, checkInTime);
+                        elements.checkOutDate.innerText = utils.formatThaiDateWithTime(displayEndDate,
+                            displayEndTime);
                     } else {
-                        // ถ้ายังไม่เลือกเวลา แสดงแค่วันที่พร้อมข้อความรอเลือกเวลา
                         const startDateStr = start.toLocaleDateString('th-TH', {
                             day: 'numeric',
                             month: 'short',
@@ -511,14 +610,13 @@
                             year: 'numeric'
                         });
 
-                        elements.checkInDate.innerText =
-                            `${startDateStr} (รอเลือกเวลา)`;
+                        elements.checkInDate.innerText = `${startDateStr} (รอเลือกเวลา)`;
                         elements.checkOutDate.innerText = `${endDateStr} (รอเลือกเวลา)`;
                     }
                 }
             };
 
-            // Form Validation
+            // Form Validation - แก้ไขให้ตรวจสอบเวลาข้ามวัน
             const validator = {
                 validateDateSelection: () => {
                     if (!elements.bookingStart.value || !elements.bookingEnd.value) {
@@ -537,8 +635,22 @@
                         return false;
                     }
 
-                    if (checkIn >= checkOut) {
-                        utils.showAlert('เวลาไม่ถูกต้อง', 'เวลาออกต้องมากกว่าเวลาเข้า');
+                    // ตรวจสอบว่าเวลาออกมาหลังเวลาเข้า (รองรับข้ามวัน)
+                    const startDate = elements.bookingStart.value;
+                    let endDate = elements.bookingEnd.value;
+                    let endTime = checkOut;
+
+                    if (checkOut.includes('T')) {
+                        const [date, time] = checkOut.split('T');
+                        endDate = date;
+                        endTime = time;
+                    }
+
+                    const startDateTime = new Date(`${startDate}T${checkIn}:00`);
+                    const endDateTime = new Date(`${endDate}T${endTime}:00`);
+
+                    if (endDateTime <= startDateTime) {
+                        utils.showAlert('เวลาไม่ถูกต้อง', 'เวลาออกต้องมาหลังเวลาเข้า');
                         return false;
                     }
 
@@ -610,26 +722,19 @@
                         elements.bookingEnd.value = realDate2 ? utils.formatDate(realDate2) :
                             utils.formatDate(realDate1);
 
-                        // Update available time slots first
+                        // Update available time slots for start date
                         timeManager.updateAvailableTimeSlots(utils.formatDate(realDate1));
 
-                        // Update display - ใช้เวลาที่เลือกจริงหรือแสดงข้อความรอเลือก
+                        // Update display
                         dateDisplayManager.updateDateDisplay(realDate1, realDate2);
 
-                        // Calculate days and update pricing
-                        let days = 1;
-                        if (realDate2) {
-                            const oneDay = 24 * 60 * 60 * 1000;
-                            days = Math.round(Math.abs((realDate2.getTime() - realDate1
-                                .getTime()) / oneDay)) + 1;
-                        }
-
-                        priceCalculator.updatePricing(days);
+                        // Reset pricing display
+                        priceCalculator.updatePricing();
                     });
                 }
             });
 
-            // Event Listeners - รวมไว้ที่เดียวและไม่ซ้ำกัน
+            // Event Listeners
             const setupEventListeners = () => {
                 // Calendar toggle
                 elements.toggleButton.addEventListener('click', () => picker.show());
@@ -649,45 +754,46 @@
                         "ยังไม่ได้เลือกไฟล์";
                 });
 
-                // Check-in time change
+                // Check-in time change - แก้ไขให้สร้างตัวเลือกเวลาออกข้ามวัน
                 elements.checkInTime.addEventListener('change', function() {
                     const checkInValue = this.value;
-                    const selectedDate = elements.bookingStart.value.split('T')[0];
+                    const startDate = elements.bookingStart.value;
+                    const endDate = elements.bookingEnd.value;
 
-                    if (!checkInValue || !selectedDate) return;
+                    if (!checkInValue || !startDate || !endDate) return;
 
-                    const dateBookings = config.bookedTimeSlots[selectedDate] || [];
-                    const allSlots = timeManager.generateAvailableTimeSlots(dateBookings);
+                    // สร้างตัวเลือกเวลาออกที่ครอบคลุมหลายวัน
+                    const checkOutOptions = timeManager.generateCheckOutOptions(startDate, checkInValue,
+                        endDate);
 
                     // Reset check-out options
                     elements.checkOutTime.innerHTML = '<option value="">เลือกเวลาออก</option>';
 
                     // Add available check-out times
-                    allSlots.forEach(slot => {
-                        if (slot.start > checkInValue) {
-                            const option = document.createElement('option');
-                            option.value = slot.start;
-                            option.textContent = `${slot.start} น.`;
-                            elements.checkOutTime.appendChild(option);
-                        }
+                    checkOutOptions.forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option.value;
+                        optionElement.textContent = option.text;
+                        elements.checkOutTime.appendChild(optionElement);
                     });
 
                     elements.checkOutTime.disabled = false;
 
-                    // อัปเดต display ทั้งหมดเมื่อเลือกเวลา
+                    // Update display
                     timeManager.updateCheckInOutDisplay();
                     dateDisplayManager.refreshDisplay();
+                    priceCalculator.updatePricing();
                 });
 
-                // Time display updates
+                // Check-out time change - แก้ไขให้รองรับรูปแบบใหม่
                 elements.checkOutTime.addEventListener('change', function() {
                     timeManager.updateCheckInOutDisplay();
                     dateDisplayManager.refreshDisplay();
+                    priceCalculator.updatePricing();
                 });
 
-                // Form submission - รวมทุก validation ไว้ที่เดียว
+                // Form submission
                 elements.bookingForm.addEventListener('submit', function(e) {
-                    // Validate all required fields
                     if (!validator.validateDateSelection() ||
                         !validator.validateTimeSelection() ||
                         !validator.validatePaymentSlip()) {
@@ -695,11 +801,20 @@
                         return;
                     }
 
-                    // Add time to booking dates
+                    // Process end date and time
+                    let finalEndDate = elements.bookingEnd.value;
+                    let finalEndTime = elements.checkOutTime.value;
+
+                    if (elements.checkOutTime.value.includes('T')) {
+                        const [date, time] = elements.checkOutTime.value.split('T');
+                        finalEndDate = date;
+                        finalEndTime = time;
+                    }
+
+                    // Set final values
                     elements.bookingStart.value =
                         `${elements.bookingStart.value}T${elements.checkInTime.value}:00`;
-                    elements.bookingEnd.value =
-                        `${elements.bookingEnd.value}T${elements.checkOutTime.value}:00`;
+                    elements.bookingEnd.value = `${finalEndDate}T${finalEndTime}:00`;
                 });
             };
 

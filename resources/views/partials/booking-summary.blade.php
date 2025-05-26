@@ -8,7 +8,7 @@
             <!-- Rate -->
             <div class="d-flex justify-content-between py-2 border-bottom">
                 <span class="text-muted">อัตราค่าบริการ:</span>
-                <span class="fw-bold">{{ number_format($room->service_rates ?? 0, 2) }} บาท/วัน</span>
+                <span class="fw-bold">{{ number_format($room->service_rates ?? 0, 2) }} บาท/ชั่วโมง</span>
             </div>
             <!-- Days -->
             <div class="d-flex justify-content-between py-2 border-bottom">

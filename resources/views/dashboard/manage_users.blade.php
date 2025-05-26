@@ -89,7 +89,7 @@
                                                 @if ($user->role === 'admin')
                                                     <span class="badge bg-primary">ผู้ดูแลระบบหลัก</span>
                                                 @elseif($user->role === 'sub-admin')
-                                                    <span class="badge bg-info">ผู้ดูแลระบบย่อย</span>
+                                                    <span class="badge bg-info">ผู้ดูแลอาคาร</span>
                                                 @else
                                                     <span class="badge bg-secondary">ผู้ใช้ทั่วไป</span>
                                                 @endif
@@ -440,7 +440,7 @@
                         <label for="edit_role" class="form-label">บทบาท</label>
                         <select class="form-select" id="edit_role" name="role" required>
                             <option value="admin">ผู้ดูแลระบบหลัก</option>
-                            <option value="sub-admin">ผู้ดูแลระบบย่อย</option>
+                            <option value="sub-admin">ผู้ดูแลอาคาร</option>
                             <option value="user">ผู้ใช้ทั่วไป</option>
                         </select>
                     </div>
