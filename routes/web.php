@@ -3,13 +3,6 @@
 use App\Http\Controllers\Booking_dbController;
 use App\Http\Controllers\CalendarController;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/booking/approve/{id}', [Booking_dbController::class, 'approve'])->name('booking.approve');
-Route::get('/booking/reject/{id}', [Booking_dbController::class, 'reject'])->name('booking.reject');
-
-// Route for calendar view
-Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
-
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookingCalendarController;
@@ -25,6 +18,13 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoomTypeController;
+
+Route::get('/booking/approve/{id}', [Booking_dbController::class, 'approve'])->name('booking.approve');
+Route::get('/booking/reject/{id}', [Booking_dbController::class, 'reject'])->name('booking.reject');
+
+// Route for calendar view
+Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 
 // Public routes
 Route::get('/', function () {
@@ -164,3 +164,11 @@ Route::put('/user/update-all', [UserController::class, 'update'])->name('user.up
 Route::get('/bookings/{id}/booking-pdf', [BookingController::class, 'downloadBookingPdf'])->name('bookings.download.pdf');
 Route::get('/bookings/{id}/slip-pdf', [BookingController::class, 'downloadSlipPdf'])->name('bookingslip.download.pdf');
 Route::get('/my-booking-history', [BookingController::class, 'myHistory'])->name('bookings.history');
+Route::get('/my-bookings/pdf', [BookingController::class, 'downloadAllHistoryPdf'])->name('bookings.download.all.pdf');
+Route::get('/my-bookings/{id}/pdf', [BookingController::class, 'downloadHistoryPdf'])->name('bookings.download.pdf');
+Route::resource('room-types', RoomController::class);
+Route::get('/room-types', [RoomTypeController::class, 'index'])->name('room-types');
+Route::get('/room-types/create', [RoomTypeController::class, 'create'])->name('room-types.create');
+Route::post('/room-types', [RoomTypeController::class, 'store'])->name('room-types.store');
+Route::get('/room-types', [RoomTypeController::class, 'index'])->name('room-types.index');
+Route::resource('room-types', RoomTypeController::class)->except(['show']);

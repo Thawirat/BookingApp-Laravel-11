@@ -107,6 +107,9 @@
                             <a href="{{ route('manage_users.index') }}" class="nav-link text-gray-700"><i
                                     class="fas fa-users-cog me-2"></i> จัดการผู้ใช้</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('room-types.index') }}" class="nav-link text-gray-700"><i class="fas fa-tags me-2"></i> จัดการประเภทห้อง</a>
+                        </li>
                     @endif
                 @endif
 

@@ -355,4 +355,25 @@ class BookingController extends Controller
         $pdf = Pdf::loadView('booking.slip', compact('booking'));
         return $pdf->download('ใบเสร็จรับเงินเลขที่' . $booking->id . '.pdf');
     }
+
+    public function downloadAllHistoryPdf()
+    {
+        $bookings = BookingHistory::where('user_id', auth()->id())
+            ->orderBy('moved_to_history_at', 'desc')
+            ->get();
+
+        $pdf = Pdf::loadView('booking-status.pdf-history', compact('bookings'));
+        return $pdf->download('ประวัติการจองห้อง.pdf');
+    }
+    public function downloadHistoryPdf($id)
+    {
+        $booking = BookingHistory::findOrFail($id);
+
+        if ($booking->user_id !== auth()->id()) {
+            abort(403, 'คุณไม่มีสิทธิ์ดูข้อมูลนี้');
+        }
+
+        $pdf = Pdf::loadView('booking-status.pdf-single-history', compact('booking'));
+        return $pdf->download('การจองห้อง_' . $booking->room_name . '.pdf');
+    }
 }

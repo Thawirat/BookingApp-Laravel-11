@@ -19,7 +19,10 @@
                             <th class="text-center">สถานะ</th>
                             <th class="text-center">การชำระเงิน</th>
                             <th class="text-center">รายละเอียด</th>
-                            <th class="text-center"></th>
+                            <th class="text-center"><a href="{{ route('bookings.download.all.pdf') }}"
+                                    class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-file-pdf me-1">ดาวโหลดทั้งหมด</i>
+                                </a></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,7 +33,7 @@
                                 <td class="text-center">{{ $booking->room_name ?? '-' }}</td>
                                 <td class="text-center">{{ $booking->building_name ?? '-' }}</td>
                                 <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($booking->crated_add)->addyear(543)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($booking->crated_at)->addyear(543)->format('d/m/Y') }}
                                 </td>
                                 <td class="text-center">
                                     <div><strong>เริ่ม:</strong>
