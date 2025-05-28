@@ -124,7 +124,7 @@ class ManageRoomsController extends Controller
                 'class' => 'required|string|max:255',
                 'room_details' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'service_rates' => 'required|numeric|min:0',
+                // 'service_rates' => 'required|numeric|min:0',
                 'status_id' => 'required|exists:status,status_id',
                 'room_type' => 'required',
                 'custom_room_type' => 'nullable|string|max:255',
@@ -141,7 +141,7 @@ class ManageRoomsController extends Controller
             $room->capacity = $validated['capacity'];
             $room->class = $validated['class'];
             $room->room_details = $validated['room_details'];
-            $room->service_rates = $validated['service_rates'];
+            // $room->service_rates = $validated['service_rates'];
             $room->status_id = $validated['status_id'];
 
 
@@ -226,7 +226,7 @@ class ManageRoomsController extends Controller
                 'class' => 'required|string|max:255',
                 'room_details' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'service_rates' => 'required|numeric|min:0',
+                // 'service_rates' => 'required|numeric|min:0',
                 'room_type' => 'required',
                 'custom_room_type' => 'nullable|string|max:255',
                 'room_type_other' => 'nullable|string',  // กรณีเลือก "อื่นๆ"
@@ -257,7 +257,7 @@ class ManageRoomsController extends Controller
             $room->capacity = $validated['capacity'];
             $room->class = $validated['class'];
             $room->room_details = $validated['room_details'];
-            $room->service_rates = $validated['service_rates'];
+            // $room->service_rates = $validated['service_rates'];
             $room->status_id = $validated['status_id'];
 
             // ถ้าเลือก "อื่นๆ"

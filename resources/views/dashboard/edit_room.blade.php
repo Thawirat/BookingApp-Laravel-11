@@ -47,10 +47,10 @@
                     <label for="room_details">รายละเอียดห้อง</label>
                     <textarea class="form-control" id="room_details" name="room_details">{{ $room->room_details }}</textarea>
                 </div>
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label for="service_rates">อัตราค่าบริการ</label>
                     <input type="number" class="form-control" id="service_rates" name="service_rates" value="{{ $room->service_rates }}" required min="0">
-                </div>
+                </div> --}}
                 <div class="form-group">
                     <label for="status_id">สถานะห้อง</label>
                     <select class="form-control" id="status_id" name="status_id" required>

@@ -94,7 +94,7 @@
                                                        '{{ $room->room_type }}',
                                                         '{{ $room->room_type_other ?? '' }}',
                                                        '{{ $room->room_details }}',
-                                                       '{{ $room->service_rates }}',
+
                                                        '{{ $room->image ? asset('storage/' . $room->image) : '' }}',
                                                        '{{ $room->class }}',
                                                        '{{ $room->status_id }}'
@@ -164,11 +164,11 @@
                             <label class="form-label fw-bold">รายละเอียดห้อง</label>
                             <textarea class="form-control shadow-sm" id="room_details" name="room_details" rows="3"></textarea>
                         </div>
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label class="form-label fw-bold">อัตราค่าบริการ (บาท)</label>
                             <input type="number" class="form-control shadow-sm" id="service_rates" name="service_rates"
                                 min="0" required>
-                        </div>
+                        </div> --}}
                         <div class="mb-3">
                             <label class="form-label fw-bold">สถานะ</label>
                             <select class="form-select shadow-sm" id="status" name="status_id" required>
@@ -216,7 +216,7 @@
             document.getElementById('custom_room_type').value = '';
             document.getElementById('custom_room_type').classList.add('d-none');
             document.getElementById('room_details').value = '';
-            document.getElementById('service_rates').value = '';
+            // document.getElementById('service_rates').value = '';
             document.getElementById('currentImage').innerHTML = '';
             document.getElementById('status').value = '2';
 
@@ -233,7 +233,7 @@
             document.getElementById('room_name').value = roomName;
             document.getElementById('capacity').value = capacity;
             document.getElementById('room_details').value = roomDetails;
-            document.getElementById('service_rates').value = serviceRates;
+            // document.getElementById('service_rates').value = serviceRates;
             document.getElementById('status').value = statusId;
 
             const select = document.getElementById('room_type_select');

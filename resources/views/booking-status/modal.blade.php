@@ -28,7 +28,7 @@
                             <li><strong>วัตถุประสงค์:</strong> {{ $booking->reason ?? 'ไม่ระบุ' }}</li>
                             <li><strong>จำนวนผู้เข้าร่วม:</strong> {{ $booking->participant_count ?? 'ไม่ระบุ' }} คน</li>
                             <li><strong>รายละเอียดเพิ่มเติม:</strong> {{ $booking->booker_info ?? 'ไม่ระบุ' }}</li>
-                            <li><strong>สถานะการชำระเงิน:</strong>
+                            {{-- <li><strong>สถานะการชำระเงิน:</strong>
                                 <span
                                     class="badge dropdown-toggle
                                     @if ($booking->payment_status == 'paid') bg-success
@@ -45,7 +45,7 @@
                                         'cancelled' => 'ยกเลิกการชำระ',
                                     } }}
                                 </span>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                     <!-- Booker Info -->

@@ -17,7 +17,7 @@
                             <th class="text-center">วันที่จอง</th>
                             <th class="text-center">วันที่เริ่มต้น-สิ้นสุด</th>
                             <th class="text-center">สถานะ</th>
-                            <th class="text-center">สถานะการชำระเงิน</th>
+                            {{-- <th class="text-center">สถานะการชำระเงิน</th> --}}
                             <th class="text-center">รายละเอียด</th>
                             <th class="text-center">PDF</th>
                         </tr>
@@ -48,7 +48,7 @@
                                         {{ $booking->status->status_name }}
                                     </span>
                                 </td>
-                                <td class="text-center">
+                                {{-- <td class="text-center">
                                     @php
                                         $statusClass =
                                             [
@@ -88,7 +88,7 @@
                                         </ul>
                                     </div>
                                     @include('booking-status.slip-for-status')
-                                </td>
+                                </td> --}}
                                 <td class="text-center">
                                     <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#detailsModal{{ $booking->id }}">

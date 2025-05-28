@@ -17,7 +17,7 @@
                             <th class="text-center">วันที่จอง</th>
                             <th class="text-center">วันที่เริ่มต้น-สิ้นสุด</th>
                             <th class="text-center">สถานะ</th>
-                            <th class="text-center">การชำระเงิน</th>
+                            {{-- <th class="text-center">การชำระเงิน</th> --}}
                             <th class="text-center">รายละเอียด</th>
                             <th class="text-center"><a href="{{ route('bookings.download.all.pdf') }}"
                                     class="btn btn-outline-danger btn-sm">
@@ -47,12 +47,22 @@
                                 </td>
                                 <td class="text-center">
                                     <span
-                                        class="badge bg-{{ $booking->status->status_name === 'อนุมัติ' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : 'secondary') }}">
+                                        class="badge
+                                        @if ($booking->status->status_name === 'อนุมัติ') bg-success
+                                        @elseif ($booking->status->status_name === 'รอดำเนินการ')
+                                            bg-warning text-dark
+                                        @elseif ($booking->status->status_name === 'ดำเนินการเสร็จสิ้น')
+                                            bg-primary
+                                        @elseif ($booking->status->status_name === 'ยกเลิกการจอง')
+                                            bg-danger
+                                        @else
+                                            bg-secondary @endif">
                                         {{ $booking->status->status_name }}
                                     </span>
                                 </td>
+
                                 {{-- สถานะการชำระเงิน --}}
-                                <td class="text-center">
+                                {{-- <td class="text-center">
                                     @php
                                         $statusClass =
                                             [
@@ -71,7 +81,7 @@
                                             ][$booking->payment_status] ?? 'ยังไม่ชำระ';
                                     @endphp
                                     <span class="badge {{ $statusClass }}">{{ $statusText }}</span>
-                                </td>
+                                </td> --}}
                                 </td>
                                 <td class="text-center">
                                     <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"

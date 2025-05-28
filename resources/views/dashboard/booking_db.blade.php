@@ -75,7 +75,7 @@
                                             <th class="text-center">เบอร์โทรศัพท์</th>
                                             <th class="text-center">วันเวลาที่จอง</th>
                                             <th class="text-center">วันเวลาที่สิ้นสุดจอง</th>
-                                            <th class="text-center">สถานะการชำระเงิน</th>
+                                            {{-- <th class="text-center">สถานะการชำระเงิน</th> --}}
                                             <th class="text-center">สถานะการอนุมัติ</th>
                                             <th class="text-center">การดำเนินการ</th>
                                         </tr>
@@ -114,9 +114,9 @@
                                                         {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
                                                     </small>
                                                 </td>
-                                                <td class="text-center">
+                                                {{-- <td class="text-center">
                                                     @include('component-dropdown.payment', ['booking' => $booking,])
-                                                </td>
+                                                </td> --}}
                                                 <td class="text-center">
                                                     @include('component-dropdown.accept', ['booking' => $booking,])
                                                 </td>

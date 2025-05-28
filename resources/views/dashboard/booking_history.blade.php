@@ -75,12 +75,12 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center">#</th>
-                                        <th>รหัสการจอง</th>
-                                        <th>ผู้จองห้อง</th>
-                                        <th>เบอร์โทรศัพท์</th>
-                                        <th>วันเวลาที่จอง</th>
-                                        <th>วันเวลาที่สิ้นสุดจอง</th>
-                                        <th>สถานะการชำระเงิน</th>
+                                        <th class="text-center">รหัสการจอง</th>
+                                        <th class="text-center">ผู้จองห้อง</th>
+                                        <th class="text-center">เบอร์โทรศัพท์</th>
+                                        <th class="text-center">วันเวลาที่จอง</th>
+                                        <th class="text-center">วันเวลาที่สิ้นสุดจอง</th>
+                                        {{-- <th>สถานะการชำระเงิน</th> --}}
                                         <th class="text-center">สถานะการจอง</th>
                                         <th class="text-center">การดำเนินการ</th>
                                     </tr>
@@ -111,16 +111,16 @@
                                                 {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
                                             </small>
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             <span class="badge {{ $booking->payment_status == 'ชำระแล้ว' ? 'bg-success' : 'bg-warning' }}">
                                                 {{ $booking->payment_status }}
                                             </span>
-                                        </td>
+                                        </td> --}}
                                         <td class="text-center">
                                             <span class="badge
                                                 @if($booking->status_id == 4) bg-success
                                                 @elseif($booking->status_id == 5) bg-danger
-                                                @elseif($booking->status_id == 6) bg-secondary
+                                                @elseif($booking->status_id == 6) bg-info text-dark
                                                 @else bg-info @endif">
                                                 {{ $booking->status_name }}
                                             </span>
