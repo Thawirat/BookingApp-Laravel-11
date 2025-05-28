@@ -21,18 +21,26 @@ class RegisterController extends Controller
 
         $user = $this->create($request->all());
 
-        // Optionally, log the user in after registration
-        // auth()->login($user);
-
-        return redirect()->route('login')->with('success', 'Registration successful! Please log in.');
+        return redirect()->route('login')->with('success', 'ลงทะเบียนสำเร็จ กรุณาเข้าสู่ระบบ');
     }
 
     protected function validator(array $data)
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                'regex:/^[a-zA-Z0-9._%+-]+@snru\.ac\.th$/i',
+            ],
+            'department' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'email.regex' => 'อีเมลต้องลงท้ายด้วย @snru.ac.th เท่านั้น',
         ]);
     }
 
@@ -41,6 +49,8 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'department' => $data['department'],
+            'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
     }
