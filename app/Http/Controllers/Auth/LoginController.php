@@ -18,15 +18,25 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Redirect to the main page after successful login
-            return redirect()->intended('/');
+            if (auth()->user()->status !== 'active') {
+                $status = auth()->user()->status;
+                Auth::logout();
+
+                return back()->withErrors([
+                    'email' => $status === 'pending'
+                        ? 'บัญชีของคุณยังรอการอนุมัติจากแอดมิน'
+                        : 'บัญชีของคุณถูกปฏิเสธ โปรดติดต่อแอดมิน',
+                ]);
+            }
+
+            return redirect()->intended('/login'); // หรือ path ที่ต้องการ
         }
 
-        // Flash message for unsuccessful login
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->withInput($request->only('email'));
+            'email' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
+        ]);
     }
+
 
     public function logout(Request $request)
     {

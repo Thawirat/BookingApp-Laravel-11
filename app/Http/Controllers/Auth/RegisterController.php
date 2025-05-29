@@ -37,7 +37,7 @@ class RegisterController extends Controller
                 'regex:/^[a-zA-Z0-9._%+-]+@snru\.ac\.th$/i',
             ],
             'department' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone_number' => ['required', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
             'email.regex' => 'อีเมลต้องลงท้ายด้วย @snru.ac.th เท่านั้น',
@@ -50,7 +50,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'department' => $data['department'],
-            'phone' => $data['phone'],
+            'phone_number' => $data['phone_number'],
             'password' => Hash::make($data['password']),
         ]);
     }

@@ -19,6 +19,7 @@ use App\Http\Controllers\UsageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomTypeController;
+use App\Http\Controllers\Auth\PasswordResetController;
 
 Route::get('/booking/approve/{id}', [Booking_dbController::class, 'approve'])->name('booking.approve');
 Route::get('/booking/reject/{id}', [Booking_dbController::class, 'reject'])->name('booking.reject');
@@ -172,3 +173,16 @@ Route::get('/room-types/create', [RoomTypeController::class, 'create'])->name('r
 Route::post('/room-types', [RoomTypeController::class, 'store'])->name('room-types.store');
 Route::get('/room-types', [RoomTypeController::class, 'index'])->name('room-types.index');
 Route::resource('room-types', RoomTypeController::class)->except(['show']);
+Route::patch('/users/{id}/status', [UserController::class, 'updateStatus'])->name('users.updateStatus');
+Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+// ส่ง OTP ไปอีเมล
+Route::post('forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+// แสดงฟอร์มกรอก OTP
+Route::get('verify-otp', [PasswordResetController::class, 'showOtpForm'])->name('password.otp');
+// ตรวจสอบ OTP
+Route::post('verify-otp', [PasswordResetController::class, 'verifyOtp'])->name('password.otp.verify');
+// แสดงฟอร์มรีเซ็ตรหัสผ่าน
+Route::get('reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.reset');

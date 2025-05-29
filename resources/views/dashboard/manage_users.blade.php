@@ -72,10 +72,13 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">ลำดับที่</th>
-                                        <th class="text-center">ชื่อผู้ใช้</th>
+                                        <th class="text-center">ชื่อ-นามสกุล</th>
+                                        <th class="text-center">หน่วยงาน</th>
                                         <th class="text-center">อีเมล</th>
+                                        <th class="text-center">เบอร์โทรศัพท์</th>
                                         <th class="text-center">บทบาท</th>
-                                        <th class="text-center">การกระทำ</th>
+                                        <th class="text-center">สถานะ</th>
+                                        <th class="text-center"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,7 +87,9 @@
                                             <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}
                                             </td>
                                             <td>{{ $user->name }}</td>
+                                            <td>{{ $user->department }}</td>
                                             <td>{{ $user->email }}</td>
+                                            <td>{{ $user->phone_number }}</td>
                                             <td>
                                                 @if ($user->role === 'admin')
                                                     <span class="badge bg-primary">ผู้ดูแลระบบหลัก</span>
@@ -93,6 +98,39 @@
                                                 @else
                                                     <span class="badge bg-secondary">ผู้ใช้ทั่วไป</span>
                                                 @endif
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('users.updateStatus', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    @php
+                                                        $statusClass = match ($user->status) {
+                                                            'pending' => 'bg-warning text-dark',
+                                                            'active' => 'bg-success text-white',
+                                                            'rejected' => 'bg-danger text-white',
+                                                            default => 'bg-secondary text-white',
+                                                        };
+                                                    @endphp
+
+                                            <td>
+                                                <form action="{{ route('users.updateStatus', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <div class="{{ $statusClass }} rounded px-2 py-1">
+                                                        <select name="status" onchange="this.form.submit()"
+                                                            class="form-select form-select-sm border-0 bg-transparent text-dark fw-bold">
+                                                            <option value="pending"
+                                                                {{ $user->status === 'pending' ? 'selected' : '' }}>
+                                                                รออนุมัติ</option>
+                                                            <option value="active"
+                                                                {{ $user->status === 'active' ? 'selected' : '' }}>
+                                                                อนุมัติแล้ว</option>
+                                                            <option value="rejected"
+                                                                {{ $user->status === 'rejected' ? 'selected' : '' }}>
+                                                                ไม่อนุมัติ</option>
+                                                        </select>
+                                                    </div>
+                                                </form>
                                             </td>
                                             <td>
                                                 <!-- แก้ไขผู้ใช้ -->

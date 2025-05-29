@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Hash;
-
+use App\Models\User;
+use App\Mail\UserApprovedMail;
+use App\Mail\UserRejectedMail;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -27,7 +29,7 @@ class UserController extends Controller
         ]);
 
         $user = Auth::user();
-        $user->update($request->only('name','email', 'phone', 'address', 'phone_number', 'address', 'user_type', 'position', 'department'));
+        $user->update($request->only('name', 'email', 'phone', 'address', 'phone_number', 'address', 'user_type', 'position', 'department'));
 
         return back()->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
     }
@@ -75,5 +77,27 @@ class UserController extends Controller
         }
 
         return back()->with('success', 'อัปเดตโปรไฟล์เรียบร้อยแล้ว');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $oldStatus = $user->status;
+        $newStatus = $request->input('status');
+
+        $user->status = $newStatus;
+        $user->save();
+
+        // ถ้าเปลี่ยนจาก pending เป็น active → ส่งเมลแจ้งว่าอนุมัติ
+        if ($oldStatus !== 'active' && $newStatus === 'active') {
+            Mail::to($user->email)->send(new UserApprovedMail($user));
+        }
+
+        // ถ้าเปลี่ยนจาก pending เป็น rejected → ส่งเมลแจ้งว่าไม่อนุมัติ
+        if ($oldStatus !== 'rejected' && $newStatus === 'rejected') {
+            Mail::to($user->email)->send(new UserRejectedMail($user));
+        }
+
+        return back()->with('success', 'อัปเดตสถานะเรียบร้อยแล้ว');
     }
 }
