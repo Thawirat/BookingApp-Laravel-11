@@ -94,31 +94,30 @@
                                                 @if ($user->role === 'admin')
                                                     <span class="badge bg-primary">ผู้ดูแลระบบหลัก</span>
                                                 @elseif($user->role === 'sub-admin')
-                                                    <span class="badge bg-info">ผู้ดูแลอาคาร</span>
+                                                    <span class="badge bg-info text-white">ผู้ดูแลอาคาร</span>
                                                 @else
                                                     <span class="badge bg-secondary">ผู้ใช้ทั่วไป</span>
                                                 @endif
                                             </td>
-                                            <td>
-                                                <form action="{{ route('users.updateStatus', $user->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    @php
-                                                        $statusClass = match ($user->status) {
-                                                            'pending' => 'bg-warning text-dark',
-                                                            'active' => 'bg-success text-white',
-                                                            'rejected' => 'bg-danger text-white',
-                                                            default => 'bg-secondary text-white',
-                                                        };
-                                                    @endphp
 
                                             <td>
                                                 <form action="{{ route('users.updateStatus', $user->id) }}" method="POST">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <div class="{{ $statusClass }} rounded px-2 py-1">
+
+                                                    @php
+                                                        $statusColor = match ($user->status) {
+                                                            'pending' => 'warning',
+                                                            'active' => 'success',
+                                                            'rejected' => 'danger',
+                                                            default => 'secondary',
+                                                        };
+                                                    @endphp
+
+                                                    <div class="status-select-wrapper">
                                                         <select name="status" onchange="this.form.submit()"
-                                                            class="form-select form-select-sm border-0 bg-transparent text-dark fw-bold">
+                                                            class="form-select form-select-sm rounded-pill bg-{{ $statusColor }} text-white shadow-none border-0 text-center fw-bold py-1 px-2"
+                                                            style="font-size: 0.85rem; min-width: 130px;">
                                                             <option value="pending"
                                                                 {{ $user->status === 'pending' ? 'selected' : '' }}>
                                                                 รออนุมัติ</option>

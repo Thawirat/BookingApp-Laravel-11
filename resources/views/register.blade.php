@@ -45,9 +45,9 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700" for="phone">เบอร์โทรศัพท์</label>
+                <label class="block text-sm font-medium text-gray-700" for="phone_number">เบอร์โทรศัพท์</label>
                 <input class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="phone" name="phone" type="tel" required pattern="[0-9]{10}"
+                    id="phone_number" name="phone_number" type="tel" required pattern="[0-9]{10}" maxlength="10"
                     title="กรุณาใส่เบอร์โทรศัพท์ 10 หลัก" />
                 <p id="phoneError" class="text-sm text-red-600 mt-1 hidden">กรุณากรอกเบอร์โทร 10 หลัก</p>
             </div>
@@ -113,7 +113,7 @@
         const emailInput = document.getElementById("email");
         const emailError = document.getElementById("emailError");
 
-        const phoneInput = document.getElementById("phone");
+        const phoneInput = document.getElementById("phone_number");
         const phoneError = document.getElementById("phoneError");
 
         const passwordInput = document.getElementById("password");
@@ -175,7 +175,7 @@
             }
 
             // ตรวจสอบเบอร์โทร
-            const phone = phoneInput.value.trim();
+            const phone = phoneInput.value.replace(/\D/g, '');
             if (!/^[0-9]{10}$/.test(phone)) {
                 phoneInput.classList.add("border-red-500");
                 phoneError.classList.remove("hidden");
