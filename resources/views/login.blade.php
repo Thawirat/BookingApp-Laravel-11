@@ -33,7 +33,9 @@
             </div>
         @endif
         @if (session('status'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded relative max-w-md w-full text-center alert alert-success">{{ session('status') }}</div>
+            <div
+                class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded relative max-w-md w-full text-center alert alert-success">
+                {{ session('status') }}</div>
         @endif
 
         <form class="space-y-6" action="{{ route('login.post') }}" method="POST">
@@ -43,10 +45,15 @@
                 <input class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     id="email" name="email" type="email" required />
             </div>
-            <div>
+            <div class="relative">
                 <label class="block text-sm font-medium text-gray-700" for="password">รหัสผ่าน</label>
-                <input class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <input
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
                     id="password" name="password" type="password" required />
+                <span class="absolute right-3 top-7 cursor-pointer text-gray-500"
+                    onclick="togglePasswordVisibility('password', this)">
+                    <i class="fas fa-eye"></i>
+                </span>
             </div>
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
@@ -72,5 +79,20 @@
                 href="{{ url('/') }}">กลับสู่หน้าหลัก</a></p>
     </div>
 </body>
+<script>
+    function togglePasswordVisibility(inputId, toggleIcon) {
+        const input = document.getElementById(inputId);
+        const icon = toggleIcon.querySelector('i');
 
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>
 </html>

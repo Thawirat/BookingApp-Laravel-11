@@ -55,7 +55,7 @@ class DashboardController extends Controller
             $totalBuildings = \App\Models\Building::count(); // จำนวนอาคารทั้งหมด
         }
 
-        return view('dashboard.dashboard', compact(
+        return view('index', compact(
             'recentBookings',
             'monthlyBookings',
             'weeklyStats',
@@ -66,9 +66,9 @@ class DashboardController extends Controller
         ));
     }
 
-
     public function showIndex()
     {
+
         // ดึงจำนวนห้องทั้งหมดจากฐานข้อมูล
         $user = Auth::user();
 
@@ -86,9 +86,15 @@ class DashboardController extends Controller
             $totalBuildings = \App\Models\Building::count();
             $totalUsers = \App\Models\User::count();
             $totalBuildings = \App\Models\Building::count(); // จำนวนอาคารทั้งหมด
+            $myBookings = Booking::with(['room', 'room.building', 'status'])
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+            $totalmyBookings = Booking::where('user_id', Auth::id())->count();
         }
 
-        return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings'));
+        return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings', 'myBookings', 'totalmyBookings'));
     }
     public function __construct()
     {

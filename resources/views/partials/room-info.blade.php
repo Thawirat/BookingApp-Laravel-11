@@ -6,7 +6,7 @@
         <!-- Room Image -->
         <div class="mb-4">
             @if (isset($room->image))
-                <img src="{{ asset($room->image) }}" alt="{{ $room->room_name }}" class="img-fluid rounded-lg shadow-sm">
+                <img src="{{ asset('storage/' .$room->image) }}" alt="{{ $room->room_name }}" class="img-fluid rounded-lg shadow-sm">
             @else
                 <div class="bg-light rounded-lg d-flex align-items-center justify-content-center py-5">
                     <span class="text-muted"><i class="bi bi-image me-2"></i>ไม่มีรูปภาพ</span>
