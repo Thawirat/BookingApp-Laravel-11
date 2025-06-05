@@ -27,7 +27,7 @@ class CalendarController extends Controller
             return [
                 'status_id' => $status->status_id,
                 'status_name' => $status->status_name,
-                'color' => config('status.colors.'.$status->status_id, '#607D8B'),
+                'color' => config('status.colors.' . $status->status_id, '#607D8B'),
             ];
         });
 
@@ -64,7 +64,7 @@ class CalendarController extends Controller
             ->leftJoin('status', 'bookings.status_id', '=', 'status.status_id')
             ->get()
             ->map(function ($booking) {
-                $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+                $booking->statusColor = config('status.colors.' . $booking->status_id, '#607D8B');
                 return $booking;
             });
 
@@ -102,7 +102,13 @@ class CalendarController extends Controller
         }
 
         return view('calendar.index', compact(
-            'calendarData', 'statusList', 'prevMonth', 'nextMonth', 'currentMonth', 'currentDate', 'view'
+            'calendarData',
+            'statusList',
+            'prevMonth',
+            'nextMonth',
+            'currentMonth',
+            'currentDate',
+            'view'
         ));
     }
 
@@ -130,7 +136,7 @@ class CalendarController extends Controller
             ->selectRaw('IFNULL(users.name, bookings.external_name) as user_name')
             ->get()
             ->map(function ($booking) {
-                $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+                $booking->statusColor = config('status.colors.' . $booking->status_id, '#607D8B');
                 return $booking;
             });
 
@@ -144,7 +150,15 @@ class CalendarController extends Controller
         }
 
         return view('calendar.index', compact(
-            'weekDays', 'timeSlots', 'bookingsByDay', 'statusList', 'prevMonth', 'nextMonth', 'currentMonth', 'currentDate', 'view'
+            'weekDays',
+            'timeSlots',
+            'bookingsByDay',
+            'statusList',
+            'prevMonth',
+            'nextMonth',
+            'currentMonth',
+            'currentDate',
+            'view'
         ));
     }
 
@@ -159,7 +173,7 @@ class CalendarController extends Controller
             ->selectRaw('IFNULL(users.name, bookings.external_name) as user_name')
             ->get()
             ->map(function ($booking) {
-                $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+                $booking->statusColor = config('status.colors.' . $booking->status_id, '#607D8B');
                 return $booking;
             });
 
@@ -172,7 +186,15 @@ class CalendarController extends Controller
         }
 
         return view('calendar.index', compact(
-            'dayViewDate', 'timeSlots', 'bookingsByTime', 'statusList', 'prevMonth', 'nextMonth', 'currentMonth', 'currentDate', 'view'
+            'dayViewDate',
+            'timeSlots',
+            'bookingsByTime',
+            'statusList',
+            'prevMonth',
+            'nextMonth',
+            'currentMonth',
+            'currentDate',
+            'view'
         ));
     }
 
@@ -188,12 +210,18 @@ class CalendarController extends Controller
             ->selectRaw('IFNULL(users.name, bookings.external_name) as user_name')
             ->get()
             ->map(function ($booking) {
-                $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+                $booking->statusColor = config('status.colors.' . $booking->status_id, '#607D8B');
                 return $booking;
             });
 
         return view('calendar.index', compact(
-            'listBookings', 'statusList', 'prevMonth', 'nextMonth', 'currentMonth', 'currentDate', 'view'
+            'listBookings',
+            'statusList',
+            'prevMonth',
+            'nextMonth',
+            'currentMonth',
+            'currentDate',
+            'view'
         ));
     }
 
@@ -211,7 +239,7 @@ class CalendarController extends Controller
                 'date' => $currentDay->format('Y-m-d'),
                 'day_th' => $this->getDayThai($currentDay->format('l')),
                 'day_full' => $currentDay->locale('th')->translatedFormat('j M'),
-                'is_holiday' => in_array($currentDay->format('w'), [0, 6]), // เสาร์-อาทิตย์
+                'is_holiday' => in_array($currentDay->format('w'), [0, 6]),
                 'is_today' => $currentDay->isToday(),
             ];
         }
@@ -226,9 +254,16 @@ class CalendarController extends Controller
         }
         $tableRooms = $roomsQuery->get();
 
-        // ดึงข้อมูลการจองในช่วงวันที่ที่เลือก
+        // ดึงข้อมูลการจองที่อาจจะเริ่มก่อนหน้าหรือสิ้นสุดหลังจากช่วงที่แสดง
         $bookingsQuery = Booking::with(['status:status_id,status_name', 'user:id,name'])
-            ->whereBetween('booking_start', [$startDate, $endDate])
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('booking_start', [$startDate, $endDate])
+                    ->orWhereBetween('booking_end', [$startDate, $endDate])
+                    ->orWhere(function ($q) use ($startDate, $endDate) {
+                        $q->where('booking_start', '<=', $startDate)
+                            ->where('booking_end', '>=', $endDate);
+                    });
+            })
             ->select('id', 'room_id', 'building_id', 'booking_start', 'booking_end', 'status_id', 'user_id', 'external_name');
 
         if ($building_id) {
@@ -236,27 +271,66 @@ class CalendarController extends Controller
         }
 
         $bookings = $bookingsQuery->get()->map(function ($booking) {
-            $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+            $booking->statusColor = config('status.colors.' . $booking->status_id, '#607D8B');
             return $booking;
         });
 
-        // จัดกลุ่มข้อมูลการจองตาม room_id และวันที่
+        // จัดกลุ่มข้อมูลการจองตาม room_id
         $tableBookingData = [];
         foreach ($bookings as $booking) {
-            $bookingDate = Carbon::parse($booking->booking_start)->format('Y-m-d');
-            $tableBookingData[$booking->room_id][$bookingDate][] = [
-                'id' => $booking->id,
-                'time' => Carbon::parse($booking->booking_start)->format('H:i') . ' - ' . Carbon::parse($booking->booking_end)->format('H:i'),
-                'user_name' => $booking->user->name ?? $booking->external_name ?? 'ไม่ระบุ',
-                'status_name' => $booking->status->status_name ?? 'ไม่ทราบ',
-                'status_id' => $booking->status_id ?? 0,
-                'statusColor' => $booking->statusColor,
-            ];
+            $bookingStart = Carbon::parse($booking->booking_start);
+            $bookingEnd = Carbon::parse($booking->booking_end);
+
+            // หาวันที่เริ่มต้นและสิ้นสุดในช่วงที่แสดง
+            $displayStartDate = max($bookingStart->format('Y-m-d'), $startDate);
+            $displayEndDate = min($bookingEnd->format('Y-m-d'), $endDate);
+
+            // คำนวณ colspan
+            $startIndex = null;
+            $endIndex = null;
+
+            foreach ($tableDates as $index => $dateInfo) {
+                if ($dateInfo['date'] === $displayStartDate) {
+                    $startIndex = $index;
+                }
+                if ($dateInfo['date'] === $displayEndDate) {
+                    $endIndex = $index;
+                }
+            }
+
+            if ($startIndex !== null && $endIndex !== null) {
+                $colspan = $endIndex - $startIndex + 1;
+
+                $tableBookingData[$booking->room_id][] = [
+                    'id' => $booking->id,
+                    'start_index' => $startIndex,
+                    'colspan' => $colspan,
+                    'time' => $bookingStart->format('H:i') . ' - ' . $bookingEnd->format('H:i'),
+                    'date_range' => $bookingStart->locale('th')->translatedFormat('j M') .
+                        ($bookingStart->format('Y-m-d') !== $bookingEnd->format('Y-m-d') ?
+                            ' - ' . $bookingEnd->locale('th')->translatedFormat('j M') : ''),
+                    'user_name' => $booking->user->name ?? $booking->external_name ?? 'ไม่ระบุ',
+                    'status_name' => $booking->status->status_name ?? 'ไม่ทราบ',
+                    'status_id' => $booking->status_id ?? 0,
+                    'statusColor' => $booking->statusColor,
+                    'booking_start' => $booking->booking_start,
+                    'booking_end' => $booking->booking_end,
+                ];
+            }
         }
 
         return view('calendar.index', compact(
-            'tableDates', 'buildings', 'tableRooms', 'tableBookingData', 'building_id',
-            'statusList', 'prevMonth', 'nextMonth', 'currentMonth', 'currentDate', 'view'
+            'tableDates',
+            'buildings',
+            'tableRooms',
+            'tableBookingData',
+            'building_id',
+            'statusList',
+            'prevMonth',
+            'nextMonth',
+            'currentMonth',
+            'currentDate',
+            'view'
         ));
     }
 
@@ -304,7 +378,7 @@ class CalendarController extends Controller
         }
 
         // Add status color from config
-        $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+        $booking->statusColor = config('status.colors.' . $booking->status_id, '#607D8B');
 
         // Get booking history
         $history = DB::table('booking_histories')
@@ -316,7 +390,7 @@ class CalendarController extends Controller
             ->orderBy('changed_at', 'desc')
             ->get()
             ->map(function ($item) {
-                $item->statusColor = config('status.colors.'.$item->status_id, '#607D8B');
+                $item->statusColor = config('status.colors.' . $item->status_id, '#607D8B');
                 return $item;
             });
 
