@@ -54,7 +54,7 @@ Route::get('/booking', [BookingController::class, 'index'])->name('booking.index
 // ทิน
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 Route::get('/calendar/data', [CalendarController::class, 'getCalendarData'])->name('calendar.data');
-Route::get('/calendar/table', [CalendarController::class, 'getTableView'])->name('calendar.table');
+Route::get('/calendar/table', [CalendarController::class, 'TableView'])->name('calendar.table');
 // Building routes
 Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index');
 Route::middleware(['auth'])->group(function () {

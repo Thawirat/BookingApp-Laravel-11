@@ -8,12 +8,14 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Room;
+use App\Models\Building;
 
 class CalendarController extends Controller
 {
     public function index(Request $request)
     {
-        // Get view type (month, week, day, list)
+        // Get view type (month, week, day, list, table)
         $view = $request->get('view', 'month');
 
         // Get the current date or the date from request
@@ -43,6 +45,8 @@ class CalendarController extends Controller
                 return $this->dayView($date, $statusList, $prevMonth, $nextMonth, $currentMonth, $currentDate, $view);
             case 'list':
                 return $this->listView($date, $statusList, $prevMonth, $nextMonth, $currentMonth, $currentDate, $view);
+            case 'table':
+                return $this->tableView($request, $date, $statusList, $prevMonth, $nextMonth, $currentMonth, $currentDate, $view);
             default:
                 return $this->monthView($date, $statusList, $prevMonth, $nextMonth, $currentMonth, $currentDate, $view);
         }
@@ -61,7 +65,6 @@ class CalendarController extends Controller
             ->get()
             ->map(function ($booking) {
                 $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
-
                 return $booking;
             });
 
@@ -128,14 +131,10 @@ class CalendarController extends Controller
             ->get()
             ->map(function ($booking) {
                 $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
-
                 return $booking;
             });
 
-        $timeSlots = [];
-        for ($hour = 8; $hour <= 22; $hour++) {
-            $timeSlots[] = sprintf('%02d:00', $hour);
-        }
+        $timeSlots = $this->getTimeSlots();
 
         $bookingsByDay = [];
         foreach ($bookings as $booking) {
@@ -161,14 +160,10 @@ class CalendarController extends Controller
             ->get()
             ->map(function ($booking) {
                 $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
-
                 return $booking;
             });
 
-        $timeSlots = [];
-        for ($hour = 8; $hour <= 22; $hour++) {
-            $timeSlots[] = sprintf('%02d:00', $hour);
-        }
+        $timeSlots = $this->getTimeSlots();
 
         $bookingsByTime = [];
         foreach ($bookings as $booking) {
@@ -194,13 +189,100 @@ class CalendarController extends Controller
             ->get()
             ->map(function ($booking) {
                 $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
-
                 return $booking;
             });
 
         return view('calendar.index', compact(
             'listBookings', 'statusList', 'prevMonth', 'nextMonth', 'currentMonth', 'currentDate', 'view'
         ));
+    }
+
+    private function tableView($request, $date, $statusList, $prevMonth, $nextMonth, $currentMonth, $currentDate, $view)
+    {
+        $building_id = $request->get('building_id');
+        $startDate = $date->format('Y-m-d');
+        $endDate = $date->copy()->addDays(6)->format('Y-m-d');
+
+        // สร้างข้อมูลวันที่ 7 วัน
+        $tableDates = [];
+        for ($i = 0; $i < 7; $i++) {
+            $currentDay = $date->copy()->addDays($i);
+            $tableDates[] = [
+                'date' => $currentDay->format('Y-m-d'),
+                'day_th' => $this->getDayThai($currentDay->format('l')),
+                'day_full' => $currentDay->locale('th')->translatedFormat('j M'),
+                'is_holiday' => in_array($currentDay->format('w'), [0, 6]), // เสาร์-อาทิตย์
+                'is_today' => $currentDay->isToday(),
+            ];
+        }
+
+        // ดึงข้อมูลอาคารทั้งหมด
+        $buildings = Building::select('id as building_id', 'building_name')->get();
+
+        // ดึงข้อมูลห้อง
+        $roomsQuery = Room::with('building:id,building_name');
+        if ($building_id) {
+            $roomsQuery->where('building_id', $building_id);
+        }
+        $tableRooms = $roomsQuery->get();
+
+        // ดึงข้อมูลการจองในช่วงวันที่ที่เลือก
+        $bookingsQuery = Booking::with(['status:status_id,status_name', 'user:id,name'])
+            ->whereBetween('booking_start', [$startDate, $endDate])
+            ->select('id', 'room_id', 'building_id', 'booking_start', 'booking_end', 'status_id', 'user_id', 'external_name');
+
+        if ($building_id) {
+            $bookingsQuery->where('building_id', $building_id);
+        }
+
+        $bookings = $bookingsQuery->get()->map(function ($booking) {
+            $booking->statusColor = config('status.colors.'.$booking->status_id, '#607D8B');
+            return $booking;
+        });
+
+        // จัดกลุ่มข้อมูลการจองตาม room_id และวันที่
+        $tableBookingData = [];
+        foreach ($bookings as $booking) {
+            $bookingDate = Carbon::parse($booking->booking_start)->format('Y-m-d');
+            $tableBookingData[$booking->room_id][$bookingDate][] = [
+                'id' => $booking->id,
+                'time' => Carbon::parse($booking->booking_start)->format('H:i') . ' - ' . Carbon::parse($booking->booking_end)->format('H:i'),
+                'user_name' => $booking->user->name ?? $booking->external_name ?? 'ไม่ระบุ',
+                'status_name' => $booking->status->status_name ?? 'ไม่ทราบ',
+                'status_id' => $booking->status_id ?? 0,
+                'statusColor' => $booking->statusColor,
+            ];
+        }
+
+        return view('calendar.index', compact(
+            'tableDates', 'buildings', 'tableRooms', 'tableBookingData', 'building_id',
+            'statusList', 'prevMonth', 'nextMonth', 'currentMonth', 'currentDate', 'view'
+        ));
+    }
+
+    // Helper Methods
+    private function getTimeSlots($start = 8, $end = 22)
+    {
+        $timeSlots = [];
+        for ($hour = $start; $hour <= $end; $hour++) {
+            $timeSlots[] = sprintf('%02d:00', $hour);
+        }
+        return $timeSlots;
+    }
+
+    private function getDayThai($englishDay)
+    {
+        $days = [
+            'Sunday' => 'อา.',
+            'Monday' => 'จ.',
+            'Tuesday' => 'อ.',
+            'Wednesday' => 'พ.',
+            'Thursday' => 'พฤ.',
+            'Friday' => 'ศ.',
+            'Saturday' => 'ส.',
+        ];
+
+        return $days[$englishDay] ?? $englishDay;
     }
 
     public function getBookingDetails($id)
@@ -235,7 +317,6 @@ class CalendarController extends Controller
             ->get()
             ->map(function ($item) {
                 $item->statusColor = config('status.colors.'.$item->status_id, '#607D8B');
-
                 return $item;
             });
 
