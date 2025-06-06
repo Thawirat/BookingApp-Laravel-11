@@ -55,7 +55,7 @@ class DashboardController extends Controller
             $totalBuildings = \App\Models\Building::count(); // จำนวนอาคารทั้งหมด
         }
 
-        return view('index', compact(
+        return view('dashboard.dashboard', compact(
             'recentBookings',
             'monthlyBookings',
             'weeklyStats',
@@ -87,12 +87,20 @@ class DashboardController extends Controller
             $totalUsers = \App\Models\User::count();
             $totalBuildings = \App\Models\Building::count(); // จำนวนอาคารทั้งหมด
             $myBookings = Booking::with(['room', 'room.building', 'status'])
-            ->where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
+                ->where('user_id', Auth::id())
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get();
             $totalmyBookings = Booking::where('user_id', Auth::id())->count();
         }
+        foreach ($myBookings as $booking) {
+            if ($booking->room) {
+                logger("Booking ID {$booking->id} has room with image: " . $booking->room->image);
+            } else {
+                logger("Booking ID {$booking->id} has no room.");
+            }
+        }
+
 
         return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings', 'myBookings', 'totalmyBookings'));
     }

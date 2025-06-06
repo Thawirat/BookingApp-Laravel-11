@@ -21,8 +21,8 @@
                                     <p class="text-muted mb-1">อาคาร {{ $room->building->building_name }} ชั้น
                                         {{ $room->class }}</p>
                                     <p class="text-muted mb-1">รองรับได้ {{ $room->capacity }} คน</p>
-                                    <p class="fw-bold text-warning">฿{{ number_format($room->service_rates, 2) }} /ชั่วโมง
-                                    </p>
+                                    {{-- <p class="fw-bold text-warning">฿{{ number_format($room->service_rates, 2) }} /ชั่วโมง
+                                    </p> --}}
                                     <a href="{{ url('booking/' . $room->room_id) }}" class="btn btn-warning w-100">จองเลย</a>
                                 </div>
                             </div>

@@ -44,7 +44,7 @@
                                 </td>
                                 <td class="text-center">
                                     <span
-                                        class="badge bg-{{ $booking->status->status_name === 'อนุมัติ' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : 'secondary') }}">
+                                        class="badge bg-{{ $booking->status->status_name === 'อนุมัติแล้ว' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : 'secondary') }}">
                                         {{ $booking->status->status_name }}
                                     </span>
                                 </td>

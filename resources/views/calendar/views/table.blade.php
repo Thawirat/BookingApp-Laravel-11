@@ -192,12 +192,12 @@
     }
 
     /* Multi-day booking styling */
-    .booking-item[data-colspan="2"] {
+    /* .booking-item[data-colspan="2"] {
         background: linear-gradient(90deg, currentColor 0%, rgba(255, 255, 255, 0.1) 100%);
-    }
+    } */
 
     .booking-item[data-colspan="3"] {
-        background: linear-gradient(90deg, currentColor 0%, rgba(255, 255, 255, 0.1) 50%, currentColor 100%);
+        background: linear-gradient(90deg, currentColor 0%, rgba(130, 97, 97, 0.1) 50%, currentColor 100%);
     }
 
     /* เพิ่ม responsive สำหรับ mobile */

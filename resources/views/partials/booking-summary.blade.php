@@ -6,10 +6,10 @@
         <!-- Price Summary -->
         <div class="mb-4">
             <!-- Rate -->
-            <div class="d-flex justify-content-between py-2 border-bottom">
+            {{-- <div class="d-flex justify-content-between py-2 border-bottom">
                 <span class="text-muted">อัตราค่าบริการ:</span>
                 <span class="fw-bold">{{ number_format($room->service_rates ?? 0, 2) }} บาท/ชั่วโมง</span>
-            </div>
+            </div> --}}
             <!-- Days -->
             <div class="d-flex justify-content-between py-2 border-bottom">
                 <span class="text-muted">จำนวนวัน:</span>
@@ -26,18 +26,18 @@
                 <span id="checkOutTime"></span>
             </div>
             <!-- Service Fee -->
-            <div class="d-flex justify-content-between py-2 border-bottom">
+            {{-- <div class="d-flex justify-content-between py-2 border-bottom">
                 <span class="text-muted">ค่าบริการทั้งหมด:</span>
                 <span id="serviceFee">0 บาท</span>
-            </div>
+            </div> --}}
             <!-- Total Price -->
-            <div class="d-flex justify-content-between py-3">
+            {{-- <div class="d-flex justify-content-between py-3">
                 <span class="fw-bold">ราคารวมทั้งสิ้น:</span>
                 <span class="fw-bold text-warning h5 mb-0" id="totalPrice">0 บาท</span>
-            </div>
+            </div> --}}
         </div>
         <!-- Bank Payment -->
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             <div class="form-check mb-3">
                 <input type="checkbox" id="bankPaymentCheckbox" class="form-check-input">
                 <label for="bankPaymentCheckbox" class="form-check-label fw-semibold">
@@ -70,14 +70,14 @@
                     <div id="fileName" class="small text-muted mt-2">ยังไม่ได้เลือกไฟล์</div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <!-- Note -->
-        <div class="bg-light p-3 rounded-3 small">
+        {{-- <div class="bg-light p-3 rounded-3 small">
             <p class="mb-0 text-primary">
                 <i class="bi bi-info-circle-fill me-1"></i>
                 <span class="fw-semibold">หมายเหตุ:</span>
                 ราคาอาจมีการเปลี่ยนแปลงตามนโยบายและระยะเวลาที่จอง
             </p>
-        </div>
+        </div> --}}
     </div>
 </div>

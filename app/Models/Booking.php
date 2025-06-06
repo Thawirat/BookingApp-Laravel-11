@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
-     use SoftDeletes;
+    use SoftDeletes;
 
     protected $casts = [
         'created_at' => 'datetime',
@@ -26,8 +26,9 @@ class Booking extends Model
 
     public function room()
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(Room::class, 'room_id', 'room_id');
     }
+
     public function status()
     {
         return $this->belongsTo(\App\Models\Status::class, 'status_id');

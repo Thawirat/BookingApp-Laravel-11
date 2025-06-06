@@ -43,8 +43,9 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    <button class="btn btn-outline-secondary position-fixed m-3" id="toggleSidebar" style="z-index: 200;">
-        <i class="fas fa-bars"></i>
+    <button id="toggleSidebar" class="position-fixed top-0 start-0 m-3 d-flex align-items-center justify-content-center"
+        style="width: 50px; height: 50px; border: none; border-radius: 12px; background: #1e293b; color: white; z-index: 200; transition: background 0.3s;">
+        <i class="fas fa-bars fa-lg"></i>
     </button>
     <div id="mobile-overlay"></div>
     <!-- Sidebar -->

@@ -58,7 +58,7 @@
                     <div class="booking-carousel d-flex overflow-auto pb-3">
                         @foreach ($myBookings as $booking)
                             <div class="card me-3 flex-shrink-0" style="width: 300px;">
-                                @if (!empty($booking->room->image))
+                                @if (!empty($booking->room) && !empty($booking->room->image))
                                     <img src="{{ asset('storage/' . $booking->room->image) }}"
                                         alt="{{ $booking->room->room_name ?? 'Room Image' }}"
                                         class="img-fluid rounded-lg shadow-sm" style="height: 180px; object-fit: cover;">
@@ -83,7 +83,7 @@
                                         น.</div>
                                     <div><strong>สถานะ:</strong>
                                         <span
-                                            class="badge bg-{{ $booking->status->status_name === 'อนุมัติ' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : 'secondary') }}">
+                                            class="badge bg-{{ $booking->status->status_name === 'อนุมัติแล้ว' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : 'secondary') }}">
                                             {{ $booking->status->status_name ?? '-' }}
                                         </span>
                                     </div>
