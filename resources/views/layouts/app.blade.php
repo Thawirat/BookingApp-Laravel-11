@@ -17,16 +17,22 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- FullCalendar และ Bootstrap -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <!-- FullCalendar v5 -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/locale/th.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
-
+    <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5/main.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5/main.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/moment/moment.min.js'></script>
 </head>
 
 <body>
@@ -108,7 +114,8 @@
                                     class="fas fa-users-cog me-2"></i> จัดการผู้ใช้</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('room-types.index') }}" class="nav-link text-gray-700"><i class="fas fa-tags me-2"></i> จัดการประเภทห้อง</a>
+                            <a href="{{ route('room-types.index') }}" class="nav-link text-gray-700"><i
+                                    class="fas fa-tags me-2"></i> จัดการประเภทห้อง</a>
                         </li>
                     @endif
                 @endif

@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Room;
 use App\Models\Building;
+use Illuminate\Support\Facades\Log;
+
 
 class CalendarController extends Controller
 {
@@ -59,7 +61,15 @@ class CalendarController extends Controller
 
         $period = CarbonPeriod::create($firstDay, $lastDay);
 
-        $bookings = Booking::whereBetween('booking_start', [$firstDay, $lastDay])
+        // ดึงการจองทั้งหมดที่ "เริ่มหรือสิ้นสุด" ภายในเดือน
+        $allBookings = Booking::where(function ($query) use ($firstDay, $lastDay) {
+            $query->whereBetween('booking_start', [$firstDay, $lastDay])
+                ->orWhereBetween('booking_end', [$firstDay, $lastDay])
+                ->orWhere(function ($query) use ($firstDay, $lastDay) {
+                    $query->where('booking_start', '<', $firstDay)
+                        ->where('booking_end', '>', $lastDay);
+                });
+        })
             ->select('bookings.*', 'status.status_name', 'bookings.status_id')
             ->leftJoin('status', 'bookings.status_id', '=', 'status.status_id')
             ->get()
@@ -68,25 +78,21 @@ class CalendarController extends Controller
                 return $booking;
             });
 
-        $bookingsByDate = [];
-        foreach ($bookings as $booking) {
-            $bookingDate = Carbon::parse($booking->booking_start)->format('Y-m-d');
-            $bookingsByDate[$bookingDate][] = $booking;
-        }
+        // Debug: ตรวจสอบข้อมูล
+        Log::info('Bookings data:', ['count' => $allBookings->count(), 'data' => $allBookings->toArray()]);
 
+        // ไม่ต้องจัดกลุ่มแบบเดิมแล้ว
         $calendarData = [];
         $currentWeek = [];
 
         foreach ($period as $day) {
             $dayFormat = $day->format('Y-m-d');
-            $dayBookings = $bookingsByDate[$dayFormat] ?? [];
 
             $dayData = [
                 'day' => $day->format('j'),
                 'date' => $dayFormat,
                 'currentMonth' => $day->format('m') === $date->format('m'),
                 'today' => $day->isToday(),
-                'bookings' => $dayBookings,
             ];
 
             $currentWeek[] = $dayData;
@@ -108,7 +114,8 @@ class CalendarController extends Controller
             'nextMonth',
             'currentMonth',
             'currentDate',
-            'view'
+            'view',
+            'allBookings' // ✅ เพิ่มส่งออกไปยัง Blade
         ));
     }
 
