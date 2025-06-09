@@ -18,33 +18,61 @@
 
             <!-- Quick Stats -->
             <div class="row g-4 mb-4">
+                {{-- การ์ด: อาคาร --}}
                 <div class="col-md-4">
                     <div class="card bg-light shadow-sm h-100">
                         <div class="card-body text-center">
                             <i class="fas fa-building text-primary display-4 mb-3"></i>
                             <h3 class="fw-bold">{{ $totalBuildings }} อาคาร</h3>
-                            <p>อาคารที่ให้บริการจองห้อง</p>
+                            <p class="text-muted">อาคารที่ให้บริการจองห้อง</p>
                         </div>
                     </div>
                 </div>
+
+                {{-- การ์ด: ห้อง --}}
                 <div class="col-md-4">
                     <div class="card bg-light shadow-sm h-100">
                         <div class="card-body text-center">
                             <i class="fas fa-door-open text-success display-4 mb-3"></i>
                             <h3 class="fw-bold">{{ $totalRooms }} ห้อง</h3>
-                            <p>ห้องที่เปิดให้จอง</p>
+                            <p class="text-muted">ห้องที่เปิดให้จอง</p>
                         </div>
                     </div>
                 </div>
+
+                {{-- การ์ด: การจอง --}}
                 <div class="col-md-4">
                     <div class="card bg-light shadow-sm h-100">
                         <div class="card-body text-center">
                             <i class="fas fa-calendar-check text-warning display-4 mb-3"></i>
                             <h3 class="fw-bold">{{ $totalBookings }} การจองทั้งหมด</h3>
-                            <p>การจองทั้งหมดที่มีในระบบ</p>
+                            <p class="text-muted">การจองทั้งหมดที่มีในระบบ</p>
                         </div>
                     </div>
                 </div>
+
+                {{-- การ์ด: Dashboard ผู้ดูแล --}}
+                @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
+                    @php
+                        $role = Auth::user()->getRoleNames()->first();
+                        $roleDisplay =
+                            [
+                                'admin' => 'ผู้ดูแลระบบ',
+                                'sub-admin' => 'ผู้ดูแลอาคาร',
+                            ][$role] ?? $role;
+                    @endphp
+                    <div class="col-md-4">
+                        <a href="{{ route('dashboard') }}" class="text-decoration-none text-dark">
+                            <div class="btn btn-light border-primary border-2 shadow-sm h-100 d-flex flex-column justify-content-center align-items-center text-decoration-none text-dark p-4">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-shield text-info display-4 mb-3"></i>
+                                    <h3 class="fw-bold">สำหรับ{{ $roleDisplay }}</h3>
+                                    <p class="text-muted">จัดการระบบสำหรับ{{ $roleDisplay }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endif
             </div>
             <!-- การจองของฉัน -->
             <div class="mb-5">
@@ -88,11 +116,12 @@
                                         </span>
                                     </div>
                                     </p>
-                                    <div class='items-center mt-4'><button type="button"
-                                            class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                                    <div class='items-center mt-4'>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#detailsModal{{ $booking->id }}">
                                             <i class="fas fa-eye"></i> ดูรายละเอียดเพิ่มเติม
-                                        </button> @include('booking-status.modal')</div>
+                                        </button> @include('booking-status.modal')
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -115,7 +144,7 @@
                                     <p class="text-muted mb-1">อาคาร {{ $room->building->building_name }} ชั้น
                                         {{ $room->floor }}</p>
                                     <p class="text-muted mb-1">รองรับได้ {{ $room->capacity }} คน</p>
-                                    <p class="fw-bold text-warning">฿{{ number_format($room->service_rates, 2) }} /วัน</p>
+                                    {{-- <p class="fw-bold text-warning">฿{{ number_format($room->service_rates, 2) }} /วัน</p> --}}
                                     <a href="{{ route('partials.booking.form', ['id' => $room->room_id]) }}"
                                         class="btn btn-warning w-100">จองเลย</a>
                                 </div>

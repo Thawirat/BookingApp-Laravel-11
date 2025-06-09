@@ -5,116 +5,57 @@
         <h2 class="mb-4 text-primary fw-bold d-flex align-items-center">
             <i class="fas fa-calendar-check me-2 fs-4"></i> สถานะการจองห้องของฉัน
         </h2>
-        @if ($bookings->count())
-            <div class="table-responsive">
-                <table class="table table-hover align-middle table-bordered shadow-sm">
-                    <thead class="table-light text-center">
-                        <tr>
-                            <th class="text-center">ลำดับที่</th>
-                            <th class="text-center">รหัสการจอง</th>
-                            <th class="text-center">ห้อง</th>
-                            <th class="text-center">อาคาร</th>
-                            <th class="text-center">วันที่จอง</th>
-                            <th class="text-center">วันที่เริ่มต้น-สิ้นสุด</th>
-                            <th class="text-center">สถานะ</th>
-                            {{-- <th class="text-center">สถานะการชำระเงิน</th> --}}
-                            <th class="text-center">รายละเอียด</th>
-                            <th class="text-center">PDF</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($bookings as $booking)
-                            <tr>
-                                <td class="text-center">{{ $loop->iteration }}</td>
-                                <td class="text-center">{{ $booking->id }}</td>
-                                <td class="text-center">{{ $booking->room_name ?? '-' }}</td>
-                                <td class="text-center">{{ $booking->building_name ?? '-' }}</td>
-                                <td class="text-center">
+        <div class="mb-5">
+            @if (isset($bookings) && $bookings->count() > 0)
+                <div class="booking-carousel d-flex overflow-auto pb-3">
+                    @foreach ($bookings as $booking)
+                        <div class="card me-3 flex-shrink-0" style="width: 300px;">
+                            @if (!empty($booking->room) && !empty($booking->room->image))
+                                <img src="{{ asset('storage/' . $booking->room->image) }}"
+                                    alt="{{ $booking->room->room_name ?? 'Room Image' }}"
+                                    class="img-fluid rounded-lg shadow-sm" style="height: 180px; object-fit: cover;">
+                            @else
+                                <div class="bg-light rounded-lg d-flex align-items-center justify-content-center py-5"
+                                    style="height: 180px;">
+                                    <span class="text-muted"><i class="bi bi-image me-2"></i>ไม่มีรูปภาพ</span>
+                                </div>
+                            @endif
+                            <div class="card-body p-3">
+                                <h5 class="card-title">{{ $booking->room_name ?? '-' }}</h5>
+                                <p class="card-text text-muted">
+                                <div><strong>จองเมื่อ:</strong>
                                     {{ \Carbon\Carbon::parse($booking->created_at)->addYears(543)->format('d/m/Y') }}
-                                </td>
-                                <td class="text-center">
-                                    <div><strong>เริ่ม:</strong>
-                                        วันที่
-                                        {{ \Carbon\Carbon::parse($booking->booking_start)->addYears(543)->format('d/m/Y เวลา H:i') }}
-                                        น.</div>
-                                    <div><strong>สิ้นสุด:</strong>
-                                        วันที่
-                                        {{ \Carbon\Carbon::parse($booking->booking_end)->addYears(543)->format('d/m/Y เวลา H:i') }}
-                                        น.</div>
-                                </td>
-                                <td class="text-center">
+                                </div>
+                                <div><strong>อาคาร:</strong> {{ $booking->building_name ?? '-' }} </div>
+                                <div><strong>เริ่มวันที่:</strong>
+                                    {{ \Carbon\Carbon::parse($booking->booking_start)->addYears(543)->format('d/m/Y เวลา H:i') }}
+                                    น.</div>
+                                <div><strong>ถึงวันที่:</strong>
+                                    {{ \Carbon\Carbon::parse($booking->booking_end)->addYears(543)->format('d/m/Y เวลา H:i') }}
+                                    น.</div>
+                                <div><strong>สถานะ:</strong>
                                     <span
                                         class="badge bg-{{ $booking->status->status_name === 'อนุมัติแล้ว' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : 'secondary') }}">
-                                        {{ $booking->status->status_name }}
+                                        {{ $booking->status->status_name ?? '-' }}
                                     </span>
-                                </td>
-                                {{-- <td class="text-center">
-                                    @php
-                                        $statusClass =
-                                            [
-                                                'paid' => 'bg-success',
-                                                'pending' => 'bg-info text-dark',
-                                                'unpaid' => 'bg-warning text-dark',
-                                                'cancelled' => 'bg-danger',
-                                            ][$booking->payment_status] ?? 'bg-secondary';
-
-                                        $statusText =
-                                            [
-                                                'paid' => 'ชำระแล้ว',
-                                                'pending' => 'รอตรวจสอบ',
-                                                'unpaid' => 'ยังไม่ชำระ',
-                                                'cancelled' => 'ยกเลิก',
-                                            ][$booking->payment_status] ?? 'ยังไม่ชำระ';
-                                    @endphp
-                                    <span class="badge {{ $statusClass }}">{{ $statusText }}</span>
-                                    <div class="dropdown mt-2">
-                                        <button class="btn btn-sm btn-light border dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            จัดการชำระเงิน
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <button class="dropdown-item" data-bs-toggle="modal"
-                                                    data-bs-target="#paymentModal{{ $booking->id }}">
-                                                    <i class="bi bi-wallet2 me-2"></i>ดู/อัปโหลดหลักฐานชำระเงิน
-                                                </button>
-                                            </li>
-                                            <li>
-                                                <button type="button" class="dropdown-item text-danger"
-                                                    onclick="confirmCancel({{ $booking->id }})">
-                                                    <i class="bi bi-x-circle me-2"></i>ยกเลิกการจอง
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    @include('booking-status.slip-for-status')
-                                </td> --}}
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#detailsModal{{ $booking->id }}">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                                <td class="text-center">
-                                    <a href="{{ route('bookings.download.pdf', $booking->id) }}"
+                                </div>
+                                </p>
+                                <div class='items-center mt-4'><button type="button" class="btn btn-outline-primary btn-sm"
+                                        data-bs-toggle="modal" data-bs-target="#detailsModal{{ $booking->id }}">
+                                        <i class="fas fa-eye"></i> ดูรายละเอียดเพิ่มเติม
+                                    </button> @include('booking-status.modal')</div>
+                                <a href="{{ route('bookings.download.pdf', $booking->id) }}"
                                         class="btn btn-outline-danger btn-sm">
                                         <i class="fas fa-file-pdf me-1"></i>
                                     </a>
-                                </td>
-                                @include('booking-status.modal')
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4">
-                {{ $bookings->links() }}
-            </div>
-        @else
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle me-1"></i> ยังไม่มีการจองในระบบ
-            </div>
-        @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-muted">คุณยังไม่มีการจองห้อง</p>
+            @endif
+        </div>
     </div>
 @endsection
 

@@ -24,8 +24,8 @@
                                         {{ $room->building->building_name }} ชั้น {{ $room->class }}</p>
                                     <p class="text-muted mb-1"> <i class="fas fa-users me-1"></i> {{ $room->capacity }}
                                         คน</p>
-                                    <p class="fw-bold text-warning mt-2"> ฿{{ number_format($room->service_rates, 2) }}
-                                        / วัน</p>
+                                    {{-- <p class="fw-bold text-warning mt-2"> ฿{{ number_format($room->service_rates, 2) }}
+                                        / วัน</p> --}}
                                 </div>
                                 <div class="ps-3 pe-3 pt-3 pb-3">
                                     <a href="{{ url('booking/' . $room->room_id) }}"
