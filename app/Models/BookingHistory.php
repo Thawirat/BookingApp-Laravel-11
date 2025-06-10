@@ -44,5 +44,14 @@ class BookingHistory extends Model
         return $this->belongsTo(Status::class, 'status_id', 'status_id');
     }
 
-    // เพิ่มความสัมพันธ์อื่นๆ ตามที่ต้องการ
+     public function room()
+    {
+        return $this->belongsTo(Room::class, 'room_id', 'room_id');
+    }
+
+    public function building()
+    {
+        return $this->belongsTo(Building::class);
+    }
+
 }

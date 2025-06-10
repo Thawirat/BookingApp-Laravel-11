@@ -3,7 +3,6 @@
 @section('content')
     <div class="container">
         <div class="row mb-4">
-
             <!-- Hero Banner -->
             <div class="card bg-warning text-white mb-4">
                 <div class="card-body text-center py-5">
@@ -21,7 +20,7 @@
                 {{-- การ์ด: อาคาร --}}
                 <div class="col-md-4">
                     <div class="card bg-light shadow-sm h-100">
-                        <div class="card-body text-center">
+                        <div class="card-body text-center p-3">
                             <i class="fas fa-building text-primary display-4 mb-3"></i>
                             <h3 class="fw-bold">{{ $totalBuildings }} อาคาร</h3>
                             <p class="text-muted">อาคารที่ให้บริการจองห้อง</p>
@@ -32,7 +31,7 @@
                 {{-- การ์ด: ห้อง --}}
                 <div class="col-md-4">
                     <div class="card bg-light shadow-sm h-100">
-                        <div class="card-body text-center">
+                        <div class="card-body text-center p-3">
                             <i class="fas fa-door-open text-success display-4 mb-3"></i>
                             <h3 class="fw-bold">{{ $totalRooms }} ห้อง</h3>
                             <p class="text-muted">ห้องที่เปิดให้จอง</p>
@@ -43,7 +42,7 @@
                 {{-- การ์ด: การจอง --}}
                 <div class="col-md-4">
                     <div class="card bg-light shadow-sm h-100">
-                        <div class="card-body text-center">
+                        <div class="card-body text-center p-3">
                             <i class="fas fa-calendar-check text-warning display-4 mb-3"></i>
                             <h3 class="fw-bold">{{ $totalBookings }} การจองทั้งหมด</h3>
                             <p class="text-muted">การจองทั้งหมดที่มีในระบบ</p>
@@ -63,8 +62,9 @@
                     @endphp
                     <div class="col-md-4">
                         <a href="{{ route('dashboard') }}" class="text-decoration-none text-dark">
-                            <div class="btn btn-light border-primary border-2 shadow-sm h-100 d-flex flex-column justify-content-center align-items-center text-decoration-none text-dark p-4">
-                                <div class="card-body text-center">
+                            <div
+                                class="btn btn-light border-primary border-2 shadow-sm h-100 d-flex flex-column justify-content-center align-items-center text-decoration-none text-dark p-4">
+                                <div class="card-body text-center p-3">
                                     <i class="fas fa-user-shield text-info display-4 mb-3"></i>
                                     <h3 class="fw-bold">สำหรับ{{ $roleDisplay }}</h3>
                                     <p class="text-muted">จัดการระบบสำหรับ{{ $roleDisplay }}</p>
@@ -132,32 +132,15 @@
             </div>
             <!-- Featured Rooms -->
             <h3 class="fw-bold mb-3">ห้องแนะนำ</h3>
-            <div class="row g-4 mb-4">
-                @if (isset($featuredRooms) && count($featuredRooms) > 0)
+            @if (isset($featuredRooms) && $featuredRooms->count() > 0)
+                <div class="featured-carousel d-flex overflow-auto pb-3">
                     @foreach ($featuredRooms as $room)
-                        <div class="col-md-4">
-                            <div class="card shadow-sm">
-                                <img src="{{ $room->image ? asset('storage/room_images' . $room->image) : '/api/placeholder/400/200' }}"
-                                    class="card-img-top" alt="Room Image">
-                                <div class="card-body">
-                                    <h5 class="fw-bold">{{ $room->room_name }}</h5>
-                                    <p class="text-muted mb-1">อาคาร {{ $room->building->building_name }} ชั้น
-                                        {{ $room->floor }}</p>
-                                    <p class="text-muted mb-1">รองรับได้ {{ $room->capacity }} คน</p>
-                                    {{-- <p class="fw-bold text-warning">฿{{ number_format($room->service_rates, 2) }} /วัน</p> --}}
-                                    <a href="{{ route('partials.booking.form', ['id' => $room->room_id]) }}"
-                                        class="btn btn-warning w-100">จองเลย</a>
-                                </div>
-                            </div>
-                        </div>
+                        @include('components.room-card', ['room' => $room])
                     @endforeach
-                @else
-                    <div class="col-12 text-center">
-                        <p>ไม่มีห้องแนะนำในขณะนี้</p>
-                    </div>
-                @endif
-            </div>
-
+                </div>
+            @else
+                <p class="text-muted">ไม่มีห้องแนะนำในขณะนี้</p>
+            @endif
             <!-- How to Book Section -->
             <div class="card bg-light mb-4">
                 <div class="card-body p-4">
@@ -224,34 +207,39 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card h-100">
+                    <div class="card h-100 shadow-sm">
                         <div class="card-header bg-success text-white">
-                            <h4 class="mb-0">คำถามที่พบบ่อย</h4>
+                            <h4 class="mb-0">คำถามที่พบบ่อย (FAQ)</h4>
                         </div>
                         <div class="card-body">
                             <div class="accordion" id="faqAccordion">
-                                <div class="accordion-item border-0">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed border-0" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#faq1">
+                                <!-- FAQ 1 -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false"
+                                            aria-controls="faq1">
                                             ทำการจองห้องได้ล่วงหน้ากี่วัน?
                                         </button>
                                     </h2>
-                                    <div id="faq1" class="accordion-collapse collapse"
+                                    <div id="faq1" class="accordion-collapse collapse" aria-labelledby="headingOne"
                                         data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             สามารถทำการจองล่วงหน้าได้ไม่เกิน 30 วัน
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item border-0">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed border-0" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#faq2">
+
+                                <!-- FAQ 2 -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false"
+                                            aria-controls="faq2">
                                             มีค่าใช้จ่ายในการจองห้องหรือไม่?
                                         </button>
                                     </h2>
-                                    <div id="faq2" class="accordion-collapse collapse"
+                                    <div id="faq2" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                                         data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             ค่าใช้จ่ายขึ้นอยู่กับประเภทห้องและระยะเวลาการใช้งาน
@@ -259,29 +247,35 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item border-0">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed border-0" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#faq3">
+
+                                <!-- FAQ 3 -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingThree">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false"
+                                            aria-controls="faq3">
                                             สามารถยกเลิกการจองได้หรือไม่?
                                         </button>
                                     </h2>
                                     <div id="faq3" class="accordion-collapse collapse"
-                                        data-bs-parent="#faqAccordion">
+                                        aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             สามารถยกเลิกการจองได้ผ่านระบบออนไลน์ โดยต้องยกเลิกก่อนวันใช้งานอย่างน้อย 24
                                             ชั่วโมง
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item border-0">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed border-0" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#faq4">
+
+                                <!-- FAQ 4 -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFour">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false"
+                                            aria-controls="faq4">
                                             ต้องชำระเงินอย่างไร?
                                         </button>
                                     </h2>
-                                    <div id="faq4" class="accordion-collapse collapse"
+                                    <div id="faq4" class="accordion-collapse collapse" aria-labelledby="headingFour"
                                         data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             สามารถชำระเงินผ่านบัตรเครดิต/เดบิต
@@ -289,14 +283,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item border-0">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed border-0" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#faq5">
+
+                                <!-- FAQ 5 -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFive">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false"
+                                            aria-controls="faq5">
                                             มีห้องให้เลือกกี่ประเภท?
                                         </button>
                                     </h2>
-                                    <div id="faq5" class="accordion-collapse collapse"
+                                    <div id="faq5" class="accordion-collapse collapse" aria-labelledby="headingFive"
                                         data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             มีห้องให้เลือกหลากหลายประเภท เช่น ห้องเรียนขนาดเล็ก ห้องประชุม ห้องสัมมนา
@@ -308,6 +305,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

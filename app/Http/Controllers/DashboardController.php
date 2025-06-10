@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\BookingHistory;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Room;
 
 class DashboardController extends Controller
 {
@@ -100,9 +102,25 @@ class DashboardController extends Controller
                 logger("Booking ID {$booking->id} has no room.");
             }
         }
+        // ดึง top room ids
+        $topRoomIds = BookingHistory::select('room_id')
+            ->where('status_id', 6)
+            ->groupBy('room_id')
+            ->orderByRaw('COUNT(*) DESC')
+            ->limit(10)
+            ->pluck('room_id');
+        if ($topRoomIds->isNotEmpty()) {
+            // ดึงห้องแนะนำ (ที่อยู่ใน room_id เหล่านั้น)
+            $featuredRooms = Room::with('building')
+                ->whereIn('room_id', $topRoomIds)
+                ->orderByRaw("FIELD(room_id, " . $topRoomIds->implode(',') . ")")
+                ->get();
+        } else {
+            // fallback ถ้าไม่มีการจอง
+            $featuredRooms = Room::with('building')->latest()->limit(10)->get();
+        }
 
-
-        return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings', 'myBookings', 'totalmyBookings'));
+        return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings', 'myBookings', 'totalmyBookings', 'featuredRooms'));
     }
     public function __construct()
     {

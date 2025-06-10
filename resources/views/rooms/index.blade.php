@@ -10,23 +10,9 @@
                         <i class="fas fa-arrow-left"></i> กลับหน้าหลัก
                     </a>
                 </div>
-                <div class="row g-4">
+                <div class="grid grid-cols-4 gap-4 pb-3">
                     @foreach ($rooms as $room)
-                        <div class="col-md-2">
-                            <div class="card shadow-sm">
-                                <img src="{{ $room->image ? asset('storage/' . $room->image) : '/api/placeholder/400/200' }}"
-                                    class="card-img-top" alt="Room Image">
-                                <div class="card-body">
-                                    <h5 class="fw-bold">{{ $room->room_name }}</h5>
-                                    <p class="text-muted mb-1">อาคาร {{ $room->building->building_name }} ชั้น
-                                        {{ $room->class }}</p>
-                                    <p class="text-muted mb-1">รองรับได้ {{ $room->capacity }} คน</p>
-                                    {{-- <p class="fw-bold text-warning">฿{{ number_format($room->service_rates, 2) }} /ชั่วโมง
-                                    </p> --}}
-                                    <a href="{{ url('booking/' . $room->room_id) }}" class="btn btn-warning w-100">จองเลย</a>
-                                </div>
-                            </div>
-                        </div>
+                        @include('components.room-card', ['room' => $room])
                     @endforeach
                 </div>
             </div>
