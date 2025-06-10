@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" href="{{ asset('favicon_io/favicon-16x16.png') }}" type="image/png">
     <title>ระบบจองห้องออนไลน์มหาวิทยาลัยราชภัฏสกลนคร</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
     <!-- Litepicker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css">
@@ -16,13 +18,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- FullCalendar v5 -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    {{-- <script src="{{ asset('js/app.js') }}"></script> --}}
+    <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/locale/th.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
@@ -32,22 +32,34 @@
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5/main.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/moment/moment.min.js'></script>
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script> --}}
 </head>
 
 <body>
-
     <!-- Loader -->
     <div id="loading-overlay">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    <button id="toggleSidebar" class="position-fixed top-0 start-0 m-3 d-flex align-items-center justify-content-center"
-        style="width: 50px; height: 50px; border: none; border-radius: 12px; background: #1e293b; color: white; z-index: 200; transition: background 0.3s;">
-        <i class="fas fa-bars fa-lg"></i>
+    <button id="toggleSidebar"
+        class="position-fixed top-0 start-0 m-3 d-flex align-items-center justify-content-center shadow"
+        style="
+        width: 52px;
+        height: 52px;
+        border: none;
+        border-radius: 50%;
+        background-color: #37474f;
+        color: white;
+        z-index: 1050;
+        transition: background-color 0.25s ease, transform 0.15s ease;
+    "
+        onmouseover="this.style.backgroundColor='#1e293b'; this.style.transform='scale(1.05)'"
+        onmouseout="this.style.backgroundColor='#37474f'; this.style.transform='scale(1)'" aria-label="Toggle sidebar"
+        title="เมนู">
+        <i class="bi bi-list fs-4"></i>
     </button>
+
     <div id="mobile-overlay"></div>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -121,7 +133,6 @@
                         </li>
                     @endif
                 @endif
-
                 @if (Auth::check())
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
@@ -149,18 +160,15 @@
         @yield('scripts')
     </div>
     @include('footer')
-
     <!-- Scripts -->
     <script>
         const toggleBtn = document.getElementById('toggleSidebar');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('mobile-overlay');
-
         toggleBtn.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-open');
             overlay.classList.toggle('active');
         });
-
         overlay.addEventListener('click', function() {
             sidebar.classList.remove('sidebar-open');
             overlay.classList.remove('active');

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="th">
 
 <head>
@@ -601,4 +601,4 @@
             min-width: 80px;
         }
     }
-</style>
+</style> --}}
