@@ -25,6 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/locale/th.js"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js" defer></script>
     <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.css' rel='stylesheet' />
     <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5/main.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.js'></script>
@@ -271,12 +272,12 @@
     }
 
     .sidebar .nav-link:hover {
-        background-color: #fff9e6;
-        color: #FFC107;
+        background-color: #ece6ff;
+        color: #2407ff;
     }
 
     .sidebar .nav-link.active {
-        background-color: #FFC107;
+        background-color: #2407ff;
         color: #fff;
     }
 
@@ -385,7 +386,7 @@
 
     .stat-card .icon {
         font-size: 24px;
-        background-color: #FFC107;
+        background-color: #1707ff;
         color: #fff;
         padding: 15px;
         border-radius: 12px;

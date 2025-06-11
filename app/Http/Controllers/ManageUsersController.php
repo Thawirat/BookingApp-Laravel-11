@@ -102,4 +102,18 @@ class ManageUsersController extends Controller
             'role' => $user->role,
         ]);
     }
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        try {
+            $user->delete();
+
+            return redirect()->route('manage_users.index')
+                ->with('success', 'ลบผู้ใช้เรียบร้อยแล้ว');
+        } catch (\Exception $e) {
+            return redirect()->route('manage_users.index')
+                ->with('error', 'ไม่สามารถลบผู้ใช้ได้: ' . $e->getMessage());
+        }
+    }
 }

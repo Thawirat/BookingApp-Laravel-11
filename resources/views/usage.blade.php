@@ -5,7 +5,7 @@
         <!-- How-to-use Section -->
         <div class="card shadow-sm mb-5">
             <div class="card-body">
-                <h3 class="fw-bold text-warning mb-4 mt-4 text-center">
+                <h3 class="fw-bold text-primary mb-4 mt-4 text-center">
                     ขั้นตอนการใช้งานระบบจองห้อง
                 </h3>
                 <div class="row g-4">
@@ -38,7 +38,7 @@
                         <div class="col-md-6">
                             <div class="card bg-light border-0 p-4 h-100">
                                 <div class="d-flex align-items-center mb-3">
-                                    <div class="bg-warning text-white rounded-circle d-flex justify-content-center align-items-center me-3"
+                                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3"
                                         style="width: 50px; height: 50px;">
                                         <i class="{{ $step['icon'] }} fs-5"></i>
                                     </div>
@@ -58,11 +58,12 @@
         <div class="card shadow-sm mb-5">
             <div x-data="{ openFaq: null }">
                 <div class="card-body">
-                    <h3 class="fw-bold text-warning mb-4 mt-4 text-center">
+                    <h3 class="fw-bold text-primary mb-4 mt-4 text-center">
                         คำถามที่พบบ่อย (FAQ)
                     </h3>
                     @include('components.qna')
                 </div>
             </div>
         </div>
-    @endsection
+    </div>
+@endsection

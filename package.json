@@ -22,10 +22,12 @@
         "test": "tests"
     },
     "dependencies": {
+        "@alpinejs/collapse": "^3.14.9",
         "@fullcalendar/bootstrap5": "^6.1.17",
         "@fullcalendar/core": "^6.1.17",
         "@fullcalendar/daygrid": "^6.1.17",
         "@fullcalendar/interaction": "^6.1.17",
+        "alpinejs": "^3.14.9",
         "asynckit": "^0.4.0",
         "bootstrap": "^5.3.6",
         "bootstrap-icons": "^1.11.3",

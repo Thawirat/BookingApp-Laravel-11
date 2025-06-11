@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-primary fw-bold mb-0">จัดการประเภทห้อง</h2>
+            <h2 class="fw-bold mb-0">จัดการประเภทห้อง</h2>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomTypeModal">
                 เพิ่มประเภทห้อง
             </button>
