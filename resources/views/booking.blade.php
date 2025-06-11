@@ -5,61 +5,64 @@
     <div class="container">
 
         <div class="row mb-4">
+            <div
+                class="bg-gradient-to-r from-pink-500 via-blue-400 to-green-500 text-white p-8 rounded-lg shadow-lg mb-10 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">ระบบจองห้องออนไลน์</h1>
+                <h2 class="text-xl md:text-2xl mt-2">มหาวิทยาลัยราชภัฏสกลนคร</h2>
+                <p class="mt-4 text-lg opacity-90">บริการจองห้องเรียน ห้องประชุม และสถานที่จัดกิจกรรมต่างๆ แบบออนไลน์</p>
+            </div>
+            {{-- ส่วนแสดงประเภทห้อง --}}
+            <div class=" p-4 rounded mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fw-bold">ประเภทห้อง</h3>
+                </div>
+                <div class="row g-3">
+                    @php
+                        use App\Models\RoomType;
+                        $roomTypes = RoomType::all();
+                    @endphp
 
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body text-center py-5">
-                    <h1 class="display-4 fw-bold">ระบบจองห้องออนไลน์</h1>
-                    <h2>มหาวิทยาลัยราชภัฏสกลนคร</h2>
-                    <p class="lead mt-3">บริการจองห้องเรียน ห้องประชุม และสถานที่จัดกิจกรรมต่างๆ แบบออนไลน์</p>
+                    @if ($roomTypes->count())
+                        @foreach ($roomTypes as $type)
+                            <div class="col-md-2">
+                                <a href="{{ route('rooms.byType', ['type' => $type->id]) }}" class="text-decoration-none">
+                                    <div class="card text-center py-3 shadow-sm hover:shadow-lg transition">
+                                        <div class="card-body">
+                                            <i
+                                                class="fas fa-{{ $type->icon ?? 'building' }} text-warning display-6 mb-2"></i>
+                                            <p class="mb-0 fw-semibold">{{ $type->name }}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-muted">ไม่มีประเภทห้องที่จะแสดง</p>
+                    @endif
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="fw-bold">ประเภทห้อง</h3>
-            </div>
-            <div class="row g-3">
-                @php
-                    use App\Models\RoomType;
-                    $roomTypes = RoomType::all(); // ดึงทุกประเภทห้องจากตาราง room_type
-                @endphp
-
-                @if ($roomTypes->count())
-                    @foreach ($roomTypes as $type)
+            {{-- ส่วนแสดงอาคารทั้งหมด --}}
+            <div class=" p-4 rounded">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fw-bold">อาคารทั้งหมด</h3>
+                </div>
+                <div class="row g-3">
+                    @foreach ($buildings as $building)
                         <div class="col-md-2">
-                            <a href="{{ route('rooms.byType', ['type' => $type->id]) }}" class="text-decoration-none">
-                                <div class="card text-center py-3 shadow-sm">
+                            <a href="{{ route('rooms.byBuilding', ['building_id' => $building->id]) }}"
+                                class="text-decoration-none">
+                                <div class="card text-center py-3 shadow-sm hover:shadow-lg transition">
                                     <div class="card-body">
-                                        <i class="fas fa-{{ $type->icon ?? 'building' }} text-warning display-6 mb-2"></i>
-                                        <p class="mb-0 fw-semibold">{{ $type->name }}</p>
+                                        <i class="fas fa-building text-primary display-6 mb-2"></i>
+                                        <p class="mb-0 fw-semibold">{{ $building->building_name }}</p>
                                     </div>
                                 </div>
                             </a>
                         </div>
                     @endforeach
-                @else
-                    <p class="text-muted">ไม่มีประเภทห้องที่จะแสดง</p>
-                @endif
+                </div>
             </div>
-
-            <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-                <h3 class="fw-bold">อาคารทั้งหมด</h3>
-            </div>
-            <div class="row g-3">
-                @foreach ($buildings as $building)
-                    <div class="col-md-2">
-                        <a href="{{ route('rooms.byBuilding', ['building_id' => $building->id]) }}"
-                            class="text-decoration-none">
-                            <div class="card text-center py-3 shadow-sm">
-                                <div class="card-body">
-                                    <i class="fas fa-building text-warning display-6 mb-2"></i>
-                                    <p class="mb-0 fw-semibold">{{ $building->building_name }}</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-
             <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
                 <h3 class="fw-bold">ห้องทั้งหมด</h3>
                 <a href="{{ route('rooms.index') }}" class="text-warning fw-bold">ดูทั้งหมด</a>

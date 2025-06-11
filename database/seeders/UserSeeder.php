@@ -6,41 +6,61 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Faker\Factory as Faker;
 
 class UserSeeder extends Seeder
 {
     public function run()
     {
+        $faker = Faker::create();
         // สร้าง user ที่มี role admin
-        if (! User::where('email', 'admin@example.com')->exists()) {
+        if (! User::where('email', 'admin@snru.ac.th')->exists()) {
             $admin = User::create([
                 'name' => 'Admin',
-                'email' => 'admin@example.com',
+                'email' => 'admin@snru.ac.th',
                 'password' => Hash::make('12345678'),
                 'role' => 'admin',
+                'user_type' => 'internal',
+                'phone_number' => '0800000000',
+                'position' => 'System Administrator',
+                'department' => 'IT Department',
+                'address' => 'มหาวิทยาลัยราชภัฏสกลนคร',
+                'status' => 'active',
             ]);
-            // กำหนด role admin ให้กับ user
             $admin->assignRole('admin');
         }
 
         // สร้าง user ที่มี role sub-admin
-        if (! User::where('email', 'subadmin@example.com')->exists()) {
+        if (! User::where('email', 'subadmin@snru.ac.th')->exists()) {
             $subAdmin = User::create([
                 'name' => 'Sub Admin',
-                'email' => 'subadmin@example.com',
+                'email' => 'subadmin@snru.ac.th',
                 'password' => Hash::make('12345678'),
                 'role' => 'sub-admin',
+                'user_type' => 'internal',
+                'phone_number' => '0800000001',
+                'position' => 'Building Manager',
+                'department' => 'Facilities',
+                'address' => 'อาคารบริการส่วนกลาง',
             ]);
-            // กำหนด role sub-admin ให้กับ user
             $subAdmin->assignRole('sub-admin');
         }
 
-        // สร้าง regular users โดยใช้ factory
+        // สร้าง regular users โดยใช้ factory พร้อมฟิลด์เพิ่มเติม
         User::factory()
             ->count(100)
             ->create()
-            ->each(function ($user) {
-                // กำหนด role user ให้กับ user ทุกคน
+            ->each(function ($user, $index) use ($faker) {
+                $user->update([
+                    'name' => $faker->name,
+                    'email' => strtolower($faker->unique()->firstName) . '@snru.ac.th',
+                    'user_type' => 'internal',
+                    'phone_number' => '08000001' . str_pad($index + 1, 2, '0', STR_PAD_LEFT),
+                    'position' => 'Staff',
+                    'department' => 'General Affairs',
+                    'address' => 'มหาวิทยาลัยราชภัฏสกลนคร',
+                    'role' => 'user',
+                ]);
                 $user->assignRole('user');
             });
     }

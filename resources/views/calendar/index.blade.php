@@ -3,18 +3,9 @@
 @section('content')
     <div class="container">
         <div class="row mb-4">
-            <!-- Hero Banner -->
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body text-center py-5">
-                    <h1 class="display-4 fw-bold">ระบบจองห้องออนไลน์</h1>
-                    <h2>มหาวิทยาลัยราชภัฏสกลนคร</h2>
-                    <p class="lead mt-3">บริการจองห้องเรียน ห้องประชุม และสถานที่จัดกิจกรรมต่างๆ แบบออนไลน์</p>
-                    <a href="{{ route('booking.index') }}" class="btn btn-light btn-lg mt-3">
-                        <i class="fas fa-calendar-plus me-2"></i>จองห้องเลย
-                    </a>
-                </div>
+            <div>
+                @include('components.banner')
             </div>
-
             <div class="col-md-6">
                 <h2>ปฏิทินการจองห้อง</h2>
             </div>
@@ -176,18 +167,18 @@
                         <h6>ประวัติการเปลี่ยนแปลง</h6>
                         <div class="timeline">
                             ${booking.history.map(item => `
-                                    <div class="timeline-item">
-                                        <div class="timeline-badge" style="background-color: ${item.statusColor}"></div>
-                                        <div class="timeline-content">
-                                            <div class="d-flex justify-content-between">
-                                                <strong>${item.status_name}</strong>
-                                                <small class="text-muted">${new Date(item.changed_at).toLocaleString('th-TH')}</small>
+                                        <div class="timeline-item">
+                                            <div class="timeline-badge" style="background-color: ${item.statusColor}"></div>
+                                            <div class="timeline-content">
+                                                <div class="d-flex justify-content-between">
+                                                    <strong>${item.status_name}</strong>
+                                                    <small class="text-muted">${new Date(item.changed_at).toLocaleString('th-TH')}</small>
+                                                </div>
+                                                <div class="text-muted">โดย: ${item.changed_by_name}</div>
+                                                ${item.note ? `<p class="mt-1">${item.note}</p>` : ''}
                                             </div>
-                                            <div class="text-muted">โดย: ${item.changed_by_name}</div>
-                                            ${item.note ? `<p class="mt-1">${item.note}</p>` : ''}
                                         </div>
-                                    </div>
-                                `).join('')}
+                                    `).join('')}
                         </div>
                     </div>
                 `;
