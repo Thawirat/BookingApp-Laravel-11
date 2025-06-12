@@ -20,6 +20,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\EquipmentController;
 
 Route::get('/booking/approve/{id}', [Booking_dbController::class, 'approve'])->name('booking.approve');
 Route::get('/booking/reject/{id}', [Booking_dbController::class, 'reject'])->name('booking.reject');
@@ -139,6 +140,8 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::delete('/manage-users/{id}', [ManageUsersController::class, 'destroy'])->name('manage_users.destroy');
     Route::middleware('auth')->get('/api/users/{id}', [ManageUsersController::class, 'show']);
     Route::middleware('auth')->get('/api/users/{id}/buildings', [ManageUsersController::class, 'getUserBuildings']);
+    Route::resource('equipments', EquipmentController::class)->only(['index', 'store', 'update', 'destroy']);
+
 });
 
 // Profile routes
