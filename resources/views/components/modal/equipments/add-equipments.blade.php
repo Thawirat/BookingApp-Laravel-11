@@ -3,9 +3,9 @@
         <div class="modal-content">
             <form action="{{ route('equipments.store') }}" method="POST">
                 @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addEquipmentModalLabel">เพิ่มวัสดุอุปกรณ์</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addEquipmentModalLabel"><i class="fas fa-plus-circle me-2"></i>เพิ่มวัสดุอุปกรณ์</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="ปิด"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                    <button type="submit" class="btn btn-primary">เพิ่มอุปกรณ์</button>
                 </div>
             </form>
         </div>

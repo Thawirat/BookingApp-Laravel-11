@@ -5,28 +5,9 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold mb-0">จัดการประเภทห้อง</h2>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomTypeModal">
-                เพิ่มประเภทห้อง
+                <i class="fas fa-plus"></i> เพิ่มประเภทห้อง
             </button>
         </div>
-
-        {{-- Alert Messages (Hidden - Using SweetAlert2 instead) --}}
-        <div class="d-none">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-        </div>
-
-        {{-- ตารางประเภทห้อง --}}
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -47,17 +28,14 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            {{-- ปุ่มแก้ไข --}}
-                                            <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                                 data-bs-target="#editRoomTypeModal{{ $type->id }}" title="แก้ไข">
-                                                แก้ไข
+                                                <i class="fas fa-edit"></i>
                                             </button>
-
-                                            {{-- ปุ่มลบ --}}
-                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                            <button type="button" class="btn btn-sm btn-danger"
                                                 onclick="confirmDelete({{ $type->id }}, '{{ $type->name }}')"
                                                 title="ลบ">
-                                                ลบ
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
 
@@ -86,7 +64,6 @@
             </div>
         </div>
     </div>
-
     {{-- Modal เพิ่มประเภทห้อง --}}
     <div class="modal fade" id="addRoomTypeModal" tabindex="-1" aria-labelledby="addRoomTypeLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -113,17 +90,16 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i>เพิ่มประเภทห้อง
-                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>ยกเลิก
+                        ยกเลิก
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        เพิ่มประเภทห้อง
                     </button>
                 </div>
             </form>
         </div>
     </div>
-
     {{-- Modal แก้ไขประเภทห้อง --}}
     @foreach ($roomTypes as $type)
         <div class="modal fade" id="editRoomTypeModal{{ $type->id }}" tabindex="-1"
@@ -153,13 +129,12 @@
                             @enderror
                         </div>
                     </div>
-
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-warning">
-                            <i class="fas fa-save me-1"></i>บันทึกการเปลี่ยนแปลง
-                        </button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-1"></i>ยกเลิก
+                            ยกเลิก
+                        </button>
+                        <button type="submit" class="btn btn-warning">
+                            บันทึกการเปลี่ยนแปลง
                         </button>
                     </div>
                 </form>
@@ -167,77 +142,23 @@
         </div>
     @endforeach
 @endsection
-
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // Function to confirm delete with SweetAlert2
-        function confirmDelete(id, name) {
-            Swal.fire({
-                title: 'ยืนยันการลบ',
-                html: `คุณแน่ใจหรือไม่ว่าต้องการลบประเภทห้อง<br><strong class="text-primary">"${name}"</strong>`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> ลบ',
-                cancelButtonText: '<i class="fas fa-times me-1"></i> ยกเลิก',
-                reverseButtons: true,
-                customClass: {
-                    confirmButton: 'btn btn-danger me-2',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit the form
-                    document.getElementById('deleteForm' + id).submit();
-                }
-            });
-        }
-
-        // Auto-focus on modal inputs
-        document.addEventListener('DOMContentLoaded', function() {
-            // Focus on add modal
-            document.getElementById('addRoomTypeModal').addEventListener('shown.bs.modal', function() {
-                document.getElementById('addRoomTypeName').focus();
-            });
-
-            // Focus on edit modals
-            @foreach ($roomTypes as $type)
-                document.getElementById('editRoomTypeModal{{ $type->id }}').addEventListener('shown.bs.modal',
-                    function() {
-                        document.getElementById('editRoomTypeName{{ $type->id }}').focus();
-                    });
-            @endforeach
-
-            // Show success message with SweetAlert2 if exists
-            @if (session('success'))
-                Swal.fire({
-                    title: 'สำเร็จ!',
-                    text: '{{ session('success') }}',
-                    icon: 'success',
-                    confirmButtonText: 'ตกลง',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    },
-                    buttonsStyling: false
-                });
-            @endif
-
-            // Show error message with SweetAlert2 if exists
-            @if (session('error'))
-                Swal.fire({
-                    title: 'เกิดข้อผิดพลาด!',
-                    text: '{{ session('error') }}',
-                    icon: 'error',
-                    confirmButtonText: 'ตกลง',
-                    customClass: {
-                        confirmButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                });
-            @endif
+<script>
+    // Function to confirm delete with SweetAlert2
+    function confirmDelete(id, name) {
+        Swal.fire({
+            title: 'ลบประเภทห้อง?',
+            html: `คุณแน่ใจหรือไม่ว่าต้องการลบประเภทห้อง<strong>"${name}"</strong>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('deleteForm' + id).submit();
+            }
         });
-    </script>
-@endpush
+    }
+</script>

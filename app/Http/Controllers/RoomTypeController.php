@@ -12,7 +12,7 @@ class RoomTypeController extends Controller
      */
     public function index()
     {
-        $roomTypes = RoomType::orderBy('name')->get();
+        $roomTypes = RoomType::orderBy('id', 'asc')->get();
         return view('dashboard.room_type', compact('roomTypes'));
     }
 

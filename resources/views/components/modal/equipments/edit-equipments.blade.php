@@ -4,9 +4,9 @@
             @csrf
             @method('PUT')
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title text-white" id="editModalLabel{{ $equipment->id }}">แก้ไขอุปกรณ์</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="editModalLabel{{ $equipment->id }}"><i class="fas fa-edit me-2"></i>แก้ไขอุปกรณ์</h5>
+                    <button type="button" class="btn-close " data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -28,7 +28,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" class="btn btn-warning">บันทึก</button>
+                    <button type="submit" class="btn btn-warning">บันทึกการเปลี่ยนแปลง</button>
                 </div>
             </div>
         </form>

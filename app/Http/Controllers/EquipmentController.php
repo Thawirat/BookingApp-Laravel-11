@@ -8,11 +8,32 @@ use Illuminate\Support\Facades\Log;
 
 class EquipmentController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
-        $equipments = Equipment::orderBy('name')->get();
+        $query = Equipment::query();
+
+        // ค้นหาด้วยชื่อหรือคำอธิบาย
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // เรียงตามจำนวน (remaining)
+        if ($request->filled('sort')) {
+            $query->orderBy('remaining', $request->sort); // asc หรือ desc
+        } else {
+            $query->orderBy('id', 'asc'); // default
+        }
+
+        $equipments = $query->paginate(20);
         return view('dashboard.equipments', compact('equipments'));
     }
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([
