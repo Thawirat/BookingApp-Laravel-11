@@ -22,12 +22,16 @@ class ManageUsersController extends Controller
 
         $users = $query->paginate(50);
 
-        // Get user statistics
         $totalUsers = User::count();
-        $adminCount = User::where('role', 'admin')->count();
-        $regularUserCount = $totalUsers - $adminCount;
+        $adminCount = User::where('role', 'admin')->where('status', 'active')->count();
+        $subAdminCount = User::where('role', 'sub-admin')->where('status', 'active')->count();
+        $regularUserCount = User::where('role', 'user')->where('status', 'active')->count();
+        $statusPendingCount = User::where('status', 'pending')->count();
+        $statusActiveCount = User::where('status', 'active')->count();
+        $statusRejectedCount = User::where('status', 'rejected')->count();
+        // $regularUserCount = $totalUsers - $adminCount;
 
-        return view('dashboard.manage_users', compact('users', 'totalUsers', 'adminCount', 'regularUserCount'));
+        return view('dashboard.manage_users', compact('users', 'totalUsers', 'adminCount', 'regularUserCount', 'subAdminCount', 'statusPendingCount', 'statusActiveCount', 'statusRejectedCount'));
     }
 
     public function update(Request $request, $id)

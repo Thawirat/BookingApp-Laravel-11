@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet" />
+    <link rel="icon" href="{{ asset('favicon_io/favicon-32x32.png') }}" type="image/png">
     <style>
         body {
             font-family: 'Kanit', sans-serif;

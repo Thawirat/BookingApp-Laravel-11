@@ -72,7 +72,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4">ยังไม่มีอุปกรณ์ในระบบ</td>
+                                    <td colspan="6" class="text-center">ยังไม่มีอุปกรณ์ในระบบ</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -96,7 +96,6 @@
             cancelButtonText: 'ยกเลิก',
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById(`deleteEquipmentForm${id}`).submit();

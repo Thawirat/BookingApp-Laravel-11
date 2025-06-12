@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             BuildingSeeder::class,
             RoomSeeder::class,
             RoomTypeSeeder::class,
+            EquipmentSeeder::class,
         ]);
     }
 }

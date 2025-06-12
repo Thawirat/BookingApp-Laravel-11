@@ -90,12 +90,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        ยกเลิก
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        เพิ่มประเภทห้อง
-                    </button>
+                    <button type="submit" class="btn btn-primary">เพิ่มประเภทห้อง</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                 </div>
             </form>
         </div>
@@ -130,12 +126,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            ยกเลิก
-                        </button>
-                        <button type="submit" class="btn btn-warning">
-                            บันทึกการเปลี่ยนแปลง
-                        </button>
+                        <button type="submit" class="btn btn-warning">บันทึกการเปลี่ยนแปลง</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                     </div>
                 </form>
             </div>
@@ -154,7 +146,6 @@
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'ลบ',
             cancelButtonText: 'ยกเลิก',
-            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('deleteForm' + id).submit();
