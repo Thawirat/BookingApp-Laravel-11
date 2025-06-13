@@ -64,142 +64,20 @@
                             </button>
                         @endif
                     </div>
-                    <div class="card-body p-0">
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 p-4">
-                            @foreach ($buildings as $building)
-                                <div class="col">
-                                    <div class="card h-100 border-0 shadow-sm">
-                                        <div class="position-relative">
-                                            <img alt="ภาพ{{ $building->building_name }}" class="card-img-top"
-                                                src="{{ $building->image ? asset('storage/' . $building->image) : asset('images/no-picture.jpg') }}"
-                                                style="height: 180px; object-fit: cover;" />
-                                            <div class="position-absolute top-0 end-0 m-2">
-                                                <span class="badge bg-success">
-                                                    <i class="fas fa-door-open me-1"></i>{{ $building->rooms->count() }}
-                                                    ห้อง
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $building->building_name }}</h5>
-                                            <p class="card-text text-muted small mb-2">
-                                                <i class="fas fa-user-edit me-1"></i>บันทึกโดย:
-                                                {{ $building->citizen_save }}
-                                            </p>
-                                            <div class="d-flex gap-2">
-                                                @if (Auth::user()->role === 'admin')
-                                                    <button class="btn btn-sm btn-outline-warning flex-grow-1"
-                                                        onclick="openEditBuildingModal('{{ $building->id }}', '{{ $building->building_name }}', '{{ $building->citizen_save }}')">
-                                                        <i class="fas fa-edit me-1"></i>แก้ไข
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger flex-grow-1"
-                                                        onclick="confirmDeleteBuilding('{{ $building->id }}', '{{ $building->building_name }}')">
-                                                        <i class="fas fa-trash me-1"></i>ลบ
-                                                    </button>
-                                                @endif
-                                                <button class="btn btn-sm btn-outline-info flex-grow-1"
-                                                    onclick="window.location.href='{{ route('manage_rooms.show', $building->id) }}'">
-                                                    <i class="fas fa-door-open me-1"></i>ดูห้อง
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                    <div class="container mx-auto pb-3">
+                        <div class="grid grid-cols-4 gap-4">
+                            @include('components.building-card')
                         </div>
-                        <div class="d-flex justify-content-center p-4">
-                            {{ $buildings->appends(['search' => request('search')])->links('pagination::bootstrap-5') }}
-                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center p-4">
+                        {{ $buildings->appends(['search' => request('search')])->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Bootstrap 5 Modal: Add Building -->
-    <div class="modal fade" id="addBuildingModal" tabindex="-1" aria-labelledby="addBuildingModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content shadow rounded-4">
-                <form id="addBuildingForm" action="{{ route('manage.buildings.store') }}" method="POST"
-                    enctype="multipart/form-data" class="p-3">
-                    @csrf
-                    <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold" id="addBuildingModalLabel">เพิ่มอาคาร</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
-                    </div>
-                    <div class="modal-body">
-
-                        <div class="mb-3">
-                            <label for="building_name" class="form-label">ชื่ออาคาร</label>
-                            <input type="text" class="form-control" id="building_name" name="building_name" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="citizen_save" class="form-label">ชื่อผู้บันทึก</label>
-                            <input type="text" class="form-control" id="citizen_save" name="citizen_save" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="building_image" class="form-label">อัปโหลดรูปภาพอาคาร</label>
-                            <input type="file" class="form-control" id="building_image" name="image"
-                                accept="image/*">
-                            <small class="form-text text-muted">รองรับไฟล์ jpeg, png, gif (ไม่เกิน 2MB)</small>
-                            <div id="addPreviewImage" class="mt-2"></div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer border-0 pt-0">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
-                        <button type="submit" class="btn btn-primary">เพิ่มอาคาร</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap 5 Modal: Edit Building -->
-    <div class="modal fade" id="editBuildingModal" tabindex="-1" aria-labelledby="editBuildingModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content shadow rounded-4">
-                <form id="editBuildingForm" action="" method="POST" enctype="multipart/form-data" class="p-3">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold" id="editBuildingModalLabel">แก้ไขอาคาร</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
-                    </div>
-                    <div class="modal-body">
-
-                        <div class="mb-3">
-                            <label for="edit_building_name" class="form-label">ชื่ออาคาร</label>
-                            <input type="text" class="form-control" id="edit_building_name" name="building_name"
-                                required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="edit_citizen_save" class="form-label">ชื่อผู้บันทึก</label>
-                            <input type="text" class="form-control" id="edit_citizen_save" name="citizen_save"
-                                required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="edit_building_image" class="form-label">อัปโหลดรูปภาพอาคาร</label>
-                            <input type="file" class="form-control" id="edit_building_image" name="image"
-                                accept="image/*">
-                            <small class="form-text text-muted">หากไม่ต้องการเปลี่ยนภาพ ให้เว้นว่างไว้</small>
-                            <div id="currentImage" class="mt-2"></div>
-                            <div id="editPreviewImage" class="mt-2"></div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer border-0 pt-0">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ปิด</button>
-                        <button type="submit" class="btn btn-primary">บันทึก</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    @include('components.modal.buildings.add-building')
+    @include('components.modal.buildings.edit-building')
 
     <script>
         function openAddBuildingModal() {
@@ -249,5 +127,17 @@
                 }
             });
         }
+        document.getElementById('building_image').addEventListener('change', function(event) {
+            const previewContainer = document.getElementById('addPreviewImage');
+            previewContainer.innerHTML = '';
+            const file = event.target.files[0];
+            if (file) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.classList.add('img-fluid', 'rounded', 'shadow-sm');
+                img.style.maxHeight = '200px';
+                previewContainer.appendChild(img);
+            }
+        });
     </script>
 @endsection

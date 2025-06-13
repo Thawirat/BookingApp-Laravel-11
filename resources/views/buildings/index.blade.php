@@ -10,7 +10,6 @@
                     <i class="fas fa-arrow-left"></i> กลับหน้าหลัก
                 </a>
             </div>
-
             <div class="row g-4">
                 @foreach($buildings as $building)
                 <div class="col-md-4">

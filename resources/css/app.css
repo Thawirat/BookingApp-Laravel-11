@@ -16,3 +16,11 @@
 .btn-warning:hover {
     background-color: #cc8500;
 }
+
+.btn-info:hover {
+    background-color: #17a2b8; /* Bootstrap info color */
+}
+
+.btn-danger:hover {
+    background-color: #c82333; /* Bootstrap danger color */
+}

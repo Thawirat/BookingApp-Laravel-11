@@ -211,7 +211,7 @@
         /* ซ่อนไว้ก่อน */
         width: 220px;
         height: 100vh;
-        background-color: #fff;
+        background-color: #ffffff;
         box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
         z-index: 1050;
         overflow-y: auto;
