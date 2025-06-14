@@ -7,13 +7,12 @@
         </h2>
         <div class="mb-5">
             @if (isset($bookings) && $bookings->count() > 0)
-                <div class="booking-carousel d-flex overflow-auto pb-3">
+                <div class="d-flex overflow-auto pb-3">
                     @foreach ($bookings as $booking)
                         <div class="card me-3 flex-shrink-0" style="width: 300px;">
                             @if (!empty($booking->room) && !empty($booking->room->image))
                                 <img src="{{ asset('storage/' . $booking->room->image) }}"
-                                    alt="{{ $booking->room->room_name ?? 'Room Image' }}"
-                                    class="img-fluid rounded-lg shadow-sm" style="height: 180px; object-fit: cover;">
+                                    alt="{{ $booking->room->room_name ?? 'Room Image' }}" class="img-fluid rounded-lg">
                             @else
                                 <div class="bg-light rounded-lg d-flex align-items-center justify-content-center py-5"
                                     style="height: 180px;">
@@ -40,14 +39,17 @@
                                     </span>
                                 </div>
                                 </p>
-                                <div class='items-center mt-4'><button type="button" class="btn btn-outline-primary btn-sm"
+                                <div class="d-flex gap-2 mt-4">
+                                    <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1"
                                         data-bs-toggle="modal" data-bs-target="#detailsModal{{ $booking->id }}">
                                         <i class="fas fa-eye"></i> ดูรายละเอียดเพิ่มเติม
-                                    </button> @include('booking-status.modal')</div>
-                                <a href="{{ route('bookings.download.pdf', $booking->id) }}"
-                                        class="btn btn-outline-danger btn-sm">
-                                        <i class="fas fa-file-pdf me-1"></i>
+                                    </button>
+                                    @include('booking-status.modal')
+                                    <a href="{{ route('bookings.download.pdf', $booking->id) }}"
+                                        class="btn btn-outline-danger btn-sm flex-grow-1">
+                                        <i class="fas fa-file-pdf me-1"></i> ดาวน์โหลด PDF
                                     </a>
+                                </div>
                             </div>
                         </div>
                     @endforeach

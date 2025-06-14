@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 .custom-link {
-    color: #ffc107; /* Bootstrap text-warning */
+    color: #1f2fdc;
     text-decoration: none;
     transition: color 0.3s;
 }
 
 .custom-link:hover {
-    color: #cc8500; /* สีตอน hover */
+    color: #0611ac;
     text-decoration: underline;
 }
 

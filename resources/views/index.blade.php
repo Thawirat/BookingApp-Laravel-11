@@ -105,7 +105,7 @@
                                         <div class="mt-3 d-flex justify-content-center">
                                             <button type="button" class="btn btn-outline-primary btn-sm"
                                                 data-bs-toggle="modal" data-bs-target="#detailsModal{{ $booking->id }}">
-                                                ดูรายละเอียดเพิ่มเติม
+                                                <i class="fas fa-eye"></i> ดูรายละเอียดเพิ่มเติม
                                             </button>
                                         </div>
                                         @include('booking-status.modal')
