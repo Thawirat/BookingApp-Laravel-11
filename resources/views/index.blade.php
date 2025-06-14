@@ -75,8 +75,7 @@
                                     @if (!empty($booking->room) && !empty($booking->room->image))
                                         <img src="{{ asset('storage/' . $booking->room->image) }}"
                                             alt="{{ $booking->room->room_name ?? 'Room Image' }}"
-                                            class="img-fluid rounded-lg shadow-sm"
-                                            style="height: 180px; object-fit: cover;">
+                                            class="img-fluid rounded-lg">
                                     @else
                                         <div class="bg-light rounded-lg d-flex align-items-center justify-content-center py-5"
                                             style="height: 180px;">

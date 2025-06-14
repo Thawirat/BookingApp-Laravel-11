@@ -113,10 +113,12 @@ class ManageRoomsController extends Controller
     {
         try {
             Log::info('Room creation request data:', $request->all());
+
             $request->merge([
                 'status_id' => $request->input('status_id', 2)
             ]);
-            // Validate
+
+            // ✅ Validate input
             $validated = $request->validate([
                 'building_id' => 'required|exists:buildings,id',
                 'room_name' => 'required|string|max:255',
@@ -124,79 +126,65 @@ class ManageRoomsController extends Controller
                 'class' => 'required|string|max:255',
                 'room_details' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                // 'service_rates' => 'required|numeric|min:0',
                 'status_id' => 'required|exists:status,status_id',
                 'room_type' => 'required',
-                'custom_room_type' => 'nullable|string|max:255',
-                'room_type_other' => 'nullable|string',  // กรณีเลือก "อื่นๆ"
+                'room_type_other' => 'nullable|string|max:255',
             ]);
 
             Log::info('Room data validated successfully:', $validated);
 
-            // Create room
             $room = new Room();
             $room->building_id = $validated['building_id'];
             $room->room_id = $this->generateRoomId($validated['building_id']);
             $room->room_name = $validated['room_name'];
             $room->capacity = $validated['capacity'];
             $room->class = $validated['class'];
-            $room->room_details = $validated['room_details'];
-            // $room->service_rates = $validated['service_rates'];
+            $room->room_details = $validated['room_details'] ?? '';
             $room->status_id = $validated['status_id'];
 
-
-            // ถ้าเลือก "อื่นๆ"
-            if ($request->room_type == 'other') {
+            // ✅ Handle room type
+            if ($request->room_type === 'other') {
                 $room->room_type = 'other';
-                $room->room_type_other = $request->room_type_other;  // เก็บข้อความที่ระบุเอง
+                $room->room_type_other = $request->room_type_other;
             } else {
                 $room->room_type = $request->room_type;
-                $room->room_type_other = null;  // ล้างค่าหากไม่ใช่ "อื่นๆ"
+                $room->room_type_other = null;
             }
-            // ✅ Handle image
+
+            // ✅ Handle image upload
             if ($request->hasFile('image')) {
                 try {
                     $image = $request->file('image');
-
                     if (!$image->isValid()) {
                         throw new \Exception('Invalid file upload: ' . $image->getErrorMessage());
                     }
 
-                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
                     $extension = strtolower($image->getClientOriginalExtension());
-
-                    if (!in_array($extension, $allowedExtensions)) {
-                        throw new \Exception('Invalid file type. Allowed types: ' . implode(', ', $allowedExtensions));
+                    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                    if (!in_array($extension, $allowed)) {
+                        throw new \Exception("Invalid file type. Allowed types: " . implode(', ', $allowed));
                     }
 
                     $imageName = time() . '_' . uniqid() . '.' . $extension;
-                    $storagePath = storage_path('app/public/room_images');
-
-                    if (!is_dir($storagePath) && !mkdir($storagePath, 0755, true)) {
-                        throw new \Exception('Failed to create storage directory');
-                    }
-
-                    $imagePath = $image->storeAs('public/room_images', $imageName);
-                    if (!$imagePath) {
+                    $path = $image->storeAs('public/room_images', $imageName);
+                    if (!$path) {
                         throw new \Exception('Failed to store image');
                     }
 
                     $room->image = 'room_images/' . $imageName;
 
                     Log::info('Room image uploaded successfully:', [
-                        'path' => $imagePath,
+                        'path' => $path,
                         'size' => $image->getSize(),
                         'mime' => $image->getMimeType(),
                     ]);
                 } catch (\Exception $e) {
-                    Log::error('Image upload failed: ' . $e->getMessage(), [
-                        'file' => $image->getClientOriginalName(),
-                        'error' => $e->getTraceAsString(),
-                    ]);
-                    return redirect()->back()->with('error', 'Failed to upload image: ' . $e->getMessage());
+                    Log::error('Image upload failed: ' . $e->getMessage());
+                    return back()->with('error', 'Failed to upload image: ' . $e->getMessage());
                 }
             }
 
+            // ✅ Save to database
             $room->save();
             Log::info('Room created successfully:', $room->toArray());
 
@@ -209,7 +197,6 @@ class ManageRoomsController extends Controller
             return redirect()->back()->with('error', 'Failed to create room. Please try again.');
         }
     }
-
 
     public function update(Request $request, $roomId)
     {
@@ -333,7 +320,6 @@ class ManageRoomsController extends Controller
             return redirect()->back()->with('error', 'Failed to update room. Please try again.');
         }
     }
-
     public function destroy($room_id)
     {
         // ค้นหาห้องที่ต้องการลบ
@@ -350,7 +336,6 @@ class ManageRoomsController extends Controller
         // ส่งหน้าก่อนหน้าพร้อมข้อความสำเร็จ
         return redirect()->back()->with('success', 'ลบห้องสำเร็จ');
     }
-
     public function subAdminRooms(Request $request)
     {
         $user = Auth::user();

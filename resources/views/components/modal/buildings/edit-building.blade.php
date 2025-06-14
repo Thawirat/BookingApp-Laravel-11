@@ -5,7 +5,7 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title fw-bold" id="editBuildingModalLabel"><i class="fas fa-edit me-2"></i>แก้ไขอาคาร</h5>
+                    <h5 class="modal-title" id="editBuildingModalLabel"><i class="fas fa-edit me-2"></i> แก้ไขอาคาร</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="ปิด"></button>
                 </div>
                 <div class="modal-body">

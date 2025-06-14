@@ -134,8 +134,8 @@ class BookingController extends Controller
                 'external_phone' => 'required|string|max:20',
                 'external_position' => 'required|string|max:255',
                 'external_address' => 'required|string|max:255',
-                'booking_start' => 'required|date|after:today',
-                'booking_end' => 'required|date|after:booking_start',
+                'booking_start' => 'required|date|after_or_equal:today',
+                'booking_end' => 'required|date|after_or_equal:booking_start',
                 'check_in_time' => [
                     'required',
                     'date_format:H:i',
@@ -155,11 +155,11 @@ class BookingController extends Controller
                 'booker_info' => 'nullable|string'
             ]);
 
-            // Combine date and time for booking start and end
+            // Combine date and time
             $bookingStart = Carbon::parse($validated['booking_start'])->format('Y-m-d') . ' ' . $validated['check_in_time'];
             $bookingEnd = Carbon::parse($validated['booking_end'])->format('Y-m-d') . ' ' . $validated['check_out_time'];
 
-            // Check if the time slot is available
+            // Check for conflict
             $existingBooking = Booking::where('room_id', $validated['room_id'])
                 ->where(function ($query) use ($bookingStart, $bookingEnd) {
                     $query->where(function ($q) use ($bookingStart, $bookingEnd) {
@@ -173,37 +173,27 @@ class BookingController extends Controller
                 return back()->withErrors(['message' => 'ช่วงเวลาที่เลือก已被预订']);
             }
 
-            // คำนวณราคารวม
-            $room = Room::find($validated['room_id']);
-            $start = new \DateTime($validated['booking_start']);
-            $end = new \DateTime($validated['booking_end']);
-            $days = $end->diff($start)->days;
-            // ถ้าจองวันเดียว ต้องคิดเป็น 1 วัน
-            $days = $days > 0 ? $days : 1;
-            $totalPrice = $room->service_rates * $days;
-
-            // สร้างข้อมูลการจอง
+            // Create booking
             $booking = new Booking;
             $booking->fill($validated);
-            $booking->status_id = 3; // สถานะรอการยืนยัน
+            $booking->status_id = 3;
             $booking->is_external = true;
-            $booking->total_price = $totalPrice;
             $booking->booking_start = $bookingStart;
             $booking->booking_end = $bookingEnd;
+            $booking->total_price = null; // ไม่ใช้ service_rates แล้ว กำหนดเป็น null หรือไม่ต้องเซตก็ได้
 
-            // กรณีผู้ใช้ที่ login แล้ว
             if (auth()->check()) {
                 $booking->user_id = auth()->id();
             }
 
-            // จัดการกับไฟล์อัปโหลด - แก้ไขเพื่อตรวจสอบและ debug
+            // Handle file upload
             if ($request->hasFile('payment_slip')) {
                 try {
                     $file = $request->file('payment_slip');
                     if ($file->isValid()) {
                         $filePath = $file->store('payment_slips', 'public');
                         $booking->payment_slip = $filePath;
-                        $booking->payment_status = 'pending'; // มีการอัปโหลดสลิป → pending
+                        $booking->payment_status = 'pending';
                         Log::info('Payment slip saved successfully: ' . $filePath);
                     } else {
                         Log::warning('Invalid payment slip file.');
@@ -215,18 +205,15 @@ class BookingController extends Controller
                 }
             } else {
                 Log::info('No payment slip provided in the request.');
-                $booking->payment_status = 'unpaid'; // ไม่มีสลิป → unpaid
+                $booking->payment_status = 'unpaid';
             }
-            $booking->save();
 
-            // ส่งอีเมลแจ้งยืนยันการจอง...
+            $booking->save();
 
             return redirect()->route('booking.index')->with('success', 'การจองห้องสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันการจอง');
         } catch (\Exception $e) {
             Log::error('Booking failed: ' . $e->getMessage(), ['request' => $request->all()]);
-
-            return back()->with('error', 'เกิดข้อผิดพลาดในการจอง: ' . $e->getMessage())
-                ->withInput();
+            return back()->with('error', 'เกิดข้อผิดพลาดในการจอง: ' . $e->getMessage())->withInput();
         }
     }
 

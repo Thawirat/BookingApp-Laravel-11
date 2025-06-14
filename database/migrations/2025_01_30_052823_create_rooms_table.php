@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('room_details'); // รายละเอียดห้อง
             $table->string('image'); // รูปภาพ
             $table->integer('capacity'); // ขนาดความจุ
-            $table->decimal('service_rates', 10, 2); // อัตราค่าบริการ
+            $table->decimal('service_rates', 10, 2)->nullable(); // อัตราค่าบริการ
             $table->unsignedBigInteger('status_id'); // สถานะการใช้งาน
 
             // เชื่อมโยงกับตาราง buildings

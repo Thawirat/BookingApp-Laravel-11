@@ -52,7 +52,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row" id="buildings-container">
             <div class="col-md-12">
                 <div class="card mb-4 shadow-sm">
@@ -64,7 +63,7 @@
                             </button>
                         @endif
                     </div>
-                    <div class="container mx-auto pb-3">
+                    <div class="container mx-auto pb-3 py-3">
                         <div class="grid grid-cols-4 gap-4">
                             @include('components.building-card')
                         </div>

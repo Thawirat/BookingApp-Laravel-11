@@ -26,7 +26,7 @@ class Room extends Model
         'class',
         'room_details',
         'capacity',
-        'service_rates',
+        // 'service_rates',
         'status_id',
         'building_id',
         'image',
