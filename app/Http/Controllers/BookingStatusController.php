@@ -25,19 +25,21 @@ class BookingStatusController extends Controller
 
         // กรองด้วย keyword
         if ($search) {
-            $query->whereHas('room', function ($q) use ($search) {
-                $q->where('room_name', 'like', '%' . $search . '%');
-            })->orWhereHas('building', function ($q) use ($search) {
-                $q->where('building_name', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('room', function ($sub) use ($search) {
+                    $sub->where('room_name', 'like', '%' . $search . '%');
+                })->orWhereHas('building', function ($sub) use ($search) {
+                    $sub->where('building_name', 'like', '%' . $search . '%');
+                });
             });
         }
 
-        // กรองด้วยสถานะ (เช่น pending, approved, rejected)
+        // กรองด้วยสถานะ
         if ($status) {
             $query->where('status_id', $status);
         }
 
-        // กรองด้วยวันที่จอง
+        // กรองด้วยวันที่จอง (start date)
         if ($date) {
             $query->whereDate('booking_start', $date);
         }
@@ -46,6 +48,7 @@ class BookingStatusController extends Controller
 
         return view('booking-status.index', compact('bookings', 'search', 'status', 'date'));
     }
+
     public function cancel($id)
     {
         $booking = Booking::where('id', $id)

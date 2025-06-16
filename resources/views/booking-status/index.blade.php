@@ -12,18 +12,19 @@
                         placeholder="ค้นหาชื่อห้องหรืออาคาร...">
                 </div>
                 <div class="col-md-3">
-                    <select name="status_id" class="form-select">
-                        <option value="">-- สถานะทั้งหมด --</option>
-                        <option value="1" {{ request('status_id') == '3' ? 'selected' : '' }}>รออนุมัติ</option>
-                        <option value="2" {{ request('status_id') == '4' ? 'selected' : '' }}>อนุมัติแล้ว</option>
-                        <option value="3" {{ request('status_id') == '5' ? 'selected' : '' }}>ยกเลิกการจอง</option>
+                    <select name="status_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">สถานะทั้งหมด</option>
+                        <option value="3" {{ request('status_id') == '3' ? 'selected' : '' }}>รออนุมัติ</option>
+                        <option value="4" {{ request('status_id') == '4' ? 'selected' : '' }}>อนุมัติแล้ว</option>
+                        <option value="5" {{ request('status_id') == '5' ? 'selected' : '' }}>ยกเลิกการจอง</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="date" name="booking_date" value="{{ request('booking_date') }}" class="form-control">
+                    <input type="date" name="booking_date" value="{{ request('booking_date') }}" class="form-control"
+                        onchange="this.form.submit()">
                 </div>
-                <div class="col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary w-100">ค้นหา</button>
+                <div class="btn-group col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> ค้นหา</button>
                     <a href="{{ route('my-bookings') }}" class="btn btn-secondary">รีเซ็ต</a>
                 </div>
             </div>

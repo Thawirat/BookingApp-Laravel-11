@@ -71,16 +71,6 @@
             margin-bottom: 6px;
         }
 
-        table.signature-table td {
-            padding: 30px 10px;
-            vertical-align: top;
-            height: 160px;
-        }
-
-        .center {
-            text-align: center;
-        }
-
         .note {
             font-size: 14pt;
             margin-top: 40px;
@@ -112,14 +102,6 @@
                     <li><strong>วันที่จอง:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}</li>
                     <li><strong>เวลา:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}</li>
                     <li><strong>วันที่สิ้นสุด:</strong> {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}</li>
-                    {{-- <li><strong>สถานะการชำระเงิน:</strong>
-                        {{ match ($booking->payment_status) {
-                            'unpaid' => 'ยังไม่ชำระ',
-                            'paid' => 'ชำระเงินแล้ว',
-                            'pending' => 'รอตรวจสอบ',
-                            'cancelled' => 'ยกเลิกการชำระ',
-                        } }}
-                    </li> --}}
                 </ul>
             </div>
             <div class="box">
@@ -145,33 +127,6 @@
                 <li><strong>ที่อยู่/หน่วยงาน:</strong> {{ $booking->external_address ?? 'ไม่ระบุ' }}</li>
             </ul>
         </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title center">แบบบันทึกการอนุมัติการใช้ห้อง</div>
-        <table class="signature-table" width="100%">
-            <tr>
-                <td class="center">
-                    <strong>ผู้อนุมัติ</strong><br><br><br>
-                    ............................................................<br>
-                    (.......................................................)<br>
-                    ตำแหน่ง: ..................................................<br>
-                    วันที่: ........../........../..........
-                </td>
-                <td class="center">
-                    <strong>ผู้ขอใช้ห้อง</strong><br><br><br>
-                    ............................................................<br>
-                    ({{ $booking->external_name }})<br>
-                    ตำแหน่ง: {{ $booking->external_position ?? '..................................................' }}<br>
-                    วันที่: ........../........../..........
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="note">
-        <strong>หมายเหตุ:</strong><br>
-        โปรดแนบสำเนาหนังสือขออนุญาตและแนบแบบฟอร์มนี้พร้อมลายเซ็นให้ครบถ้วน เพื่อใช้ประกอบการอนุมัติการใช้ห้องประชุม
     </div>
 </body>
 
