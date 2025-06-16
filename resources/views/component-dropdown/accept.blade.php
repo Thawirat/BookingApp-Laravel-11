@@ -2,10 +2,9 @@
     {{-- ป้ายสถานะ --}}
     <span
         class="badge
-                                                                @if ($booking->status_id == 1) bg-info
-                                                                @elseif($booking->status_id == 2) bg-warning
-                                                                @elseif($booking->status_id == 3) bg-danger
+                                                                @if ($booking->status_id == 3) bg-warning
                                                                 @elseif($booking->status_id == 4) bg-success
+                                                                @elseif($booking->status_id == 5) bg-danger
                                                                 @else bg-secondary @endif"
         data-bs-toggle="tooltip" data-bs-placement="top"
         title="อนุมัติโดย: {{ $booking->approver_name ?? 'ยังไม่มีผู้อนุมัติ' }}">

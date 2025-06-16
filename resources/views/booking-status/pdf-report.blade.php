@@ -112,14 +112,14 @@
                     <li><strong>วันที่จอง:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}</li>
                     <li><strong>เวลา:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}</li>
                     <li><strong>วันที่สิ้นสุด:</strong> {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}</li>
-                    <li><strong>สถานะการชำระเงิน:</strong>
+                    {{-- <li><strong>สถานะการชำระเงิน:</strong>
                         {{ match ($booking->payment_status) {
                             'unpaid' => 'ยังไม่ชำระ',
                             'paid' => 'ชำระเงินแล้ว',
                             'pending' => 'รอตรวจสอบ',
                             'cancelled' => 'ยกเลิกการชำระ',
                         } }}
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
             <div class="box">

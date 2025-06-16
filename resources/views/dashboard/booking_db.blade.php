@@ -69,12 +69,13 @@
                                 <table class="table table-striped table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th class="text-center">#</th>
+                                            <th class="text-center">ลำดับที่</th>
                                             <th class="text-center">รหัสการจอง</th>
+                                            <th class="text-center">ห้องที่จอง</th>
                                             <th class="text-center">ผู้จองห้อง</th>
                                             <th class="text-center">เบอร์โทรศัพท์</th>
-                                            <th class="text-center">วันเวลาที่จอง</th>
-                                            <th class="text-center">วันเวลาที่สิ้นสุดจอง</th>
+                                            <th class="text-center">วันที่จอง</th>
+                                            <th class="text-center">วันที่เริ่มต้น-สิ้นสุดการจอง</th>
                                             {{-- <th class="text-center">สถานะการชำระเงิน</th> --}}
                                             <th class="text-center">สถานะการอนุมัติ</th>
                                             <th class="text-center">การดำเนินการ</th>
@@ -87,24 +88,22 @@
                                                     {{ ($bookings->currentPage() - 1) * $bookings->perPage() + $loop->iteration }}
                                                 </td>
                                                 <td><span class="badge bg-light text-dark">{{ $booking->id }}</span></td>
+                                                <td><span class="fw-bold">{{ $booking->room_name }}</span></td>
                                                 <td>
-                                                    <div class="fw-bold">{{ $booking->external_name }}</div><small
-                                                        class="text-muted">{{ $booking->external_email }}</small>
+                                                    <div class="fw-bold">{{ $booking->external_name }}</div>
+                                                    <small class="text-muted">{{ $booking->external_email }}</small>
                                                 </td>
                                                 <td>{{ $booking->external_phone }}</td>
                                                 <td>
                                                     <div><i class="far fa-calendar-alt me-1"></i>
-                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}
+                                                        {{ \Carbon\Carbon::parse($booking->created_at)->format('d/m/Y') }}
                                                     </div>
-                                                    <small class="text-muted">
-                                                        <i class="far fa-clock me-1"></i>
-                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }}
-                                                        -
-                                                        {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
-                                                    </small>
                                                 </td>
                                                 <td>
-                                                    <div><i class="far fa-calendar-alt me-1"></i>
+                                                    <div>
+                                                        <i class="far fa-calendar-alt me-1"></i>
+                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}
+                                                        -
                                                         {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}
                                                     </div>
                                                     <small class="text-muted">
@@ -118,20 +117,22 @@
                                                     @include('component-dropdown.payment', ['booking' => $booking,])
                                                 </td> --}}
                                                 <td class="text-center">
-                                                    @include('component-dropdown.accept', ['booking' => $booking,])
+                                                    @include('component-dropdown.accept', [
+                                                        'booking' => $booking,
+                                                    ])
                                                 </td>
                                                 <td class="text-center">
-                                                    <div class="btn-group">
-                                                        <a href="#" class="btn btn-outline-info btn-sm view-details"
+                                                    <div class="d-flex flex-column gap-2">
+                                                        <a href="#" class="btn btn-outline-primary view-details"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#detailsModal{{ $booking->id }}">
-                                                            <i class="fas fa-eye"></i>
+                                                            <i class="fas fa-eye"></i> ดูรายละเอียด
+                                                        </a>
+                                                        <a href="{{ route('bookingslip.download.pdf', $booking->id) }}"
+                                                            class="btn btn-outline-danger">
+                                                            <i class="fas fa-file-pdf me-1"></i> ดาวน์โหลดไฟล์ PDF
                                                         </a>
                                                     </div>
-                                                    <a href="{{ route('bookingslip.download.pdf', $booking->id) }}"
-                                                        class="btn btn-outline-danger btn-sm">
-                                                        <i class="fas fa-file-pdf me-1"></i>
-                                                    </a>
                                                 </td>
                                             </tr>
                                             @include('booking-status.modal')
@@ -158,14 +159,6 @@
         </div>
     </div>
 @endsection
-
-<!-- Flatpickr CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-<!-- Flatpickr JS -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-<!-- สคริปต์หลัก -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var datepicker = document.getElementById("datepicker");

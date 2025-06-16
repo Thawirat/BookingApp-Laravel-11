@@ -5,6 +5,29 @@
         <h2 class="mb-4 d-flex align-items-center">
             <i class="fas fa-calendar-check me-2 fs-4"></i> สถานะการจองห้องของฉัน
         </h2>
+        <form method="GET" action="{{ route('my-bookings') }}" class="mb-4">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" name="search" value="{{ request('search') }}" class="form-control"
+                        placeholder="ค้นหาชื่อห้องหรืออาคาร...">
+                </div>
+                <div class="col-md-3">
+                    <select name="status_id" class="form-select">
+                        <option value="">-- สถานะทั้งหมด --</option>
+                        <option value="1" {{ request('status_id') == '3' ? 'selected' : '' }}>รออนุมัติ</option>
+                        <option value="2" {{ request('status_id') == '4' ? 'selected' : '' }}>อนุมัติแล้ว</option>
+                        <option value="3" {{ request('status_id') == '5' ? 'selected' : '' }}>ยกเลิกการจอง</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="booking_date" value="{{ request('booking_date') }}" class="form-control">
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">ค้นหา</button>
+                    <a href="{{ route('my-bookings') }}" class="btn btn-secondary">รีเซ็ต</a>
+                </div>
+            </div>
+        </form>
         <div class="mb-5">
             @if (isset($bookings) && $bookings->count() > 0)
                 <div class="container mx-auto pb-3 py-3">
@@ -41,23 +64,36 @@
                                             </div>
                                             <div><strong>สถานะ:</strong>
                                                 <span
-                                                    class="badge bg-{{ $booking->status->status_name === 'อนุมัติแล้ว' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : 'secondary') }}">
+                                                    class="badge bg-{{ $booking->status->status_name === 'อนุมัติแล้ว' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : ($booking->status->status_name === 'ยกเลิกการการจอง' ? 'danger' : 'secondary')) }}">
                                                     {{ $booking->status->status_name ?? '-' }}
                                                 </span>
                                             </div>
                                         </div>
-
-                                        <div class="mt-auto d-flex gap-2">
+                                        <div class="mt-auto d-flex flex-column gap-2">
                                             <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1"
                                                 data-bs-toggle="modal" data-bs-target="#detailsModal{{ $booking->id }}">
                                                 <i class="fas fa-eye"></i> ดูรายละเอียดเพิ่มเติม
                                             </button>
                                             @include('booking-status.modal')
-
-                                            <a href="{{ route('bookings.download.pdf', $booking->id) }}"
+                                            <a href="{{ route('mybookings.download.pdf', $booking->id) }}"
                                                 class="btn btn-outline-danger btn-sm flex-grow-1">
                                                 <i class="fas fa-file-pdf me-1"></i> ดาวน์โหลด PDF
                                             </a>
+                                            <form id="cancel-form-{{ $booking->id }}"
+                                                action="{{ route('mybookings.cancel', $booking->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <div class="d-grid gap-2">
+                                                    <button type="button"
+                                                        class="btn btn-danger btn-sm flex-grow-1 cancel-booking-btn"
+                                                        data-id="{{ $booking->id }}"
+                                                        data-room="{{ $booking->room->room_name ?? 'ห้อง' }}"
+                                                        data-status="{{ $booking->status_id }}"
+                                                        data-url="{{ route('mybookings.cancel', $booking->id) }}">
+                                                        <i class="fas fa-times-circle me-1"></i> ยกเลิกการจอง
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -68,31 +104,48 @@
             @else
                 <p class="text-muted">คุณยังไม่มีการจองห้อง</p>
             @endif
+            <div class="mt-3">
+                {{ $bookings->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        document.querySelectorAll('.cancel-booking-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const bookingId = this.dataset.id;
+                const cancelUrl = this.dataset.url;
+                const roomName = this.dataset.room;
+                const statusId = parseInt(this.dataset.status);
 
-<script>
-    function confirmCancel(bookingId) {
-        Swal.fire({
-            title: 'คุณแน่ใจหรือไม่?',
-            text: "การยกเลิกนี้จะไม่สามารถย้อนกลับได้!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'ใช่, ยกเลิก!',
-            cancelButtonText: 'ไม่',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/booking/${bookingId}/cancel`;
-                form.innerHTML = `
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="_method" value="PATCH">
-                `;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        })
-    }
-</script>
+                if (statusId === 4) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ไม่สามารถยกเลิกได้',
+                        text: `การจองห้อง "${roomName}" ได้รับการอนุมัติแล้ว ไม่สามารถยกเลิกได้`,
+                        confirmButtonColor: '#3085d6'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'ยืนยันการยกเลิก?',
+                    html: `คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการจองห้อง <strong>${roomName}</strong>?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'ใช่, ยกเลิกเลย',
+                    cancelButtonText: 'ไม่',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById(`cancel-form-${bookingId}`);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
