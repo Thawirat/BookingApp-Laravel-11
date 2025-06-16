@@ -15,7 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- ลิงก์ CSS  Bootstrap และ Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- FullCalendar v5 -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
@@ -33,6 +34,10 @@
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5/main.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/moment/moment.min.js'></script>
     {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script> --}}
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -133,7 +138,8 @@
                                     class="fas fa-tags me-2"></i> จัดการประเภทห้อง</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('equipments.index') }}" class="nav-link text-gray-700"><i class="fas fa-boxes me-2"></i> จัดการวัสดุ/อุปกรณ์</a>
+                            <a href="{{ route('equipments.index') }}" class="nav-link text-gray-700"><i
+                                    class="fas fa-boxes me-2"></i> จัดการวัสดุ/อุปกรณ์</a>
                         </li>
                     @endif
                 @endif
@@ -381,6 +387,7 @@
         height: 100px;
         margin-bottom: 25px;
     }
+
     .stat-card .icon {
         font-size: 24px;
         background-color: #1707ff;

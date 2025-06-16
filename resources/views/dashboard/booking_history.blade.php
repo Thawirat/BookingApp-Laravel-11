@@ -14,7 +14,6 @@
                 </form>
             </div>
         </div>
-
         <div class="row mb-4">
             <div class="col-md-4">
                 <div class="stat-card">
@@ -44,7 +43,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-12">
                 <div class="card mb-4 shadow-sm">
@@ -74,7 +72,7 @@
                             <table class="table table-striped table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="text-center">#</th>
+                                        <th class="text-center">ลำดับที่</th>
                                         <th class="text-center">รหัสการจอง</th>
                                         <th class="text-center">ผู้จองห้อง</th>
                                         <th class="text-center">เบอร์โทรศัพท์</th>
@@ -134,74 +132,7 @@
                                             </div>
                                         </td>
                                     </tr>
-
-                                    <!-- Modal for Booking Details -->
-                                    <div class="modal fade" id="detailsModal{{ $booking->id }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ $booking->id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title" id="detailsModalLabel{{ $booking->id }}">
-                                                        <i class="fas fa-info-circle me-2"></i> รายละเอียดการจองห้อง
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <h6 class="fw-bold text-primary mb-3">ข้อมูลการจอง</h6>
-                                                            <div class="mb-2">
-                                                                <strong>รหัสการจอง:</strong> {{ $booking->id }}
-                                                            </div>
-                                                            <div class="mb-2">
-                                                                <strong>วันที่จอง:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}
-                                                            </div>
-                                                            <div class="mb-2">
-                                                                <strong>เวลา:</strong>
-                                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} -
-                                                                {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
-                                                            </div>
-                                                            <div class="mb-2">
-                                                                <strong>วัตถุประสงค์:</strong> {{ $booking->reason ?? 'ไม่ระบุ' }}
-                                                            </div>
-                                                            <div class="mb-2">
-                                                                <strong>สถานะการชำระเงิน:</strong>
-                                                                <span class="badge {{ $booking->payment_status == 'ชำระแล้ว' ? 'bg-success' : 'bg-warning' }}">
-                                                                    {{ $booking->payment_status }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <h6 class="fw-bold text-primary mb-3">ข้อมูลผู้จอง</h6>
-                                                            <div class="mb-2">
-                                                                <strong>ชื่อผู้จอง:</strong> {{ $booking->external_name }}
-                                                            </div>
-                                                            <div class="mb-2">
-                                                                <strong>อีเมล:</strong> {{ $booking->external_email }}
-                                                            </div>
-                                                            <div class="mb-2">
-                                                                <strong>โทรศัพท์:</strong> {{ $booking->external_phone }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <hr>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <h6 class="fw-bold text-primary mb-3">ข้อมูลห้อง</h6>
-                                                            <div class="mb-2">
-                                                                <strong>อาคาร:</strong> {{ $booking->building_name }}
-                                                            </div>
-                                                            <div class="mb-2">
-                                                                <strong>ห้อง:</strong> {{ $booking->room_name }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @include('booking-status.modal')
                                 @empty
                                     <tr>
                                         <td colspan="9" class="text-center py-4 text-muted">
@@ -213,7 +144,6 @@
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="d-flex justify-content-center mt-4">
                             {{ $bookings->appends(['search' => request('search'), 'booking_date' => request('booking_date')])->links('pagination::bootstrap-5') }}
                         </div>
@@ -224,14 +154,6 @@
     </div>
 </div>
 @endsection
-
-<!-- Flatpickr CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-<!-- Flatpickr JS -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-<!-- สคริปต์หลัก -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var datepicker = document.getElementById("datepicker");
