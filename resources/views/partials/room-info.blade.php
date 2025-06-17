@@ -1,4 +1,4 @@
-<div class="card shadow rounded-lg border-0 mb-4">
+<div class="card rounded-lg border-0 mb-4">
     <div class="card-header bg-white py-3 border-bottom">
         <h4 class="mb-0 fw-bold">ข้อมูลห้องพัก</h4>
     </div>
@@ -6,7 +6,7 @@
         <!-- Room Image -->
         <div class="mb-4">
             @if (isset($room->image))
-                <img src="{{ asset('storage/' .$room->image) }}" alt="{{ $room->room_name }}" class="img-fluid rounded-lg shadow-sm">
+                <img src="{{ asset('storage/' .$room->image) }}" alt="{{ $room->room_name }}" class="img-fluid rounded-lg">
             @else
                 <div class="bg-light rounded-lg d-flex align-items-center justify-content-center py-5">
                     <span class="text-muted"><i class="bi bi-image me-2"></i>ไม่มีรูปภาพ</span>

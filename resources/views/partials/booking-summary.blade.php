@@ -1,4 +1,4 @@
-<div class="card shadow rounded-lg border-0">
+<div class="card rounded-lg border-0">
     <div class="card-header bg-white py-3 border-bottom">
         <h4 class="mb-0 fw-bold">สรุปการจอง</h4>
     </div>
@@ -12,8 +12,8 @@
             </div> --}}
             <!-- Days -->
             <div class="d-flex justify-content-between py-2 border-bottom">
-                <span class="text-muted">จำนวนวัน:</span>
-                <span id="totalDays">0 วัน</span>
+                <span class="text-muted">เวลาทั้งหมด:</span>
+                <span id="totalDays"></span>
             </div>
             <!-- Check-in time -->
             <div class="d-flex justify-content-between py-2 border-bottom">

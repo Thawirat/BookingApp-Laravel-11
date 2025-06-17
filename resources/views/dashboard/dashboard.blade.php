@@ -12,7 +12,7 @@
                 <div class="p-3 mb-4 bg-white rounded shadow-sm">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h5>การจองล่าสุด</h5>
-                        <a href="#" class="view-all-link">ดูทั้งหมด</a>
+                        <a href="{{ route('booking_db') }}" class="custom-link">ดูทั้งหมด</a>
                     </div>
 
                     <div class="booking-carousel" id="bookingCarousel">
@@ -230,16 +230,6 @@
         position: relative;
         height: 250px;
         width: 100%;
-    }
-
-    .view-all-link {
-        font-size: 14px;
-        color: #FFC107;
-        text-decoration: none;
-    }
-
-    .view-all-link:hover {
-        text-decoration: underline;
     }
 
     @media (max-width: 768px) {

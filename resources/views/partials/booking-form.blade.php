@@ -8,7 +8,7 @@
             <div class="row">
                 <!-- Booking Form Section -->
                 <div class="col-lg-8 mb-4">
-                    <div class="card shadow rounded-lg border-0 mb-4">
+                    <div class="card rounded-lg border-0 mb-4">
                         <div class="card-header bg-white py-3 border-bottom">
                             <h4 class="mb-0 fw-bold">ข้อมูลผู้จอง <span class="text-danger">*</span></h4>
                         </div>
@@ -103,7 +103,8 @@
                                     </div>
                                     <div class="col-md-12">
                                         <label class="form-label fw-semibold">รายละเอียดเพิ่มเติม(ถ้ามี)</label>
-                                        <textarea name="booker_info" class="form-control" rows="3" placeholder="ระบุรายละเอียดเพิ่มเติม"></textarea>
+                                        <textarea name="booker_info" class="form-control" rows="3"
+                                            placeholder="ระบุรายละเอียดเพิ่มเติม เช่น ต้องการวัสดุ/อุปกรณ์..."></textarea>
                                     </div>
                                     <!-- จำนวนผู้เข้าร่วม -->
                                     <div class="col-md-6">
@@ -114,7 +115,7 @@
                                     </div>
                                 </div>
                                 <!-- Date Selection Box -->
-                                <div class="card border-0 shadow-sm mt-4 mb-3">
+                                <div class="border-0 mt-4 mb-3">
                                     <div class="card-body p-4 text-center">
                                         <div class="d-flex justify-content-center align-items-center mb-3 flex-wrap gap-3">
                                             <div>
@@ -155,7 +156,7 @@
                                     </div>
                                 </div>
                                 <!-- Time Selection Box -->
-                                <div class="card border-0 shadow-sm mb-4">
+                                <div class=" border-0 mb-4">
                                     <div class="card-body p-4">
                                         <h5 class="fw-bold mb-3">เวลาจอง</h5>
                                         <!-- Update the time inputs -->
@@ -181,11 +182,11 @@
                                 </div>
                                 <!-- Action Buttons -->
                                 <div class="d-flex justify-content-between">
-                                    <button type="button" class="btn btn-danger px-4">
-                                        <i class="bi bi-x-circle me-1"></i>ยกเลิก
+                                    <button type="button" class="btn btn-danger px-4" onclick="window.location.href='{{ route('rooms.index') }}'">
+                                        ยกเลิก
                                     </button>
                                     <button type="submit" class="btn btn-success px-4">
-                                        <i class="bi bi-check-circle me-1"></i>ยืนยันการจอง
+                                        ยืนยันการจอง
                                     </button>
                                 </div>
                             </form>
@@ -201,40 +202,10 @@
         </div>
     </div>
     <style>
-        /* Font family */
-        body {
-            font-family: 'Kanit', sans-serif;
-            background-color: #f5f5f7;
-            color: #333;
-        }
-
-        /* Card styling */
-        .card {
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Button styling */
-        .btn-success {
-            background-color: #FFC107;
-            border-color: #FFC107;
-            color: #333;
-        }
-
-        .btn-success:hover {
-            background-color: #e0a800;
-            border-color: #e0a800;
-            color: #333;
-        }
-
         /* Calendar customizations */
         .litepicker .day-item[data-tooltip] {
             position: relative;
         }
-
         .litepicker .day-item[data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -249,29 +220,25 @@
             white-space: nowrap;
             z-index: 10;
         }
-
         /* Holiday styling */
         .litepicker .day-item.is-holiday {
             background-color: #fef08a !important;
             color: #854d0e !important;
             font-weight: bold;
-            cursor: not-allowed !important;
-        }
 
+        }
         /* Booked days styling */
         .litepicker .day-item.is-booked {
             background-color: #bfdbfe !important;
             color: #1e40af !important;
-            cursor: not-allowed !important;
-        }
 
+        }
         /* Selected dates */
         .litepicker .day-item.is-start-date,
         .litepicker .day-item.is-end-date {
             background-color: #FFC107 !important;
             color: #333 !important;
         }
-
         .litepicker .day-item.is-in-range {
             background-color: rgba(255, 193, 7, 0.2) !important;
             color: #333 !important;
@@ -284,7 +251,39 @@
             bookingForm.addEventListener('submit', function(e) {
                 e.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
 
-                // แสดง SweetAlert2 เพื่อยืนยันการจอง
+                // ตรวจสอบการทับกันของเวลาก่อนยืนยัน
+                const startDate = document.getElementById('booking_start').value.split('T')[0];
+                const endDate = document.getElementById('booking_end').value.split('T')[0];
+                const startTime = document.getElementById('check_in_time').value;
+                const endTime = document.getElementById('check_out_time').value;
+
+                // ใช้ฟังก์ชันตรวจสอบการทับกันจาก timeManager
+                const conflicts = timeManager.checkTimeSlotConflict(startDate, startTime, endDate, endTime);
+
+                if (conflicts.length > 0) {
+                    // แสดงการแจ้งเตือนเมื่อเวลาทับกัน
+                    const conflictInfo = conflicts.join('<br>');
+                    Swal.fire({
+                        title: 'ไม่สามารถจองได้!',
+                        html: `
+                            <div class="text-start">
+                                <p class="mb-2"><strong>เวลาที่เลือกทับกันกับการจองที่มีอยู่:</strong></p>
+                                <div class="alert alert-danger">
+                                    ${conflictInfo}
+                                </div>
+                                <p class="small text-muted mt-2">
+                                    * กรุณาเปลี่ยนเวลาการจองให้ไม่ทับกันกับการจองที่มีอยู่
+                                </p>
+                            </div>
+                        `,
+                        icon: 'error',
+                        confirmButtonText: 'เข้าใจแล้ว',
+                        confirmButtonColor: '#d33'
+                    });
+                    return; // หยุดการทำงานถ้าเวลาทับกัน
+                }
+
+                // หากไม่มีการทับกัน ให้แสดง SweetAlert2 เพื่อยืนยันการจอง
                 Swal.fire({
                     title: 'ยืนยันการจอง',
                     text: "คุณต้องการยืนยันการจองนี้หรือไม่?",
@@ -292,7 +291,8 @@
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'ใช่, ยืนยัน!'
+                    confirmButtonText: 'ใช่, ยืนยัน!',
+                    cancelButtonText: 'ยกเลิก'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // ส่งข้อมูลฟอร์มด้วย fetch
@@ -304,17 +304,33 @@
                             })
                             .then(response => {
                                 if (response.ok) {
-                                    // หากส่งข้อมูลสำเร็จ ให้รีไดเร็กต์ไปที่หน้าหลัก
-                                    window.location.href = '/';
+                                    // แสดงข้อความสำเร็จ
+                                    Swal.fire({
+                                        title: 'จองสำเร็จ!',
+                                        text: 'การจองของคุณได้รับการบันทึกเรียบร้อยแล้ว',
+                                        icon: 'success',
+                                        confirmButtonText: 'ตกลง'
+                                    }).then(() => {
+                                        // หากส่งข้อมูลสำเร็จ ให้รีไดเร็กต์ไปที่หน้าหลัก
+                                        window.location.href = '/';
+                                    });
                                 } else {
                                     // หากมีข้อผิดพลาด
-                                    Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถบันทึกข้อมูลได้',
-                                        'error');
+                                    Swal.fire({
+                                        title: 'เกิดข้อผิดพลาด',
+                                        text: 'ไม่สามารถบันทึกข้อมูลได้',
+                                        icon: 'error',
+                                        confirmButtonText: 'ตกลง'
+                                    });
                                 }
                             })
                             .catch(error => {
-                                Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์',
-                                    'error');
+                                Swal.fire({
+                                    title: 'เกิดข้อผิดพลาด',
+                                    text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์',
+                                    icon: 'error',
+                                    confirmButtonText: 'ตกลง'
+                                });
                             });
                     }
                 });
@@ -331,31 +347,18 @@
                 bookingStart: document.getElementById('booking_start'),
                 bookingEnd: document.getElementById('booking_end'),
                 totalDays: document.getElementById('totalDays'),
-                serviceFee: document.getElementById('serviceFee'),
-                totalPrice: document.getElementById('totalPrice'),
-                bankPaymentCheckbox: document.getElementById('bankPaymentCheckbox'),
-                bankPaymentDetails: document.getElementById('bankPaymentDetails'),
-                paymentSlip: document.getElementById('paymentSlip'),
-                fileName: document.getElementById('fileName'),
                 bookingForm: document.getElementById('bookingForm'),
                 checkInTime: document.getElementById('check_in_time'),
                 checkOutTime: document.getElementById('check_out_time')
             };
 
-            // Configuration - รวมข้อมูล config ไว้ที่เดียว
+            // Configuration - รวมข้อมูล config ไว้ที่เดียว (ลบส่วนราคาออก)
             const config = {
-                serviceRate: parseFloat({{ $room->service_rates ?? 0 }}), // ค่าบริการต่อชั่วโมง
                 holidaysWithNames: @json($holidaysWithNames),
                 bookedDetails: @json($bookedDetails),
                 disabledDays: @json($disabledDays),
                 bookedTimeSlots: @json($bookedTimeSlots ?? [])
             };
-
-            // Validation
-            if (isNaN(config.serviceRate)) {
-                console.error('serviceRate is not a valid number');
-                return;
-            }
 
             // Utility Functions
             const utils = {
@@ -375,10 +378,6 @@
                     return `${dateStr} (${timeStr} น.)`;
                 },
 
-                numberWithCommas: (x) => {
-                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                },
-
                 addHours: (time, hours) => {
                     const [h, m] = time.split(':').map(Number);
                     const newHour = (h + hours) % 24;
@@ -389,11 +388,9 @@
                 calculateTotalHours: (startDate, startTime, endDate, endTime) => {
                     const start = new Date(`${startDate}T${startTime}:00`);
                     const end = new Date(`${endDate}T${endTime}:00`);
-
                     const diffMs = end.getTime() - start.getTime();
-                    const diffHours = Math.ceil(diffMs / (1000 * 60 * 60)); // ปัดขึ้นเป็นชั่วโมง
-
-                    return Math.max(1, diffHours); // อย่างน้อย 1 ชั่วโมง
+                    const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
+                    return Math.max(1, diffHours);
                 },
 
                 // แปลงชั่วโมงเป็นรูปแบบ "X วัน Y ชั่วโมง"
@@ -403,7 +400,6 @@
                     } else {
                         const days = Math.floor(totalHours / 24);
                         const hours = totalHours % 24;
-
                         if (hours === 0) {
                             return `${days} วัน`;
                         } else {
@@ -412,12 +408,32 @@
                     }
                 },
 
-                showAlert: (title, text) => {
+                showAlert: (title, text, icon = 'warning') => {
                     Swal.fire({
                         title: title,
                         text: text,
-                        icon: 'warning',
+                        icon: icon,
                         confirmButtonText: 'ตกลง'
+                    });
+                },
+
+                showBookingAlert: (bookedInfo) => {
+                    Swal.fire({
+                        title: 'ห้องนี้มีการจองแล้ว!',
+                        html: `
+                    <div class="text-start">
+                        <p class="mb-2"><strong>ช่วงเวลาที่มีการจอง:</strong></p>
+                        <div class="alert alert-warning">
+                            ${bookedInfo}
+                        </div>
+                        <p class="small text-muted mt-2">
+                            * กรุณาเลือกช่วงเวลาอื่นที่ไม่ซ้อนกับการจองที่มีอยู่
+                        </p>
+                    </div>
+                `,
+                        icon: 'warning',
+                        confirmButtonText: 'เข้าใจแล้ว',
+                        confirmButtonColor: '#f39c12'
                     });
                 }
             };
@@ -450,23 +466,87 @@
                     });
                 },
 
+                // ตรวจสอบว่าช่วงเวลาที่เลือกซ้อนกับการจองที่มีอยู่หรือไม่
+                checkTimeSlotConflict: (startDate, startTime, endDate, endTime) => {
+                    const conflicts = [];
+                    const currentDate = new Date(startDate);
+                    const finalDate = new Date(endDate);
+
+                    while (currentDate <= finalDate) {
+                        const dateStr = utils.formatDate(currentDate);
+                        const dayBookings = config.bookedTimeSlots[dateStr] || [];
+
+                        dayBookings.forEach(booking => {
+                            // ตรวจสอบการซ้อนของเวลา
+                            let checkStart = startTime;
+                            let checkEnd = endTime;
+
+                            // ถ้าเป็นวันเดียวกัน ใช้เวลาที่กำหนด
+                            if (dateStr === startDate && dateStr === endDate) {
+                                // วันเดียวกัน
+                            } else if (dateStr === startDate) {
+                                // วันแรก - จากเวลาเริ่มถึง 23:00
+                                checkEnd = '23:00';
+                            } else if (dateStr === endDate) {
+                                // วันสุดท้าย - จาก 08:00 ถึงเวลาจบ
+                                checkStart = '08:00';
+                            } else {
+                                // วันระหว่าง - ทั้งวัน
+                                checkStart = '08:00';
+                                checkEnd = '23:00';
+                            }
+
+                            // ตรวจสอบการซ้อน
+                            if (checkStart < booking.end && checkEnd > booking.start) {
+                                const conflictDate = currentDate.toLocaleDateString('th-TH', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric'
+                                });
+                                conflicts.push(
+                                    `${conflictDate}: ${booking.start} - ${booking.end} น.`);
+                            }
+                        });
+
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+
+                    return conflicts;
+                },
+
                 updateAvailableTimeSlots: (selectedDate) => {
                     const dateBookings = config.bookedTimeSlots[selectedDate] || [];
 
-                    // Reset time inputs
-                    elements.checkInTime.innerHTML = '<option value="">เลือกเวลาเข้า</option>';
-                    elements.checkOutTime.innerHTML = '<option value="">เลือกเวลาออก</option>';
+                    // Reset time inputs to normal input type
+                    if (elements.checkInTime.tagName === 'SELECT') {
+                        const checkInInput = document.createElement('input');
+                        checkInInput.type = 'time';
+                        checkInInput.id = 'check_in_time';
+                        checkInInput.name = 'check_in_time';
+                        checkInInput.step = '60';
+                        checkInInput.min = '08:00';
+                        checkInInput.max = '22:59';
+                        checkInInput.className = elements.checkInTime.className;
+                        elements.checkInTime.parentNode.replaceChild(checkInInput, elements.checkInTime);
+                        elements.checkInTime = checkInInput;
+                    }
 
-                    // Generate and populate available time slots
-                    const timeSlots = timeManager.generateAvailableTimeSlots(dateBookings);
-                    timeSlots.forEach(slot => {
-                        if (slot.end < '23:00') {
-                            const option = document.createElement('option');
-                            option.value = slot.start;
-                            option.textContent = `${slot.start} น.`;
-                            elements.checkInTime.appendChild(option);
-                        }
-                    });
+                    if (elements.checkOutTime.tagName === 'SELECT') {
+                        const checkOutInput = document.createElement('input');
+                        checkOutInput.type = 'time';
+                        checkOutInput.id = 'check_out_time';
+                        checkOutInput.name = 'check_out_time';
+                        checkOutInput.step = '60';
+                        checkOutInput.min = '08:01';
+                        checkOutInput.max = '23:00';
+                        checkOutInput.className = elements.checkOutTime.className;
+                        elements.checkOutTime.parentNode.replaceChild(checkOutInput, elements.checkOutTime);
+                        elements.checkOutTime = checkOutInput;
+                    }
+
+                    // Clear values
+                    elements.checkInTime.value = '';
+                    elements.checkOutTime.value = '';
                 },
 
                 updateCheckInOutDisplay: () => {
@@ -479,89 +559,34 @@
                         checkOutSpan.innerText = elements.checkOutTime.value ?
                             `${elements.checkOutTime.value} น.` : '-';
                     }
-                },
-
-                // ฟังก์ชันใหม่: สร้างตัวเลือกเวลาออกที่ครอบคลุมหลายวัน
-                generateCheckOutOptions: (startDate, startTime, endDate) => {
-                    const options = [];
-                    const currentDate = new Date(startDate);
-                    const finalDate = new Date(endDate);
-
-                    while (currentDate <= finalDate) {
-                        const dateStr = utils.formatDate(currentDate);
-                        const dateBookings = config.bookedTimeSlots[dateStr] || [];
-                        const availableSlots = timeManager.generateAvailableTimeSlots(dateBookings);
-
-                        availableSlots.forEach(slot => {
-                            // ถ้าเป็นวันเดียวกับวันเริ่ม ให้เลือกเวลาหลังจากเวลาเริ่มเท่านั้น
-                            if (dateStr === startDate && slot.start <= startTime) {
-                                return;
-                            }
-
-                            // ถ้าเป็นวันสุดท้าย ให้เลือกเวลาก่อน 23:00
-                            if (dateStr === utils.formatDate(finalDate) && slot.start >= '23:00') {
-                                return;
-                            }
-
-                            const displayDate = currentDate.toLocaleDateString('th-TH', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric'
-                            });
-
-                            options.push({
-                                value: `${dateStr}T${slot.start}`,
-                                text: `${displayDate} ${slot.start} น.`,
-                                date: dateStr,
-                                time: slot.start
-                            });
-                        });
-
-                        currentDate.setDate(currentDate.getDate() + 1);
-                    }
-
-                    return options;
                 }
             };
 
-            // Price Calculator - แก้ไขให้คำนวณตามชั่วโมง
-            const priceCalculator = {
-                updatePricing: () => {
+            // Duration Calculator (ไม่มีราคา)
+            const durationCalculator = {
+                updateDuration: () => {
                     const startDate = elements.bookingStart.value;
                     const endDate = elements.bookingEnd.value;
                     const startTime = elements.checkInTime.value;
                     const endTime = elements.checkOutTime.value;
 
                     if (!startDate || !endDate || !startTime || !endTime) {
-                        elements.totalDays.innerText = '-';
-                        elements.serviceFee.innerText = '-';
-                        elements.totalPrice.innerText = '-';
+                        if (elements.totalDays) {
+                            elements.totalDays.innerText = '-';
+                        }
                         return;
                     }
 
-                    // แยกเวลาออกจาก endTime ถ้ามีรูปแบบ "dateT time"
-                    let actualEndDate = endDate;
-                    let actualEndTime = endTime;
-
-                    if (endTime.includes('T')) {
-                        const [date, time] = endTime.split('T');
-                        actualEndDate = date;
-                        actualEndTime = time;
-                    }
-
-                    const totalHours = utils.calculateTotalHours(startDate, startTime, actualEndDate,
-                        actualEndTime);
-                    const totalServiceFee = totalHours * config.serviceRate;
-                    const formattedPrice = utils.numberWithCommas(totalServiceFee.toFixed(2)) + ' บาท';
+                    const totalHours = utils.calculateTotalHours(startDate, startTime, endDate, endTime);
                     const durationText = utils.formatDurationDisplay(totalHours);
 
-                    elements.totalDays.innerText = durationText;
-                    elements.serviceFee.innerText = formattedPrice;
-                    elements.totalPrice.innerText = formattedPrice;
+                    if (elements.totalDays) {
+                        elements.totalDays.innerText = durationText;
+                    }
                 }
             };
 
-            // Date Display Manager - แก้ไขให้แสดงข้อมูลชั่วโมง
+            // Date Display Manager
             const dateDisplayManager = {
                 currentSelectedDates: {
                     start: null,
@@ -585,19 +610,9 @@
                     const checkOutTime = elements.checkOutTime.value;
 
                     if (checkInTime && checkOutTime) {
-                        // แยกเวลาออกถ้ามีรูปแบบ "dateT time"
-                        let displayEndDate = end || start;
-                        let displayEndTime = checkOutTime;
-
-                        if (checkOutTime.includes('T')) {
-                            const [date, time] = checkOutTime.split('T');
-                            displayEndDate = new Date(date);
-                            displayEndTime = time;
-                        }
-
                         elements.checkInDate.innerText = utils.formatThaiDateWithTime(start, checkInTime);
-                        elements.checkOutDate.innerText = utils.formatThaiDateWithTime(displayEndDate,
-                            displayEndTime);
+                        elements.checkOutDate.innerText = utils.formatThaiDateWithTime(end || start,
+                            checkOutTime);
                     } else {
                         const startDateStr = start.toLocaleDateString('th-TH', {
                             day: 'numeric',
@@ -616,11 +631,11 @@
                 }
             };
 
-            // Form Validation - แก้ไขให้ตรวจสอบเวลาข้ามวัน
+            // Form Validation
             const validator = {
                 validateDateSelection: () => {
                     if (!elements.bookingStart.value || !elements.bookingEnd.value) {
-                        alert('กรุณาเลือกวันที่จอง');
+                        utils.showAlert('วันที่', 'กรุณาเลือกวันที่จอง');
                         return false;
                     }
                     return true;
@@ -635,19 +650,11 @@
                         return false;
                     }
 
-                    // ตรวจสอบว่าเวลาออกมาหลังเวลาเข้า (รองรับข้ามวัน)
+                    // ตรวจสอบว่าเวลาออกมาหลังเวลาเข้า
                     const startDate = elements.bookingStart.value;
-                    let endDate = elements.bookingEnd.value;
-                    let endTime = checkOut;
-
-                    if (checkOut.includes('T')) {
-                        const [date, time] = checkOut.split('T');
-                        endDate = date;
-                        endTime = time;
-                    }
-
+                    const endDate = elements.bookingEnd.value;
                     const startDateTime = new Date(`${startDate}T${checkIn}:00`);
-                    const endDateTime = new Date(`${endDate}T${endTime}:00`);
+                    const endDateTime = new Date(`${endDate}T${checkOut}:00`);
 
                     if (endDateTime <= startDateTime) {
                         utils.showAlert('เวลาไม่ถูกต้อง', 'เวลาออกต้องมาหลังเวลาเข้า');
@@ -655,16 +662,11 @@
                     }
 
                     return true;
-                },
-
-                validatePaymentSlip: () => {
-                    if (elements.bankPaymentCheckbox.checked && !elements.paymentSlip.files[0]) {
-                        alert('กรุณาอัปโหลดสลิปการโอนเงิน');
-                        return false;
-                    }
-                    return true;
                 }
             };
+
+            // ทำให้ timeManager เป็น global variable เพื่อให้สคริปต์แรกเข้าถึงได้
+            window.timeManager = timeManager;
 
             // Calendar Setup
             const holidays = Object.keys(config.holidaysWithNames);
@@ -728,94 +730,52 @@
                         // Update display
                         dateDisplayManager.updateDateDisplay(realDate1, realDate2);
 
-                        // Reset pricing display
-                        priceCalculator.updatePricing();
+                        // Reset duration display
+                        durationCalculator.updateDuration();
                     });
                 }
             });
 
-            // Event Listeners
+            // Event Listeners Setup
             const setupEventListeners = () => {
                 // Calendar toggle
-                elements.toggleButton.addEventListener('click', () => picker.show());
+                if (elements.toggleButton) {
+                    elements.toggleButton.addEventListener('click', () => picker.show());
+                }
 
-                // Bank payment toggle
-                elements.bankPaymentCheckbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        elements.bankPaymentDetails.classList.remove('d-none');
-                    } else {
-                        elements.bankPaymentDetails.classList.add('d-none');
-                    }
-                });
-
-                // File upload display
-                elements.paymentSlip.addEventListener('change', function() {
-                    elements.fileName.innerText = this.files[0] ? this.files[0].name :
-                        "ยังไม่ได้เลือกไฟล์";
-                });
-
-                // Check-in time change - แก้ไขให้สร้างตัวเลือกเวลาออกข้ามวัน
-                elements.checkInTime.addEventListener('change', function() {
-                    const checkInValue = this.value;
-                    const startDate = elements.bookingStart.value;
-                    const endDate = elements.bookingEnd.value;
-
-                    if (!checkInValue || !startDate || !endDate) return;
-
-                    // สร้างตัวเลือกเวลาออกที่ครอบคลุมหลายวัน
-                    const checkOutOptions = timeManager.generateCheckOutOptions(startDate, checkInValue,
-                        endDate);
-
-                    // Reset check-out options
-                    elements.checkOutTime.innerHTML = '<option value="">เลือกเวลาออก</option>';
-
-                    // Add available check-out times
-                    checkOutOptions.forEach(option => {
-                        const optionElement = document.createElement('option');
-                        optionElement.value = option.value;
-                        optionElement.textContent = option.text;
-                        elements.checkOutTime.appendChild(optionElement);
+                // Check-in time change
+                if (elements.checkInTime) {
+                    elements.checkInTime.addEventListener('change', function() {
+                        timeManager.updateCheckInOutDisplay();
+                        dateDisplayManager.refreshDisplay();
+                        durationCalculator.updateDuration();
                     });
+                }
 
-                    elements.checkOutTime.disabled = false;
-
-                    // Update display
-                    timeManager.updateCheckInOutDisplay();
-                    dateDisplayManager.refreshDisplay();
-                    priceCalculator.updatePricing();
-                });
-
-                // Check-out time change - แก้ไขให้รองรับรูปแบบใหม่
-                elements.checkOutTime.addEventListener('change', function() {
-                    timeManager.updateCheckInOutDisplay();
-                    dateDisplayManager.refreshDisplay();
-                    priceCalculator.updatePricing();
-                });
+                // Check-out time change
+                if (elements.checkOutTime) {
+                    elements.checkOutTime.addEventListener('change', function() {
+                        timeManager.updateCheckInOutDisplay();
+                        dateDisplayManager.refreshDisplay();
+                        durationCalculator.updateDuration();
+                    });
+                }
 
                 // Form submission
-                elements.bookingForm.addEventListener('submit', function(e) {
-                    if (!validator.validateDateSelection() ||
-                        !validator.validateTimeSelection() ||
-                        !validator.validatePaymentSlip()) {
-                        e.preventDefault();
-                        return;
-                    }
+                if (elements.bookingForm) {
+                    elements.bookingForm.addEventListener('submit', function(e) {
+                        if (!validator.validateDateSelection() || !validator.validateTimeSelection()) {
+                            e.preventDefault();
+                            return false;
+                        }
 
-                    // Process end date and time
-                    let finalEndDate = elements.bookingEnd.value;
-                    let finalEndTime = elements.checkOutTime.value;
-
-                    if (elements.checkOutTime.value.includes('T')) {
-                        const [date, time] = elements.checkOutTime.value.split('T');
-                        finalEndDate = date;
-                        finalEndTime = time;
-                    }
-
-                    // Set final values
-                    elements.bookingStart.value =
-                        `${elements.bookingStart.value}T${elements.checkInTime.value}:00`;
-                    elements.bookingEnd.value = `${finalEndDate}T${finalEndTime}:00`;
-                });
+                        // Set final datetime values
+                        elements.bookingStart.value =
+                            `${elements.bookingStart.value}T${elements.checkInTime.value}:00`;
+                        elements.bookingEnd.value =
+                            `${elements.bookingEnd.value}T${elements.checkOutTime.value}:00`;
+                    });
+                }
             };
 
             // Initialize
@@ -823,7 +783,8 @@
             timeManager.updateCheckInOutDisplay();
 
             // Load existing dates if available
-            if (elements.bookingStart.value && elements.bookingEnd.value) {
+            if (elements.bookingStart && elements.bookingEnd && elements.bookingStart.value && elements.bookingEnd
+                .value) {
                 let startParts = elements.bookingStart.value.split('T')[0];
                 let endParts = elements.bookingEnd.value.split('T')[0];
                 let startDate = new Date(startParts + 'T00:00:00');

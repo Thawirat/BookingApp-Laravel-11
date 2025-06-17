@@ -568,29 +568,6 @@
         margin-bottom: 5px;
     }
 
-    .btn-success {
-        background-color: #FFC107;
-        border-color: #FFC107;
-        color: #333;
-    }
-
-    .btn-success:hover {
-        background-color: #e0a800;
-        border-color: #e0a800;
-        color: #333;
-    }
-
-    .btn-danger {
-        background-color: #F44336;
-        border-color: #F44336;
-        color: #fff;
-    }
-
-    .btn-danger:hover {
-        background-color: #d32f2f;
-        border-color: #d32f2f;
-    }
-
     /* Mobile responsiveness */
     @media (max-width: 1200px) {
         .stat-card {
