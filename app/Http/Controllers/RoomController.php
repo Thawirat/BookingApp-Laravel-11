@@ -8,11 +8,6 @@ use App\Models\RoomType;
 
 class RoomController extends Controller
 {
-    /**
-     * Display a listing of all rooms.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $rooms = Room::with(['building', 'status'])->get();
@@ -20,12 +15,6 @@ class RoomController extends Controller
         return view('rooms.index', compact('rooms'));
     }
 
-    /**
-     * Display rooms filtered by type (class).
-     *
-     * @param  string  $type
-     * @return \Illuminate\Http\Response
-     */
     public function byType($type)
     {
         $rooms = Room::with(['building', 'status'])
@@ -37,13 +26,6 @@ class RoomController extends Controller
 
         return view('rooms.filtered', compact('rooms', 'title'));
     }
-
-    /**
-     * Display rooms filtered by building.
-     *
-     * @param  int  $building_id
-     * @return \Illuminate\Http\Response
-     */
     public function byBuilding($building_id)
     {
         $building = Building::findOrFail($building_id);
@@ -55,11 +37,6 @@ class RoomController extends Controller
         return view('rooms.filtered', compact('rooms', 'title'));
     }
 
-    /**
-     * Display popular rooms.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function popular()
     {
         // In a real application, you might sort by booking count or ratings

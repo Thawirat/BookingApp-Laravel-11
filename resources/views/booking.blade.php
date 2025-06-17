@@ -41,8 +41,6 @@
                     @endif
                 </div>
             </div>
-
-            {{-- ส่วนแสดงอาคารทั้งหมด --}}
             <div class=" p-4 rounded">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="fw-bold">อาคารทั้งหมด</h3>

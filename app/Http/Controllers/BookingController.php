@@ -48,7 +48,7 @@ class BookingController extends Controller
     public function index()
     {
         $buildings = Building::with('rooms')->get();
-        $rooms = Room::with('status')->paginate(1);
+        $rooms = Room::with('status')->get();
 
         return view('booking', compact('buildings', 'rooms'));
     }
