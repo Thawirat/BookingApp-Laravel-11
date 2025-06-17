@@ -12,7 +12,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\BookingHistory;
 use Illuminate\Support\Facades\DB;
 
-
 class BookingController extends Controller
 {
     // ข้อมูลวันหยุดประจำปี 2025
@@ -117,7 +116,6 @@ class BookingController extends Controller
             return back()->with('error', 'ไม่พบห้องที่ต้องการ หรือเกิดข้อผิดพลาดในการแสดงแบบฟอร์ม');
         }
     }
-
     public function store(Request $request)
     {
         try {
@@ -239,16 +237,32 @@ class BookingController extends Controller
 
         return view('dashboard.my_bookings', compact('bookings'));
     }
-    public function myHistory()
+    public function myHistory(Request $request)
     {
-        if (auth()->check()) {
-            $bookings = BookingHistory::where('user_id', auth()->id())
-                ->orderBy('moved_to_history_at', 'desc') // หรือ created_at ถ้าไม่มี field นี้
-                ->paginate(10);
-        } else {
-            return redirect()->route('login')
-                ->with('error', 'กรุณาเข้าสู่ระบบเพื่อดูประวัติการจองของคุณ');
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'กรุณาเข้าสู่ระบบเพื่อดูประวัติการจองของคุณ');
         }
+
+        $query = BookingHistory::where('user_id', auth()->id());
+
+        if ($request->filled('q')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('room_name', 'like', '%' . $request->q . '%')
+                    ->orWhere('building_name', 'like', '%' . $request->q . '%')
+                    ->orWhere('id', 'like', '%' . $request->q . '%');
+            });
+        }
+
+        if ($request->filled('status_id')) {
+            $query->where('status_id', $request->status_id);
+        }
+
+        if ($request->filled('booking_date')) {
+            $query->whereDate('booking_date', $request->booking_date);
+        }
+
+        $sort = $request->input('sort', 'desc');
+        $bookings = $query->orderBy('moved_to_history_at', $sort)->paginate(50);
 
         return view('booking-status.myhistory', compact('bookings'));
     }
@@ -291,10 +305,8 @@ class BookingController extends Controller
                     'moved_to_history_at' => now(),
                 ]);
 
-                $booking->delete(); // soft delete ถ้าใช้ softDeletes
-
+                $booking->delete();
                 DB::commit();
-
                 return back()->with('success', 'ยกเลิกการจองเรียบร้อยแล้ว และย้ายไปยังประวัติการจอง');
             } else {
                 return back()->with('error', 'คุณไม่มีสิทธิ์ยกเลิกการจองนี้');
@@ -306,28 +318,28 @@ class BookingController extends Controller
             return back()->with('error', 'เกิดข้อผิดพลาดในการยกเลิกการจอง');
         }
     }
-    public function uploadSlip(Request $request, Booking $booking)
-    {
-        $request->validate([
-            'payment_slip' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ]);
+    // public function uploadSlip(Request $request, Booking $booking)
+    // {
+    //     $request->validate([
+    //         'payment_slip' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    //     ]);
 
-        try {
-            $file = $request->file('payment_slip');
-            $filePath = $file->store('payment_slips', 'public');
+    //     try {
+    //         $file = $request->file('payment_slip');
+    //         $filePath = $file->store('payment_slips', 'public');
 
-            $booking->payment_slip = $filePath;
-            $booking->payment_status = 'pending'; // เปลี่ยนสถานะตามต้องการ
-            $booking->save();
+    //         $booking->payment_slip = $filePath;
+    //         $booking->payment_status = 'pending'; // เปลี่ยนสถานะตามต้องการ
+    //         $booking->save();
 
-            Log::info("อัปโหลดสลิปสำเร็จสำหรับ booking ID: {$booking->id}");
+    //         Log::info("อัปโหลดสลิปสำเร็จสำหรับ booking ID: {$booking->id}");
 
-            return back()->with('success', 'อัปโหลดสลิปสำเร็จ');
-        } catch (\Exception $e) {
-            Log::error("อัปโหลดสลิปล้มเหลวสำหรับ booking ID {$booking->id}: " . $e->getMessage());
-            return back()->with('error', 'เกิดข้อผิดพลาดในการอัปโหลดสลิป');
-        }
-    }
+    //         return back()->with('success', 'อัปโหลดสลิปสำเร็จ');
+    //     } catch (\Exception $e) {
+    //         Log::error("อัปโหลดสลิปล้มเหลวสำหรับ booking ID {$booking->id}: " . $e->getMessage());
+    //         return back()->with('error', 'เกิดข้อผิดพลาดในการอัปโหลดสลิป');
+    //     }
+    // }
 
     public function downloadBookingPdf($id)
     {

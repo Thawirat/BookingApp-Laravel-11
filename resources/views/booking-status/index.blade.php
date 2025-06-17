@@ -9,9 +9,13 @@
             <div class="row g-2">
                 <div class="col-md-4">
                     <input type="text" name="search" value="{{ request('search') }}" class="form-control"
-                        placeholder="ค้นหาชื่อห้องหรืออาคาร...">
+                        placeholder="ค้นหาชื่อห้อง/อาคาร...">
                 </div>
-                <div class="col-md-3">
+                <div class="btn-group col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> ค้นหา</button>
+                    <a href="{{ route('my-bookings') }}" class="btn btn-secondary">ล้างการค้นหา</a>
+                </div>
+                <div class="col-md-2">
                     <select name="status_id" class="form-select" onchange="this.form.submit()">
                         <option value="">สถานะทั้งหมด</option>
                         <option value="3" {{ request('status_id') == '3' ? 'selected' : '' }}>รออนุมัติ</option>
@@ -19,13 +23,9 @@
                         <option value="5" {{ request('status_id') == '5' ? 'selected' : '' }}>ยกเลิกการจอง</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="date" name="booking_date" value="{{ request('booking_date') }}" class="form-control"
                         onchange="this.form.submit()">
-                </div>
-                <div class="btn-group col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> ค้นหา</button>
-                    <a href="{{ route('my-bookings') }}" class="btn btn-secondary">รีเซ็ต</a>
                 </div>
             </div>
         </form>
@@ -65,7 +65,7 @@
                                             </div>
                                             <div><strong>สถานะ:</strong>
                                                 <span
-                                                    class="badge bg-{{ $booking->status->status_name === 'อนุมัติแล้ว' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : ($booking->status->status_name === 'ยกเลิกการการจอง' ? 'danger' : 'secondary')) }}">
+                                                    class="badge bg-{{ $booking->status->status_name === 'อนุมัติแล้ว' ? 'success' : ($booking->status->status_name === 'รอดำเนินการ' ? 'warning text-dark' : ($booking->status->status_name === 'ยกเลิกการจอง' ? 'danger' : 'secondary')) }}">
                                                     {{ $booking->status->status_name ?? '-' }}
                                                 </span>
                                             </div>
@@ -102,8 +102,14 @@
                         @endforeach
                     </div>
                 </div>
+            @elseif (request()->hasAny(['q', 'status_id', 'booking_date']))
+                <div class="alert alert-warning">
+                    <i class="fas fa-search-minus me-1"></i> ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา
+                </div>
             @else
-                <p class="text-muted">คุณยังไม่มีการจองห้อง</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-1"></i> ยังไม่มีการจองในระบบ
+                </div>
             @endif
             <div class="mt-3">
                 {{ $bookings->links('pagination::bootstrap-5') }}

@@ -19,7 +19,7 @@ class StatusSeeder extends Seeder
             ['status_id' => 2, 'status_name' => 'พร้อมใช้งาน'],
             ['status_id' => 3, 'status_name' => 'รอดำเนินการ'],
             ['status_id' => 4, 'status_name' => 'อนุมัติแล้ว'],
-            ['status_id' => 5, 'status_name' => 'ยกเลิกการการจอง'],
+            ['status_id' => 5, 'status_name' => 'ยกเลิกการจอง'],
             ['status_id' => 6, 'status_name' => 'ดำเนินการเสร็จสิ้น'],
         ] : [];
 

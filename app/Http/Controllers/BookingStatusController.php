@@ -33,17 +33,14 @@ class BookingStatusController extends Controller
                 });
             });
         }
-
         // กรองด้วยสถานะ
         if ($status) {
             $query->where('status_id', $status);
         }
-
         // กรองด้วยวันที่จอง (start date)
         if ($date) {
             $query->whereDate('booking_start', $date);
         }
-
         $bookings = $query->paginate(40);
 
         return view('booking-status.index', compact('bookings', 'search', 'status', 'date'));
@@ -62,14 +59,26 @@ class BookingStatusController extends Controller
 
         // บันทึกลง booking_histories
         BookingHistory::create([
-            'booking_id'    => $booking->id,
-            'user_id'       => $booking->user_id,
-            'room_id'       => $booking->room_id,
-            'building_id'   => $booking->building_id,
-            'booking_start' => $booking->booking_start,
-            'booking_end'   => $booking->booking_end,
-            'booking_date'  => $booking->booking_date,
-            'status_id'     => 5, // ยกเลิก
+            'booking_id'         => $booking->id,
+            'user_id'            => $booking->user_id,
+            'external_name'      => $booking->external_name,
+            'external_email'     => $booking->external_email,
+            'external_phone'     => $booking->external_phone,
+            'building_id'        => $booking->building_id,
+            'building_name'      => $booking->building_name,
+            'room_id'            => $booking->room_id,
+            'room_name'          => $booking->room_name,
+            'booking_start'      => $booking->booking_start,
+            'booking_end'        => $booking->booking_end,
+            'status_id'          => 5, // รหัสสถานะ "ยกเลิก"
+            'status_name'        => 'ยกเลิกการจอง',
+            'reason'             => $booking->reason,
+            'total_price'        => $booking->total_price,
+            'payment_status'     => $booking->payment_status,
+            'is_external'        => $booking->is_external,
+            'created_at'         => $booking->created_at,
+            'updated_at'         => $booking->updated_at,
+            'moved_to_history_at' => now(),
         ]);
 
         // ลบการจองจาก booking ปกติ

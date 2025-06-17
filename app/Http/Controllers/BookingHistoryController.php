@@ -8,12 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class BookingHistoryController extends Controller
 {
-    /**
-     * เพิ่มการจองลงในประวัติ
-     *
-     * @param  mixed  $booking
-     * @return void
-     */
     public function addBookingToHistory($booking)
     {
         $bookingHistory = new BookingHistory;
@@ -28,19 +22,14 @@ class BookingHistoryController extends Controller
             'start_time' => $booking->booking_start,
             'end_time' => $booking->booking_end,
             'purpose' => $booking->reason,
-            'status_id' => 6, // ดำเนินการเสร็จสิ้น
-            'payment_status' => 'completed', // สมมติว่าชำระเงินแล้ว
+            'status_id' => 6,
+            'payment_status' => 'completed',
             'amount' => $booking->total_price,
             'moved_to_history_at' => now(),
         ]);
         $bookingHistory->save();
     }
 
-    /**
-     * แสดงรายการประวัติการจอง
-     *
-     * @return \Illuminate\View\View
-     */
     public function index(Request $request)
     {
         // สร้าง query สำหรับประวัติการจอง
@@ -67,15 +56,12 @@ class BookingHistoryController extends Controller
         if ($request->has('date_from') && $request->date_from) {
             $query->where('booking_history.booking_date', '>=', $request->date_from);
         }
-
         // กรองตามวันที่สิ้นสุด
         if ($request->has('date_to') && $request->date_to) {
             $query->where('booking_history.booking_date', '<=', $request->date_to);
         }
-
         // เรียงลำดับและแบ่งหน้า
         $bookingHistory = $query->orderBy('booking_history.booking_date', 'desc')->paginate(20);
-
         // นับจำนวนการจอง
         $totalBookings = DB::table('booking_history')->count();
         $completedBookings = DB::table('booking_history')->where('status_id', 6)->count(); // เสร็จสิ้น
@@ -89,11 +75,6 @@ class BookingHistoryController extends Controller
         ]);
     }
 
-    /**
-     * แสดงประวัติการจองห้อง (Alternate Method)
-     *
-     * @return \Illuminate\View\View
-     */
     public function history(Request $request)
     {
         // สร้าง query สำหรับประวัติการจอง
