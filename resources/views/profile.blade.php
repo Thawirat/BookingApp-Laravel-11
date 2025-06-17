@@ -11,7 +11,7 @@
                     </div>
                     <div class="card-body text-center">
                         <img src="{{ Auth::user()->avatar_url ?? asset('images/profile-avatar2.png') }}" alt="User Avatar"
-                            class="rounded-circle border border-4 border-primary mb-3 mx-auto d-block"
+                            class="rounded-circle mb-3 mx-auto d-block"
                             style="width: 130px; height: 130px;">
                         <h5 class="mb-0">{{ Auth::user()->name ?? 'Guest' }}</h5>
                         <p class="text-muted small">บัญชีผู้ใช้งาน</p>
@@ -40,7 +40,7 @@
                                     <label class="form-label">ประเภทผู้ใช้งาน</label>
                                     <select name="user_type" class="form-select" disabled>
                                         <option value="internal"
-                                            {{ Auth::user()->user_type == 'internal' ? 'selected' : '' }}>บุคลากรภายใน
+                                            {{ Auth::user()->user_type == 'internal' ? 'selected' : '' }}>บุคคลภายใน
                                         </option>
                                         <option value="external"
                                             {{ Auth::user()->user_type == 'external' ? 'selected' : '' }}>บุคคลภายนอก
@@ -103,7 +103,7 @@
 
                             <!-- Action Buttons -->
                             <div id="editButtons" class="mt-4 d-none text-end">
-                                <button type="submit" class="btn btn-success me-2">บันทึกการเปลี่ยนแปลง</button>
+                                <button type="submit" class="btn btn-warning me-2">บันทึกการเปลี่ยนแปลง</button>
                                 <button type="button" class="btn btn-secondary" onclick="toggleEdit(false)">ยกเลิก</button>
                             </div>
                         </form>

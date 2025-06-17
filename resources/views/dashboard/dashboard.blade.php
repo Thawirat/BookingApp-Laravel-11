@@ -5,7 +5,32 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>ภาพรวม</h2>
         </div>
+        <div class="row">
+            @php
+                $stats = [
+                    ['icon' => 'fa-building', 'label' => 'จำนวนอาคาร', 'value' => $totalBuildings ?? 0],
+                    ['icon' => 'fa-door-closed', 'label' => 'จำนวนห้อง', 'value' => $totalRooms ?? 0],
+                    ['icon' => 'fa-users', 'label' => 'จำนวนผู้ใช้', 'value' => $totalUsers ?? 0],
+                    [
+                        'icon' => 'fa-calendar-check',
+                        'label' => 'จำนวนการจองห้อง',
+                        'value' => $totalBookings ?? 0,
+                    ],
+                ];
+            @endphp
 
+            @foreach ($stats as $stat)
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas {{ $stat['icon'] }}"></i></div>
+                        <div class="details">
+                            <h3>{{ $stat['value'] }}</h3>
+                            <p>{{ $stat['label'] }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
         <div class="row">
             <!-- การจองล่าสุด -->
             <div class="col-md-8">
@@ -18,20 +43,29 @@
                     <div class="booking-carousel" id="bookingCarousel">
                         @forelse ($recentBookings as $booking)
                             <div class="booking-card">
-                                <img src="https://placehold.co/100x100" alt="ภาพห้อง {{ $booking->room_name }}">
+                                @if (!empty($booking->room) && !empty($booking->room->image))
+                                    <img src="{{ asset('storage/' . $booking->room->image) }}"
+                                        alt="{{ $booking->room->room_name ?? 'Room Image' }}"
+                                        class="img-fluid rounded-top w-100" style="height: 180px; object-fit: cover;">
+                                @else
+                                    <div class="bg-light rounded-top d-flex align-items-center justify-content-center"
+                                        style="height: 180px;">
+                                        <span class="text-muted"><i class="bi bi-image me-2"></i>ไม่มีรูปภาพ</span>
+                                    </div>
+                                @endif
                                 <p class="room-name">{{ $booking->room_name }}</p>
                                 <p class="building-name">{{ $booking->building_name }}</p>
                                 <p class="booker-name">{{ $booking->booker_name }}</p>
-                                <button class="btn btn-light btn-sm"
-                                    onclick="showDetails('{{ $booking->room_name }}', '{{ $booking->booker_name }}', '{{ $booking->date }}', '{{ $booking->time }}')">
-                                    ดูรายละเอียด
+                                <button type="button" class="btn btn-outline btn-sm flex-grow-1" data-bs-toggle="modal"
+                                    data-bs-target="#detailsModal{{ $booking->id }}">
+                                    <i class="fas fa-eye"></i> ดูรายละเอียดเพิ่มเติม
                                 </button>
                             </div>
+                            @include('booking-status.modal')
                         @empty
                             <p>ไม่มีการจองล่าสุด</p>
                         @endforelse
                     </div>
-
                     <div class="carousel-controls mt-2">
                         <button class="icon-btn" onclick="scrollCarousel(-200)">
                             <i class="fas fa-chevron-left"></i>
@@ -41,37 +75,7 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- สถิติการจอง -->
-                <div class="row">
-                    @php
-                        $stats = [
-                            ['icon' => 'fa-building', 'label' => 'จำนวนอาคาร', 'value' => $totalBuildings ?? 0],
-                            ['icon' => 'fa-door-closed', 'label' => 'จำนวนห้อง', 'value' => $totalRooms ?? 0],
-                            ['icon' => 'fa-users', 'label' => 'จำนวนผู้ใช้', 'value' => $totalUsers ?? 0],
-                            [
-                                'icon' => 'fa-calendar-check',
-                                'label' => 'จำนวนการจองห้อง',
-                                'value' => $totalBookings ?? 0,
-                            ],
-                        ];
-                    @endphp
-
-                    @foreach ($stats as $stat)
-                        <div class="col-md-3 col-6 mb-3">
-                            <div class="stat-card">
-                                <div class="icon"><i class="fas {{ $stat['icon'] }}"></i></div>
-                                <div class="details">
-                                    <h3>{{ $stat['value'] }}</h3>
-                                    <p>{{ $stat['label'] }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
             </div>
-
-            <!-- สถิติรายสัปดาห์ -->
             <div class="col-md-4">
                 <div class="p-3 bg-white rounded shadow-sm">
                     <h5>สถิติการจองรายสัปดาห์</h5>
