@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Room;
 use App\Models\Building;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\BookingHistory;
 
 class CalendarController extends Controller
 {
@@ -61,8 +61,9 @@ class CalendarController extends Controller
 
         $period = CarbonPeriod::create($firstDay, $lastDay);
 
-        // ดึงการจองทั้งหมดที่ "เริ่มหรือสิ้นสุด" ภายในเดือน
-        $allBookings = Booking::where(function ($query) use ($firstDay, $lastDay) {
+        // ────────────────────────
+        // ดึงจาก bookings
+        $bookings = Booking::where(function ($query) use ($firstDay, $lastDay) {
             $query->whereBetween('booking_start', [$firstDay, $lastDay])
                 ->orWhereBetween('booking_end', [$firstDay, $lastDay])
                 ->orWhere(function ($query) use ($firstDay, $lastDay) {
@@ -72,16 +73,33 @@ class CalendarController extends Controller
         })
             ->select('bookings.*', 'status.status_name', 'bookings.status_id')
             ->leftJoin('status', 'bookings.status_id', '=', 'status.status_id')
-            ->get()
-            ->map(function ($booking) {
-                $booking->statusColor = config('status.colors.' . $booking->status_id, '#607D8B');
-                return $booking;
-            });
+            ->get();
 
-        // Debug: ตรวจสอบข้อมูล
-        Log::info('Bookings data:', ['count' => $allBookings->count(), 'data' => $allBookings->toArray()]);
+        // ────────────────────────
+        // ดึงจาก booking_history
+        $histories = BookingHistory::where(function ($query) use ($firstDay, $lastDay) {
+            $query->whereBetween('booking_start', [$firstDay, $lastDay])
+                ->orWhereBetween('booking_end', [$firstDay, $lastDay])
+                ->orWhere(function ($query) use ($firstDay, $lastDay) {
+                    $query->where('booking_start', '<', $firstDay)
+                        ->where('booking_end', '>', $lastDay);
+                });
+        })
+            ->select('booking_history.*', 'status.status_name', 'booking_history.status_id')
+            ->leftJoin('status', 'booking_history.status_id', '=', 'status.status_id')
+            ->get();
 
-        // ไม่ต้องจัดกลุ่มแบบเดิมแล้ว
+        // ────────────────────────
+        // รวม bookings + history เข้าด้วยกัน
+        $allBookings = $bookings->concat($histories)->map(function ($booking) {
+            $booking->statusColor = config('status.colors.' . $booking->status_id, '#607D8B');
+            return $booking;
+        });
+
+        Log::info('Bookings + History:', ['count' => $allBookings->count()]);
+
+        // ────────────────────────
+        // สร้างโครงสร้างปฏิทิน
         $calendarData = [];
         $currentWeek = [];
 
@@ -115,7 +133,7 @@ class CalendarController extends Controller
             'currentMonth',
             'currentDate',
             'view',
-            'allBookings' // ✅ เพิ่มส่งออกไปยัง Blade
+            'allBookings'
         ));
     }
 

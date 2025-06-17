@@ -21,6 +21,7 @@ class StatusSeeder extends Seeder
             ['status_id' => 4, 'status_name' => 'อนุมัติแล้ว'],
             ['status_id' => 5, 'status_name' => 'ยกเลิกการจอง'],
             ['status_id' => 6, 'status_name' => 'ดำเนินการเสร็จสิ้น'],
+            ['status_id' => 7, 'status_name' => 'กำลังดำเนินการ'],
         ] : [];
 
         foreach ($statuses as $status) {
