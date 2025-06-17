@@ -32,7 +32,6 @@ class BookingHistoryController extends Controller
 
     public function index(Request $request)
     {
-        // สร้าง query สำหรับประวัติการจอง
         $query = DB::table('booking_history')
             ->leftJoin('status', 'booking_history.status_id', '=', 'status.status_id')
             ->leftJoin('users', 'booking_history.user_id', '=', 'users.id')
@@ -42,8 +41,8 @@ class BookingHistoryController extends Controller
                 'users.name as user_name'
             );
 
-        // ค้นหาข้อมูล
-        if ($request->has('search')) {
+        // 🔍 ค้นหาข้อมูล
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('booking_history.booking_id', 'like', "%{$search}%")
@@ -52,20 +51,34 @@ class BookingHistoryController extends Controller
             });
         }
 
-        // กรองตามวันที่เริ่มต้น
-        if ($request->has('date_from') && $request->date_from) {
-            $query->where('booking_history.booking_date', '>=', $request->date_from);
+        // 📆 กรองตามวันที่เริ่มต้น
+        if ($request->filled('date_from')) {
+            $query->whereDate('booking_history.booking_start', '>=', $request->date_from);
         }
-        // กรองตามวันที่สิ้นสุด
-        if ($request->has('date_to') && $request->date_to) {
-            $query->where('booking_history.booking_date', '<=', $request->date_to);
+
+        // 📆 กรองตามวันที่สิ้นสุด
+        if ($request->filled('date_to')) {
+            $query->whereDate('booking_history.booking_end', '<=', $request->date_to);
         }
-        // เรียงลำดับและแบ่งหน้า
-        $bookingHistory = $query->orderBy('booking_history.booking_date', 'desc')->paginate(20);
-        // นับจำนวนการจอง
+
+        // 📆 กรองตามวันที่จอง (แบบระบุวันเดียว)
+        if ($request->filled('booking_date')) {
+            $query->whereDate('booking_history.created_at', $request->booking_date);
+        }
+
+        // ✅ กรองสถานะ
+        if ($request->filled('status_id')) {
+            $query->where('booking_history.status_id', $request->status_id);
+        }
+
+        // 🔃 เรียงลำดับ
+        $sort = $request->get('sort', 'desc');
+        $bookingHistory = $query->orderBy('booking_history.created_at', $sort)->paginate(50)->appends($request->all());
+
+        // 🔢 นับจำนวน
         $totalBookings = DB::table('booking_history')->count();
-        $completedBookings = DB::table('booking_history')->where('status_id', 6)->count(); // เสร็จสิ้น
-        $cancelledBookings = DB::table('booking_history')->where('status_id', 5)->count(); // ยกเลิก
+        $completedBookings = DB::table('booking_history')->where('status_id', 6)->count();
+        $cancelledBookings = DB::table('booking_history')->where('status_id', 5)->count();
 
         return view('dashboard.booking_history', [
             'bookings' => $bookingHistory,
