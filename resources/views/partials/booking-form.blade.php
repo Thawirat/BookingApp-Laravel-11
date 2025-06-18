@@ -384,28 +384,104 @@
                     return `${String(newHour).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
                 },
 
-                // คำนวณชั่วโมงรวมระหว่างวันที่และเวลา
-                calculateTotalHours: (startDate, startTime, endDate, endTime) => {
+                // คำนวณเวลารวมระหว่างวันที่และเวลา (ปรับปรุงให้แม่นยำถึงนาที)
+                calculateTotalDuration: (startDate, startTime, endDate, endTime) => {
                     const start = new Date(`${startDate}T${startTime}:00`);
                     const end = new Date(`${endDate}T${endTime}:00`);
                     const diffMs = end.getTime() - start.getTime();
-                    const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
-                    return Math.max(1, diffHours);
+
+                    // คำนวณเป็นนาทีทั้งหมด
+                    const totalMinutes = Math.floor(diffMs / (1000 * 60));
+
+                    if (totalMinutes <= 0) {
+                        return { days: 0, hours: 0, minutes: 0, totalMinutes: 0 };
+                    }
+
+                    const days = Math.floor(totalMinutes / (24 * 60));
+                    const hours = Math.floor((totalMinutes % (24 * 60)) / 60);
+                    const minutes = totalMinutes % 60;
+
+                    return {
+                        days: days,
+                        hours: hours,
+                        minutes: minutes,
+                        totalMinutes: totalMinutes
+                    };
                 },
 
-                // แปลงชั่วโมงเป็นรูปแบบ "X วัน Y ชั่วโมง"
-                formatDurationDisplay: (totalHours) => {
-                    if (totalHours < 24) {
-                        return `${totalHours} ชั่วโมง`;
-                    } else {
-                        const days = Math.floor(totalHours / 24);
-                        const hours = totalHours % 24;
-                        if (hours === 0) {
-                            return `${days} วัน`;
-                        } else {
-                            return `${days} วัน ${hours} ชั่วโมง`;
-                        }
+                // แปลงเวลาเป็นรูปแบบ "X วัน Y ชั่วโมง Z นาที"
+                formatDurationDisplay: (duration) => {
+                    const { days, hours, minutes, totalMinutes } = duration;
+
+                    if (totalMinutes <= 0) {
+                        return 'กรุณาเลือกเวลา';
                     }
+
+                    let result = [];
+
+                    if (days > 0) {
+                        result.push(`${days} วัน`);
+                    }
+
+                    if (hours > 0) {
+                        result.push(`${hours} ชั่วโมง`);
+                    }
+
+                    if (minutes > 0) {
+                        result.push(`${minutes} นาที`);
+                    }
+
+                    // ถ้าไม่มีอะไรเลย แสดงว่าเป็น 0 นาที
+                    if (result.length === 0) {
+                        return '0 นาที';
+                    }
+
+                    return result.join(' ');
+                },
+
+                // แปลงเวลาเป็นรูปแบบย่อ เช่น "2d 5h 30m"
+                formatDurationShort: (duration) => {
+                    const { days, hours, minutes, totalMinutes } = duration;
+
+                    if (totalMinutes <= 0) {
+                        return '-';
+                    }
+
+                    let result = [];
+
+                    if (days > 0) {
+                        result.push(`${days}d`);
+                    }
+
+                    if (hours > 0) {
+                        result.push(`${hours}h`);
+                    }
+
+                    if (minutes > 0) {
+                        result.push(`${minutes}m`);
+                    }
+
+                    if (result.length === 0) {
+                        return '0m';
+                    }
+
+                    return result.join(' ');
+                },
+
+                // คำนวณเวลาสำหรับแสดงผลแบบละเอียด
+                getDetailedDurationInfo: (duration) => {
+                    const { days, hours, minutes, totalMinutes } = duration;
+
+                    const totalHours = Math.floor(totalMinutes / 60);
+                    const totalDays = Math.floor(totalMinutes / (24 * 60));
+
+                    return {
+                        ...duration,
+                        totalHours: totalHours,
+                        totalDays: totalDays,
+                        formatted: utils.formatDurationDisplay(duration),
+                        formattedShort: utils.formatDurationShort(duration)
+                    };
                 },
 
                 showAlert: (title, text, icon = 'warning') => {
@@ -562,7 +638,7 @@
                 }
             };
 
-            // Duration Calculator (ไม่มีราคา)
+            // Duration Calculator (ปรับปรุงให้คำนวณแม่นยำถึงนาที)
             const durationCalculator = {
                 updateDuration: () => {
                     const startDate = elements.bookingStart.value;
@@ -573,16 +649,55 @@
                     if (!startDate || !endDate || !startTime || !endTime) {
                         if (elements.totalDays) {
                             elements.totalDays.innerText = '-';
+                            elements.totalDays.title = 'กรุณาเลือกวันที่และเวลา';
                         }
                         return;
                     }
 
-                    const totalHours = utils.calculateTotalHours(startDate, startTime, endDate, endTime);
-                    const durationText = utils.formatDurationDisplay(totalHours);
+                    const duration = utils.calculateTotalDuration(startDate, startTime, endDate, endTime);
+                    const detailedInfo = utils.getDetailedDurationInfo(duration);
 
                     if (elements.totalDays) {
-                        elements.totalDays.innerText = durationText;
+                        elements.totalDays.innerText = detailedInfo.formatted;
+
+                        // เพิ่ม tooltip แสดงข้อมูลเพิ่มเติม
+                        elements.totalDays.title = `รวม: ${detailedInfo.totalMinutes} นาที (${detailedInfo.totalHours} ชั่วโมง)`;
+
+                        // เพิ่ม class สำหรับการแสดงผลที่แตกต่างกัน
+                        elements.totalDays.className = 'duration-display';
+
+                        // ถ้าต้องการแสดงข้อมูลเพิ่มเติมใน element อื่น
+                        const detailElement = document.getElementById('durationDetail');
+                        if (detailElement) {
+                            detailElement.innerHTML = `
+                                <small class="text-muted">
+                                    รวม ${detailedInfo.totalMinutes} นาที
+                                    (${detailedInfo.totalHours} ชั่วโมง)
+                                </small>
+                            `;
+                        }
                     }
+
+                    // Log สำหรับ debugging
+                    console.log('Duration calculated:', {
+                        input: { startDate, startTime, endDate, endTime },
+                        result: detailedInfo
+                    });
+                },
+
+                // ฟังก์ชันสำหรับการแสดงผลแบบละเอียด
+                showDetailedDuration: () => {
+                    const startDate = elements.bookingStart.value;
+                    const endDate = elements.bookingEnd.value;
+                    const startTime = elements.checkInTime.value;
+                    const endTime = elements.checkOutTime.value;
+
+                    if (!startDate || !endDate || !startTime || !endTime) {
+                        return null;
+                    }
+
+                    const duration = utils.calculateTotalDuration(startDate, startTime, endDate, endTime);
+                    return utils.getDetailedDurationInfo(duration);
                 }
             };
 
@@ -631,7 +746,7 @@
                 }
             };
 
-            // Form Validation
+            // Form Validation (ปรับปรุงการตรวจสอบ)
             const validator = {
                 validateDateSelection: () => {
                     if (!elements.bookingStart.value || !elements.bookingEnd.value) {
@@ -653,12 +768,19 @@
                     // ตรวจสอบว่าเวลาออกมาหลังเวลาเข้า
                     const startDate = elements.bookingStart.value;
                     const endDate = elements.bookingEnd.value;
-                    const startDateTime = new Date(`${startDate}T${checkIn}:00`);
-                    const endDateTime = new Date(`${endDate}T${checkOut}:00`);
+                    const duration = utils.calculateTotalDuration(startDate, checkIn, endDate, checkOut);
 
-                    if (endDateTime <= startDateTime) {
+                    if (duration.totalMinutes <= 0) {
                         utils.showAlert('เวลาไม่ถูกต้อง', 'เวลาออกต้องมาหลังเวลาเข้า');
                         return false;
+                    }
+
+                    // ตรวจสอบระยะเวลาขั้นต่ำ (ถ้าต้องการ)
+                    if (duration.totalMinutes < 60) {
+                        const confirmResult = confirm('ระยะเวลาการจองน้อยกว่า 1 ชั่วโมง ต้องการดำเนินการต่อหรือไม่?');
+                        if (!confirmResult) {
+                            return false;
+                        }
                     }
 
                     return true;
@@ -667,6 +789,7 @@
 
             // ทำให้ timeManager เป็น global variable เพื่อให้สคริปต์แรกเข้าถึงได้
             window.timeManager = timeManager;
+            window.durationCalculator = durationCalculator; // เพิ่มการเข้าถึง durationCalculator
 
             // Calendar Setup
             const holidays = Object.keys(config.holidaysWithNames);
@@ -751,7 +874,6 @@
                         durationCalculator.updateDuration();
                     });
                 }
-
                 // Check-out time change
                 if (elements.checkOutTime) {
                     elements.checkOutTime.addEventListener('change', function() {
@@ -760,7 +882,6 @@
                         durationCalculator.updateDuration();
                     });
                 }
-
                 // Form submission
                 if (elements.bookingForm) {
                     elements.bookingForm.addEventListener('submit', function(e) {
@@ -768,7 +889,6 @@
                             e.preventDefault();
                             return false;
                         }
-
                         // Set final datetime values
                         elements.bookingStart.value =
                             `${elements.bookingStart.value}T${elements.checkInTime.value}:00`;
@@ -777,10 +897,10 @@
                     });
                 }
             };
-
             // Initialize
             setupEventListeners();
             timeManager.updateCheckInOutDisplay();
+            durationCalculator.updateDuration(); // เรียกใช้การคำนวณครั้งแรก
 
             // Load existing dates if available
             if (elements.bookingStart && elements.bookingEnd && elements.bookingStart.value && elements.bookingEnd
