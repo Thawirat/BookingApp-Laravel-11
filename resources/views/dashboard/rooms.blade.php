@@ -160,94 +160,42 @@
 
         // Function to open Edit Room Modal
         function openEditRoomModal(roomId, roomName, capacity, roomTypeName, roomTypeOther, roomDetails, imageUrl,
-            roomClass, statusId, equipments = []) {
-
+            roomClass, statusId) {
             // Set form action
             document.getElementById('editRoomForm').action = `/manage_rooms/${roomId}`;
 
             // Set form values
-            $('#edit_room_name').val(roomName);
-            $('#edit_capacity').val(capacity);
-            $('#edit_room_details').val(roomDetails);
-            $('#edit_class').val(roomClass);
-            $('#edit_status').val(statusId);
+            document.getElementById('edit_room_name').value = roomName;
+            document.getElementById('edit_capacity').value = capacity;
+            document.getElementById('edit_room_details').value = roomDetails;
+            document.getElementById('edit_class').value = roomClass;
+            document.getElementById('edit_status').value = statusId;
 
-            const select = $('#edit_room_type_select');
-            const customInput = $('#edit_custom_room_type');
+            const select = document.getElementById('edit_room_type_select');
+            const customInput = document.getElementById('edit_custom_room_type');
 
+            // Handle room type selection
             if (roomTypeName === 'other') {
-                select.val('other');
-                customInput.removeClass('d-none').prop('required', true).val(roomTypeOther || '');
+                select.value = 'other';
+                customInput.classList.remove('d-none');
+                customInput.required = true;
+                customInput.value = roomTypeOther || '';
             } else {
-                select.val(roomTypeName);
-                customInput.addClass('d-none').prop('required', false).val('');
+                select.value = roomTypeName;
+                customInput.classList.add('d-none');
+                customInput.required = false;
+                customInput.value = '';
             }
 
-            $('#currentImage').html(
-                imageUrl ?
+            // Display current image
+            document.getElementById('currentImage').innerHTML = imageUrl ?
                 `<img src="${imageUrl}" alt="Current Image" style="max-width: 100%; height: auto;" class="mt-2" />` :
-                '<p class="text-muted mt-2">ไม่มีรูปภาพ</p>'
-            );
+                '<p class="text-muted mt-2">ไม่มีรูปภาพ</p>';
 
-            // --- แก้ไขส่วนการจัดการอุปกรณ์ ---
-            const wrapper = document.getElementById('equipment-wrapper');
-
-            // ลบทุกแถวอุปกรณ์เดิม (ยกเว้นแถวแรกที่เป็น template)
-            const existingRows = wrapper.querySelectorAll('.equipment-row');
-            existingRows.forEach(row => row.remove());
-
-            // Debug: ตรวจสอบข้อมูลอุปกรณ์ที่ได้รับ
-            console.log('Equipments received:', equipments);
-            console.log('Equipments type:', typeof equipments);
-            console.log('Equipments length:', equipments ? equipments.length : 'undefined');
-
-            // แปลง equipments เป็น array ถ้าเป็น string (JSON)
-            let equipmentArray = [];
-            if (typeof equipments === 'string') {
-                try {
-                    equipmentArray = JSON.parse(equipments);
-                } catch (e) {
-                    console.error('Error parsing equipments JSON:', e);
-                    equipmentArray = [];
-                }
-            } else if (Array.isArray(equipments)) {
-                equipmentArray = equipments;
-            }
-
-            console.log('Processed equipment array:', equipmentArray);
-
-            // สร้างแถวอุปกรณ์ใหม่
-            if (equipmentArray && equipmentArray.length > 0) {
-                equipmentArray.forEach((eq, index) => {
-                    console.log(`Equipment ${index}:`, eq);
-
-                    const newRow = createEquipmentRow();
-
-                    // ตรวจสอบและกำหนดค่าให้กับ input fields
-                    const nameInput = newRow.querySelector('input[name="equipment_names[]"]');
-                    const noteInput = newRow.querySelector('input[name="equipment_notes[]"]');
-                    const quantityInput = newRow.querySelector('input[name="equipment_quantities[]"]');
-
-                    if (nameInput) nameInput.value = eq.name || eq.equipment_name || '';
-                    if (noteInput) noteInput.value = eq.note || eq.notes || eq.description || eq.equipment_note ||
-                        '';
-                    if (quantityInput) quantityInput.value = eq.quantity || eq.equipment_quantity || '';
-
-                    // เพิ่มแถวก่อนปุ่ม "เพิ่มอุปกรณ์"
-                    const addButton = wrapper.querySelector('#add-equipment-btn');
-                    wrapper.insertBefore(newRow, addButton);
-                });
-            } else {
-                // ถ้าไม่มีอุปกรณ์ ให้สร้างแถวเปล่า 1 แถว
-                const emptyRow = createEquipmentRow();
-                const addButton = wrapper.querySelector('#add-equipment-btn');
-                wrapper.insertBefore(emptyRow, addButton);
-            }
-
+            // Show modal
             $('#editRoomModal').modal('show');
         }
 
-        // ฟังก์ชันสร้างแถวอุปกรณ์
         function createEquipmentRow() {
             const row = document.createElement('div');
             row.classList.add('row', 'g-2', 'mb-2', 'equipment-row');
