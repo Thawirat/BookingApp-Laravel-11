@@ -134,38 +134,224 @@
                 }))
             );
         }
-        // Handle custom room type for Add Modal
-        document.getElementById('add_room_type_select').addEventListener('change', function() {
-            const customInput = document.getElementById('add_custom_room_type');
-            if (this.value === 'other') {
-                customInput.classList.remove('d-none');
-                customInput.required = true;
-            } else {
-                customInput.classList.add('d-none');
-                customInput.required = false;
-                customInput.value = '';
-            }
-        });
 
-        // Handle custom room type for Edit Modal
-        document.getElementById('edit_room_type_select').addEventListener('change', function() {
-            const customInput = document.getElementById('edit_custom_room_type');
-            if (this.value === 'other') {
-                customInput.classList.remove('d-none');
-                customInput.required = true;
-            } else {
-                customInput.classList.add('d-none');
-                customInput.required = false;
-                customInput.value = '';
+        // ใช้ DOMContentLoaded เพื่อให้แน่ใจว่า DOM โหลดเสร็จแล้ว
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle custom room type for Add Modal
+            const addRoomTypeSelect = document.getElementById('add_room_type_select');
+            if (addRoomTypeSelect) {
+                addRoomTypeSelect.addEventListener('change', function() {
+                    const customInput = document.getElementById('add_custom_room_type');
+                    if (customInput) {
+                        if (this.value === 'other') {
+                            customInput.classList.remove('d-none');
+                            customInput.required = true;
+                        } else {
+                            customInput.classList.add('d-none');
+                            customInput.required = false;
+                            customInput.value = '';
+                        }
+                    }
+                });
+            }
+
+            // Handle custom room type for Edit Modal
+            const editRoomTypeSelect = document.getElementById('edit_room_type_select');
+            if (editRoomTypeSelect) {
+                editRoomTypeSelect.addEventListener('change', function() {
+                    const customInput = document.getElementById('edit_custom_room_type');
+                    if (customInput) {
+                        if (this.value === 'other') {
+                            customInput.classList.remove('d-none');
+                            customInput.required = true;
+                        } else {
+                            customInput.classList.add('d-none');
+                            customInput.required = false;
+                            customInput.value = '';
+                        }
+                    }
+                });
+            }
+
+            // Handle Add Equipment Button - ตรวจสอบว่า element มีอยู่จริงก่อน
+            const addEquipmentButton = document.getElementById('addEquipmentButton');
+            if (addEquipmentButton) {
+                addEquipmentButton.addEventListener('click', () => {
+                    addEquipmentInput({}, equipmentCount);
+                    equipmentCount++;
+                });
+            }
+
+            // รองรับการเรียกใช้จากที่อื่น ๆ เช่น onclick ใน HTML
+            window.addNewEquipment = function() {
+                addEquipmentInput({}, equipmentCount);
+                equipmentCount++;
+            };
+
+            // Event Listeners สำหรับจัดการอุปกรณ์
+            const wrapper = document.getElementById('equipment-wrapper');
+            const addBtn = document.getElementById('add-equipment-btn');
+
+            // เพิ่มอุปกรณ์
+            if (addBtn && wrapper) {
+                addBtn.addEventListener('click', function() {
+                    const newRow = createEquipmentRow();
+                    wrapper.insertBefore(newRow, addBtn);
+                });
+            }
+
+            // ลบอุปกรณ์
+            if (wrapper) {
+                wrapper.addEventListener('click', function(e) {
+                    if (e.target.closest('.remove-equipment')) {
+                        const equipmentRows = wrapper.querySelectorAll('.equipment-row');
+                        if (equipmentRows.length > 1) {
+                            e.target.closest('.equipment-row').remove();
+                        } else {
+                            // ถ้าเหลือแถวเดียว ให้เคลียร์ค่าแทนการลบ
+                            const row = e.target.closest('.equipment-row');
+                            row.querySelectorAll('input').forEach(input => input.value = '');
+                        }
+                    }
+                });
+            }
+
+            // Handle Add Room Form Submission
+            const addRoomForm = document.getElementById('addRoomForm');
+            if (addRoomForm) {
+                addRoomForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const form = this;
+                    const formData = new FormData(form);
+                    const csrfToken = form.querySelector('input[name="_token"]');
+
+                    if (!csrfToken) {
+                        console.error('CSRF token not found');
+                        return;
+                    }
+
+                    fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken.value
+                            },
+                            body: formData
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(error => Promise.reject(error));
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'สำเร็จ',
+                                    text: 'เพิ่มห้องสำเร็จ',
+                                    confirmButtonText: 'ตกลง'
+                                }).then(() => {
+                                    $('#addRoomModal').modal('hide');
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'เกิดข้อผิดพลาด',
+                                    text: data.message || "ไม่ทราบสาเหตุ",
+                                    confirmButtonText: 'ปิด'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error adding room:", error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด',
+                                text: 'เกิดข้อผิดพลาดในการเพิ่มห้อง',
+                                confirmButtonText: 'ปิด'
+                            });
+                        });
+                });
+            }
+
+            // Handle Edit Room Form Submission
+            const editRoomForm = document.getElementById('editRoomForm');
+            if (editRoomForm) {
+                editRoomForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const form = this;
+                    const formData = new FormData(form);
+                    const csrfToken = form.querySelector('input[name="_token"]');
+
+                    if (!csrfToken) {
+                        console.error('CSRF token not found');
+                        return;
+                    }
+
+                    fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken.value
+                            },
+                            body: formData
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(error => Promise.reject(error));
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'สำเร็จ',
+                                    text: 'อัปเดตห้องสำเร็จ',
+                                    confirmButtonText: 'ตกลง'
+                                }).then(() => {
+                                    $('#editRoomModal').modal('hide');
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'เกิดข้อผิดพลาด',
+                                    text: data.message || "ไม่ทราบสาเหตุ",
+                                    confirmButtonText: 'ปิด'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error updating room:", error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด',
+                                text: 'เกิดข้อผิดพลาดในการอัปเดตห้อง',
+                                confirmButtonText: 'ปิด'
+                            });
+                        });
+                });
             }
         });
 
         // Function to open Add Room Modal
         function openAddRoomModal() {
-            // Reset form values
-            document.getElementById('addRoomForm').reset();
-            document.getElementById('add_custom_room_type').classList.add('d-none');
-            document.getElementById('add_custom_room_type').required = false;
+            const addRoomForm = document.getElementById('addRoomForm');
+            const addCustomRoomType = document.getElementById('add_custom_room_type');
+
+            if (addRoomForm) {
+                addRoomForm.reset();
+            }
+
+            if (addCustomRoomType) {
+                addCustomRoomType.classList.add('d-none');
+                addCustomRoomType.required = false;
+            }
 
             // Show modal
             $('#addRoomModal').modal('show');
@@ -173,36 +359,51 @@
 
         // Function to open Edit Room Modal
         function openEditRoomModal(roomId, roomName, capacity, roomTypeName, roomTypeOther, roomDetails, imageUrl,
-            roomClass, statusId, equipments) { // เพิ่มพารามิเตอร์ equipments เข้ามา
+            roomClass, statusId, equipments) {
+
+            const editRoomForm = document.getElementById('editRoomForm');
+            if (!editRoomForm) return;
+
             // Set form action
-            document.getElementById('editRoomForm').action = `/manage_rooms/${roomId}`;
-            // Set form values
-            document.getElementById('edit_room_name').value = roomName;
-            document.getElementById('edit_capacity').value = capacity;
-            document.getElementById('edit_room_details').value = roomDetails;
-            document.getElementById('edit_class').value = roomClass;
-            document.getElementById('edit_status').value = statusId;
+            editRoomForm.action = `/manage_rooms/${roomId}`;
+
+            // Set form values safely
+            const setValueSafely = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.value = value;
+            };
+
+            setValueSafely('edit_room_name', roomName);
+            setValueSafely('edit_capacity', capacity);
+            setValueSafely('edit_room_details', roomDetails);
+            setValueSafely('edit_class', roomClass);
+            setValueSafely('edit_status', statusId);
 
             const select = document.getElementById('edit_room_type_select');
             const customInput = document.getElementById('edit_custom_room_type');
 
             // Handle room type selection
-            if (roomTypeName === 'other') {
-                select.value = 'other';
-                customInput.classList.remove('d-none');
-                customInput.required = true;
-                customInput.value = roomTypeOther || '';
-            } else {
-                select.value = roomTypeName;
-                customInput.classList.add('d-none');
-                customInput.required = false;
-                customInput.value = '';
+            if (select && customInput) {
+                if (roomTypeName === 'other') {
+                    select.value = 'other';
+                    customInput.classList.remove('d-none');
+                    customInput.required = true;
+                    customInput.value = roomTypeOther || '';
+                } else {
+                    select.value = roomTypeName;
+                    customInput.classList.add('d-none');
+                    customInput.required = false;
+                    customInput.value = '';
+                }
             }
 
             // Display current image
-            document.getElementById('currentImage').innerHTML = imageUrl ?
-                `<img src="${imageUrl}" alt="Current Image" style="max-width: 100%; height: auto;" class="mt-2" />` :
-                '<p class="text-muted mt-2">ไม่มีรูปภาพ</p>';
+            const currentImage = document.getElementById('currentImage');
+            if (currentImage) {
+                currentImage.innerHTML = imageUrl ?
+                    `<img src="${imageUrl}" alt="Current Image" style="max-width: 100%; height: auto;" class="mt-2" />` :
+                    '<p class="text-muted mt-2">ไม่มีรูปภาพ</p>';
+            }
 
             // เติมข้อมูลอุปกรณ์ลงในฟอร์ม
             populateEquipments(equipments || []);
@@ -215,21 +416,31 @@
 
         function populateEquipments(equipments) {
             const container = document.getElementById('equipmentList');
+            if (!container) return;
+
             container.innerHTML = '';
             equipmentCount = 0; // reset count
 
-            equipments.forEach((equipment, i) => {
-                addEquipmentInput(equipment, i);
-                equipmentCount++;
-            });
+            // ถ้าไม่มีอุปกรณ์ ให้เพิ่มแถวเปล่า 1 แถว
+            if (equipments.length === 0) {
+                addEquipmentInput({}, 0);
+                equipmentCount = 1;
+            } else {
+                equipments.forEach((equipment, i) => {
+                    addEquipmentInput(equipment, i);
+                });
+                equipmentCount = equipments.length;
+            }
         }
 
-        function addEquipmentInput(equipment = {}, index) {
-            if (index === undefined) {
-                console.error('addEquipmentInput: index is undefined');
-                index = equipmentCount++;
+        function addEquipmentInput(equipment = {}, index = null) {
+            // ถ้าไม่ได้ส่ง index มา ให้ใช้ equipmentCount ปัจจุบัน
+            if (index === null || index === undefined) {
+                index = equipmentCount;
             }
+
             const container = document.getElementById('equipmentList');
+            if (!container) return;
 
             const wrapper = document.createElement('div');
             wrapper.className = 'row g-2 mb-2 align-items-center';
@@ -282,168 +493,30 @@
             container.appendChild(wrapper);
         }
 
-        // เวลาเพิ่มอุปกรณ์ใหม่ (เช่นจากปุ่มเพิ่ม)
-        document.getElementById('addEquipmentButton').addEventListener('click', () => {
-            addEquipmentInput({}, equipmentCount);
-            equipmentCount++;
-        });
-
         function createEquipmentRow() {
             const row = document.createElement('div');
             row.classList.add('row', 'g-2', 'mb-2', 'equipment-row');
             row.innerHTML = `
-    <div class="col-md-4">
-        <input type="text" name="equipment_names[]" class="form-control"
-            placeholder="ชื่ออุปกรณ์" required>
-    </div>
-    <div class="col-md-4">
-        <input type="text" name="equipment_notes[]" class="form-control"
-            placeholder="รายละเอียด" required>
-    </div>
-    <div class="col-md-3">
-        <input type="number" name="equipment_quantities[]" class="form-control"
-            placeholder="จำนวน" min="1" required>
-    </div>
-    <div class="col-md-1 d-flex align-items-start">
-        <button type="button" class="btn btn-danger btn-sm remove-equipment">
-            <i class="fas fa-trash"></i>
-        </button>
-    </div>
-`;
+                <div class="col-md-4">
+                    <input type="text" name="equipment_names[]" class="form-control"
+                        placeholder="ชื่ออุปกรณ์" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="equipment_notes[]" class="form-control"
+                        placeholder="รายละเอียด" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="equipment_quantities[]" class="form-control"
+                        placeholder="จำนวน" min="1" required>
+                </div>
+                <div class="col-md-1 d-flex align-items-start">
+                    <button type="button" class="btn btn-danger btn-sm remove-equipment">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
             return row;
         }
-
-        // Event Listeners สำหรับจัดการอุปกรณ์
-        document.addEventListener('DOMContentLoaded', function() {
-            const wrapper = document.getElementById('equipment-wrapper');
-            const addBtn = document.getElementById('add-equipment-btn');
-
-            // เพิ่มอุปกรณ์
-            if (addBtn) {
-                addBtn.addEventListener('click', function() {
-                    const newRow = createEquipmentRow();
-                    wrapper.insertBefore(newRow, addBtn);
-                });
-            }
-
-            // ลบอุปกรณ์
-            wrapper.addEventListener('click', function(e) {
-                if (e.target.closest('.remove-equipment')) {
-                    const equipmentRows = wrapper.querySelectorAll('.equipment-row');
-                    if (equipmentRows.length > 1) {
-                        e.target.closest('.equipment-row').remove();
-                    } else {
-                        // ถ้าเหลือแถวเดียว ให้เคลียร์ค่าแทนการลบ
-                        const row = e.target.closest('.equipment-row');
-                        row.querySelectorAll('input').forEach(input => input.value = '');
-                    }
-                }
-            });
-        });
-
-        // Handle Add Room Form Submission
-        document.getElementById('addRoomForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const form = this;
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
-                    },
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(error => Promise.reject(error));
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'สำเร็จ',
-                            text: 'เพิ่มห้องสำเร็จ',
-                            confirmButtonText: 'ตกลง'
-                        }).then(() => {
-                            $('#addRoomModal').modal('hide');
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'เกิดข้อผิดพลาด',
-                            text: data.message || "ไม่ทราบสาเหตุ",
-                            confirmButtonText: 'ปิด'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("Error adding room:", error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'เกิดข้อผิดพลาด',
-                        text: 'เกิดข้อผิดพลาดในการเพิ่มห้อง',
-                        confirmButtonText: 'ปิด'
-                    });
-                });
-        });
-
-        // Handle Edit Room Form Submission
-        document.getElementById('editRoomForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const form = this;
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
-                    },
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(error => Promise.reject(error));
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'สำเร็จ',
-                            text: 'อัปเดตห้องสำเร็จ',
-                            confirmButtonText: 'ตกลง'
-                        }).then(() => {
-                            $('#editRoomModal').modal('hide');
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'เกิดข้อผิดพลาด',
-                            text: data.message || "ไม่ทราบสาเหตุ",
-                            confirmButtonText: 'ปิด'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("Error updating room:", error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'เกิดข้อผิดพลาด',
-                        text: 'เกิดข้อผิดพลาดในการอัปเดตห้อง',
-                        confirmButtonText: 'ปิด'
-                    });
-                });
-        });
 
         function confirmDeleteRoom(roomId, roomName) {
             Swal.fire({
