@@ -86,17 +86,7 @@
                                                 </p>
                                                 <div class="btn-group w-100" role="group">
                                                     <a href="#" class="btn btn-sm btn-warning flex-grow-1"
-                                                        onclick="openEditRoomModal(
-                                                       '{{ $room->room_id }}',
-                                                       '{{ $room->room_name }}',
-                                                       '{{ $room->capacity }}',
-                                                       '{{ $room->room_type }}',
-                                                        '{{ $room->room_type_other ?? '' }}',
-                                                       '{{ $room->room_details }}',
-                                                       '{{ $room->image ? asset('storage/' . $room->image) : '' }}',
-                                                       '{{ $room->class }}',
-                                                       '{{ $room->status_id }}',
-                                                   )">
+                                                        onclick="handleEditRoomClick({{ $room->room_id }})">
                                                         <i class="fas fa-edit me-1"></i>แก้ไข
                                                     </a>
                                                     <button class="btn btn-sm btn-danger flex-grow-1"
@@ -121,6 +111,29 @@
     @include('components.modal.rooms.add-room')
     @include('components.modal.rooms.edit-room')
     <script>
+        const roomData = @json($rooms->keyBy('room_id')); // key ตาม room_id
+
+        function handleEditRoomClick(roomId) {
+            const room = roomData[roomId];
+            if (!room) return;
+
+            openEditRoomModal(
+                room.room_id,
+                room.room_name,
+                room.capacity,
+                room.room_type,
+                room.room_type_other ?? '',
+                room.room_details,
+                room.image ? `/storage/${room.image}` : '',
+                room.class,
+                room.status_id,
+                (room.equipments || []).map(eq => ({
+                    name: eq.name,
+                    quantity: eq.quantity,
+                    note: eq.note
+                }))
+            );
+        }
         // Handle custom room type for Add Modal
         document.getElementById('add_room_type_select').addEventListener('change', function() {
             const customInput = document.getElementById('add_custom_room_type');
@@ -160,10 +173,9 @@
 
         // Function to open Edit Room Modal
         function openEditRoomModal(roomId, roomName, capacity, roomTypeName, roomTypeOther, roomDetails, imageUrl,
-            roomClass, statusId) {
+            roomClass, statusId, equipments) { // เพิ่มพารามิเตอร์ equipments เข้ามา
             // Set form action
             document.getElementById('editRoomForm').action = `/manage_rooms/${roomId}`;
-
             // Set form values
             document.getElementById('edit_room_name').value = roomName;
             document.getElementById('edit_capacity').value = capacity;
@@ -192,9 +204,89 @@
                 `<img src="${imageUrl}" alt="Current Image" style="max-width: 100%; height: auto;" class="mt-2" />` :
                 '<p class="text-muted mt-2">ไม่มีรูปภาพ</p>';
 
+            // เติมข้อมูลอุปกรณ์ลงในฟอร์ม
+            populateEquipments(equipments || []);
+
             // Show modal
             $('#editRoomModal').modal('show');
         }
+
+        let equipmentCount = 0; // นับจำนวนอุปกรณ์ในฟอร์มตอนนี้
+
+        function populateEquipments(equipments) {
+            const container = document.getElementById('equipmentList');
+            container.innerHTML = '';
+            equipmentCount = 0; // reset count
+
+            equipments.forEach((equipment, i) => {
+                addEquipmentInput(equipment, i);
+                equipmentCount++;
+            });
+        }
+
+        function addEquipmentInput(equipment = {}, index) {
+            if (index === undefined) {
+                console.error('addEquipmentInput: index is undefined');
+                index = equipmentCount++;
+            }
+            const container = document.getElementById('equipmentList');
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'row g-2 mb-2 align-items-center';
+
+            const nameCol = document.createElement('div');
+            nameCol.className = 'col-md-4';
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.name = `equipments[${index}][name]`;
+            nameInput.className = 'form-control';
+            nameInput.placeholder = 'ชื่ออุปกรณ์';
+            nameInput.value = equipment.name || '';
+            nameCol.appendChild(nameInput);
+
+            const noteCol = document.createElement('div');
+            noteCol.className = 'col-md-4';
+            const noteInput = document.createElement('input');
+            noteInput.type = 'text';
+            noteInput.name = `equipments[${index}][note]`;
+            noteInput.className = 'form-control';
+            noteInput.placeholder = 'รายละเอียด';
+            noteInput.value = equipment.note || '';
+            noteCol.appendChild(noteInput);
+
+            const qtyCol = document.createElement('div');
+            qtyCol.className = 'col-md-2';
+            const qtyInput = document.createElement('input');
+            qtyInput.type = 'number';
+            qtyInput.name = `equipments[${index}][quantity]`;
+            qtyInput.className = 'form-control';
+            qtyInput.placeholder = 'จำนวน';
+            qtyInput.min = 1;
+            qtyInput.value = equipment.quantity || '';
+            qtyCol.appendChild(qtyInput);
+
+            const actionCol = document.createElement('div');
+            actionCol.className = 'col-md-2';
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'btn btn-danger btn-sm';
+            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            deleteBtn.onclick = () => wrapper.remove();
+            actionCol.appendChild(deleteBtn);
+
+            wrapper.appendChild(nameCol);
+            wrapper.appendChild(noteCol);
+            wrapper.appendChild(qtyCol);
+            wrapper.appendChild(actionCol);
+
+            container.appendChild(wrapper);
+        }
+
+        // เวลาเพิ่มอุปกรณ์ใหม่ (เช่นจากปุ่มเพิ่ม)
+        document.getElementById('addEquipmentButton').addEventListener('click', () => {
+            addEquipmentInput({}, equipmentCount);
+            equipmentCount++;
+        });
 
         function createEquipmentRow() {
             const row = document.createElement('div');

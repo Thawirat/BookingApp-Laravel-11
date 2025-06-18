@@ -20,7 +20,7 @@ return new class extends Migration
             // คอลัมน์อื่นๆ
             $table->string('room_name'); // ชื่อห้อง
             $table->string('class'); // ชั้น
-            $table->string('room_details'); // รายละเอียดห้อง
+            $table->string('room_details')->nullable(); // รายละเอียดห้อง
             $table->string('image'); // รูปภาพ
             $table->integer('capacity'); // ขนาดความจุ
             $table->decimal('service_rates', 10, 2)->nullable(); // อัตราค่าบริการ

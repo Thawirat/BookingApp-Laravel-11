@@ -42,6 +42,17 @@
                         <textarea class="form-control shadow-sm" id="edit_room_details" name="room_details" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label fw-bold">อุปกรณ์ในห้อง</label>
+                        <div id="equipmentList">
+                            <!-- รายการอุปกรณ์จะถูกเพิ่มที่นี่ด้วย JS -->
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                            onclick="addEquipmentInput()">
+                            <i class="fas fa-plus me-1"></i> เพิ่มอุปกรณ์
+                        </button>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label fw-bold">สถานะ</label>
                         <select class="form-select shadow-sm" id="edit_status" name="status_id" required>
                             <option value="2">พร้อมใช้งาน</option>

@@ -318,6 +318,36 @@ class ManageRoomsController extends Controller
 
             // Save room
             $room->save();
+            // จัดการอุปกรณ์
+            $existingEquipments = $room->equipments()->get()->keyBy('id');
+
+            // เก็บ id ที่ส่งมาใน request
+            $inputEquipmentIds = collect($request->equipments ?? [])->pluck('id')->filter()->all();
+
+            // ลบอุปกรณ์ที่มีใน DB แต่ไม่อยู่ใน request (ถ้าต้องการลบ)
+            $room->equipments()->whereNotIn('id', $inputEquipmentIds)->delete();
+            $buildingId = $request->input('building_id');
+            // Loop ผ่าน equipments ใน request
+            foreach ($request->equipments ?? [] as $equipment) {
+                if (!empty($equipment['name']) && !empty($equipment['quantity'])) {
+                    if (!empty($equipment['id']) && $existingEquipments->has($equipment['id'])) {
+                        $existingEquipment = $existingEquipments->get($equipment['id']);
+                        $existingEquipment->update([
+                            'name' => $equipment['name'],
+                            'quantity' => $equipment['quantity'],
+                            'note' => $equipment['note'] ?? null,
+
+                        ]);
+                    } else {
+                        $room->equipments()->create([
+                            'name' => $equipment['name'],
+                            'quantity' => $equipment['quantity'],
+                            'note' => $equipment['note'] ?? null,
+                            'building_id' => $buildingId,
+                        ]);
+                    }
+                }
+            }
             Log::info('Room updated successfully', $room->toArray());
 
             if ($request->expectsJson()) {
@@ -354,27 +384,27 @@ class ManageRoomsController extends Controller
         // ส่งหน้าก่อนหน้าพร้อมข้อความสำเร็จ
         return redirect()->back()->with('success', 'ลบห้องสำเร็จ');
     }
-    public function subAdminRooms(Request $request)
-    {
-        $user = Auth::user();
-        $buildings = Building::whereHas('users', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->get();
+    // public function subAdminRooms(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $buildings = Building::whereHas('users', function ($query) use ($user) {
+    //         $query->where('user_id', $user->id);
+    //     })->get();
 
-        $query = Room::query();
+    //     $query = Room::query();
 
-        // If building ID is provided, filter rooms by that building
-        if ($request->building) {
-            $query->where('building_id', $request->building);
-        }
+    //     // If building ID is provided, filter rooms by that building
+    //     if ($request->building) {
+    //         $query->where('building_id', $request->building);
+    //     }
 
-        $rooms = $query->whereIn('building_id', $buildings->pluck('id'))
-            ->with(['building', 'status'])
-            ->when($request->search, function ($query) use ($request) {
-                $query->where('room_name', 'like', '%' . $request->search . '%');
-            })
-            ->paginate(12);
+    //     $rooms = $query->whereIn('building_id', $buildings->pluck('id'))
+    //         ->with(['building', 'status'])
+    //         ->when($request->search, function ($query) use ($request) {
+    //             $query->where('room_name', 'like', '%' . $request->search . '%');
+    //         })
+    //         ->paginate(12);
 
-        return view('dashboard.sub_admin_rooms', compact('rooms', 'buildings'));
-    }
+    //     return view('dashboard.sub_admin_rooms', compact('rooms', 'buildings'));
+    // }
 }
