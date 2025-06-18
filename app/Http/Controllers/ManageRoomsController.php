@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Models\RoomEquipment;
 
 
 class ManageRoomsController extends Controller
@@ -71,7 +72,7 @@ class ManageRoomsController extends Controller
             ->count();
 
         // Get paginated rooms
-        $rooms = Room::with(['building', 'status'])
+        $rooms = Room::with(['building', 'status', 'equipments'])
             ->where('building_id', $building->id)
             ->when(request('search'), function ($query) {
                 $query->where('room_name', 'like', '%' . request('search') . '%');
@@ -183,27 +184,44 @@ class ManageRoomsController extends Controller
                     return back()->with('error', 'Failed to upload image: ' . $e->getMessage());
                 }
             }
-
-            // ✅ Save to database
             $room->save();
+
+            if ($request->has('equipment_names')) {
+                foreach ($request->equipment_names as $index => $name) {
+                    RoomEquipment::create([
+                        'room_id' => $room->room_id,
+                        'building_id' => $room->building_id,
+                        'name' => $name,
+                        'note' => $request->equipment_notes[$index],
+                        'quantity' => $request->equipment_quantities[$index],
+                    ]);
+                }
+            }
+
             Log::info('Room created successfully:', $room->toArray());
 
-            return redirect()->route('manage_rooms.show', $room->building_id)->with('success', 'Room created successfully');
+            return response()->json([
+                'success' => true,
+                'message' => 'Room created successfully',
+            ], 200);
         } catch (\Exception $e) {
             Log::error('Error creating room: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
                 'request' => $request->all()
             ]);
-            return redirect()->back()->with('error', 'Failed to create room. Please try again.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create room. Please try again.',
+            ], 500);
         }
     }
 
     public function update(Request $request, $roomId)
     {
         try {
-            // Log the request for debugging
             Log::info('Update request received', ['room_id' => $roomId, 'data' => $request->all()]);
-
+            $rooms = Room::with('equipments')->get(); // หรือ
+            $room = Room::with('equipments')->find($roomId);
             // Validate input
             $validated = $request->validate([
                 'building_id' => 'required|exists:buildings,id',
@@ -213,16 +231,17 @@ class ManageRoomsController extends Controller
                 'class' => 'required|string|max:255',
                 'room_details' => 'nullable|string',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                // 'service_rates' => 'required|numeric|min:0',
                 'room_type' => 'required',
                 'custom_room_type' => 'nullable|string|max:255',
-                'room_type_other' => 'nullable|string',  // กรณีเลือก "อื่นๆ"
+                'room_type_other' => 'nullable|string',
+                'equipment_names' => 'nullable|array',
+                'equipment_notes' => 'nullable|array',
+                'equipment_quantities' => 'nullable|array',
             ]);
 
-            // Find the room to be updated
             $room = Room::findOrFail($roomId);
 
-            // Check for duplicate room name in the same building
+            // Check for duplicate room name
             $existing = Room::where('building_id', $validated['building_id'])
                 ->where('room_name', $validated['room_name'])
                 ->where('room_id', '!=', $roomId)
@@ -232,9 +251,6 @@ class ManageRoomsController extends Controller
                 $message = 'ห้องนี้มีอยู่แล้วในอาคารนี้';
                 Log::warning($message, ['existing_room_id' => $existing->room_id]);
 
-                if ($request->expectsJson()) {
-                    return response()->json(['success' => false, 'message' => $message], 409);
-                }
                 return redirect()->back()->with('error', $message);
             }
 
@@ -244,19 +260,17 @@ class ManageRoomsController extends Controller
             $room->capacity = $validated['capacity'];
             $room->class = $validated['class'];
             $room->room_details = $validated['room_details'];
-            // $room->service_rates = $validated['service_rates'];
             $room->status_id = $validated['status_id'];
 
-            // ถ้าเลือก "อื่นๆ"
             if ($request->room_type == 'other') {
                 $room->room_type = 'other';
-                $room->room_type_other = $request->room_type_other;  // เก็บข้อความที่ระบุเอง
+                $room->room_type_other = $request->room_type_other;
             } else {
                 $room->room_type = $request->room_type;
-                $room->room_type_other = null;  // ล้างค่าหากไม่ใช่ "อื่นๆ"
+                $room->room_type_other = null;
             }
 
-            // Image upload (if provided)
+            // Handle image upload
             if ($request->hasFile('image')) {
                 try {
                     $image = $request->file('image');
@@ -298,12 +312,22 @@ class ManageRoomsController extends Controller
                 }
             }
 
-            // Save room
             $room->save();
             Log::info('Room updated successfully', $room->toArray());
 
-            if ($request->expectsJson()) {
-                return response()->json(['success' => true]);
+            // 🔽 อัปเดตอุปกรณ์: ลบของเก่า เพิ่มของใหม่
+            $room->equipments()->delete();
+
+            if ($request->has('equipment_names')) {
+                foreach ($request->equipment_names as $index => $name) {
+                    if (!empty($name)) {
+                        $room->equipments()->create([
+                            'name' => $name,
+                            'note' => $request->equipment_notes[$index] ?? '',
+                            'quantity' => $request->equipment_quantities[$index] ?? 1,
+                        ]);
+                    }
+                }
             }
 
             return redirect()->route('manage_rooms.show', $room->building_id)->with('success', 'Room updated successfully!');
@@ -313,11 +337,7 @@ class ManageRoomsController extends Controller
                 'request' => $request->all(),
             ]);
 
-            if ($request->expectsJson()) {
-                return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดระหว่างอัปเดต'], 500);
-            }
-
-            return redirect()->back()->with('error', 'Failed to update room. Please try again.');
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดขณะอัปเดตข้อมูลห้อง');
         }
     }
     public function destroy($room_id)

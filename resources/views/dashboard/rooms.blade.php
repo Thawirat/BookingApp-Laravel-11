@@ -95,7 +95,7 @@
                                                        '{{ $room->room_details }}',
                                                        '{{ $room->image ? asset('storage/' . $room->image) : '' }}',
                                                        '{{ $room->class }}',
-                                                       '{{ $room->status_id }}'
+                                                       '{{ $room->status_id }}',
                                                    )">
                                                         <i class="fas fa-edit me-1"></i>แก้ไข
                                                     </a>
@@ -120,7 +120,6 @@
     </div>
     @include('components.modal.rooms.add-room')
     @include('components.modal.rooms.edit-room')
-
     <script>
         // Handle custom room type for Add Modal
         document.getElementById('add_room_type_select').addEventListener('change', function() {
@@ -161,41 +160,146 @@
 
         // Function to open Edit Room Modal
         function openEditRoomModal(roomId, roomName, capacity, roomTypeName, roomTypeOther, roomDetails, imageUrl,
-            roomClass, statusId) {
+            roomClass, statusId, equipments = []) {
+
             // Set form action
             document.getElementById('editRoomForm').action = `/manage_rooms/${roomId}`;
 
             // Set form values
-            document.getElementById('edit_room_name').value = roomName;
-            document.getElementById('edit_capacity').value = capacity;
-            document.getElementById('edit_room_details').value = roomDetails;
-            document.getElementById('edit_class').value = roomClass;
-            document.getElementById('edit_status').value = statusId;
+            $('#edit_room_name').val(roomName);
+            $('#edit_capacity').val(capacity);
+            $('#edit_room_details').val(roomDetails);
+            $('#edit_class').val(roomClass);
+            $('#edit_status').val(statusId);
 
-            const select = document.getElementById('edit_room_type_select');
-            const customInput = document.getElementById('edit_custom_room_type');
+            const select = $('#edit_room_type_select');
+            const customInput = $('#edit_custom_room_type');
 
-            // Handle room type selection
             if (roomTypeName === 'other') {
-                select.value = 'other';
-                customInput.classList.remove('d-none');
-                customInput.required = true;
-                customInput.value = roomTypeOther || '';
+                select.val('other');
+                customInput.removeClass('d-none').prop('required', true).val(roomTypeOther || '');
             } else {
-                select.value = roomTypeName;
-                customInput.classList.add('d-none');
-                customInput.required = false;
-                customInput.value = '';
+                select.val(roomTypeName);
+                customInput.addClass('d-none').prop('required', false).val('');
             }
 
-            // Display current image
-            document.getElementById('currentImage').innerHTML = imageUrl ?
+            $('#currentImage').html(
+                imageUrl ?
                 `<img src="${imageUrl}" alt="Current Image" style="max-width: 100%; height: auto;" class="mt-2" />` :
-                '<p class="text-muted mt-2">ไม่มีรูปภาพ</p>';
+                '<p class="text-muted mt-2">ไม่มีรูปภาพ</p>'
+            );
 
-            // Show modal
+            // --- แก้ไขส่วนการจัดการอุปกรณ์ ---
+            const wrapper = document.getElementById('equipment-wrapper');
+
+            // ลบทุกแถวอุปกรณ์เดิม (ยกเว้นแถวแรกที่เป็น template)
+            const existingRows = wrapper.querySelectorAll('.equipment-row');
+            existingRows.forEach(row => row.remove());
+
+            // Debug: ตรวจสอบข้อมูลอุปกรณ์ที่ได้รับ
+            console.log('Equipments received:', equipments);
+            console.log('Equipments type:', typeof equipments);
+            console.log('Equipments length:', equipments ? equipments.length : 'undefined');
+
+            // แปลง equipments เป็น array ถ้าเป็น string (JSON)
+            let equipmentArray = [];
+            if (typeof equipments === 'string') {
+                try {
+                    equipmentArray = JSON.parse(equipments);
+                } catch (e) {
+                    console.error('Error parsing equipments JSON:', e);
+                    equipmentArray = [];
+                }
+            } else if (Array.isArray(equipments)) {
+                equipmentArray = equipments;
+            }
+
+            console.log('Processed equipment array:', equipmentArray);
+
+            // สร้างแถวอุปกรณ์ใหม่
+            if (equipmentArray && equipmentArray.length > 0) {
+                equipmentArray.forEach((eq, index) => {
+                    console.log(`Equipment ${index}:`, eq);
+
+                    const newRow = createEquipmentRow();
+
+                    // ตรวจสอบและกำหนดค่าให้กับ input fields
+                    const nameInput = newRow.querySelector('input[name="equipment_names[]"]');
+                    const noteInput = newRow.querySelector('input[name="equipment_notes[]"]');
+                    const quantityInput = newRow.querySelector('input[name="equipment_quantities[]"]');
+
+                    if (nameInput) nameInput.value = eq.name || eq.equipment_name || '';
+                    if (noteInput) noteInput.value = eq.note || eq.notes || eq.description || eq.equipment_note ||
+                        '';
+                    if (quantityInput) quantityInput.value = eq.quantity || eq.equipment_quantity || '';
+
+                    // เพิ่มแถวก่อนปุ่ม "เพิ่มอุปกรณ์"
+                    const addButton = wrapper.querySelector('#add-equipment-btn');
+                    wrapper.insertBefore(newRow, addButton);
+                });
+            } else {
+                // ถ้าไม่มีอุปกรณ์ ให้สร้างแถวเปล่า 1 แถว
+                const emptyRow = createEquipmentRow();
+                const addButton = wrapper.querySelector('#add-equipment-btn');
+                wrapper.insertBefore(emptyRow, addButton);
+            }
+
             $('#editRoomModal').modal('show');
         }
+
+        // ฟังก์ชันสร้างแถวอุปกรณ์
+        function createEquipmentRow() {
+            const row = document.createElement('div');
+            row.classList.add('row', 'g-2', 'mb-2', 'equipment-row');
+            row.innerHTML = `
+    <div class="col-md-4">
+        <input type="text" name="equipment_names[]" class="form-control"
+            placeholder="ชื่ออุปกรณ์" required>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="equipment_notes[]" class="form-control"
+            placeholder="รายละเอียด" required>
+    </div>
+    <div class="col-md-3">
+        <input type="number" name="equipment_quantities[]" class="form-control"
+            placeholder="จำนวน" min="1" required>
+    </div>
+    <div class="col-md-1 d-flex align-items-start">
+        <button type="button" class="btn btn-danger btn-sm remove-equipment">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+`;
+            return row;
+        }
+
+        // Event Listeners สำหรับจัดการอุปกรณ์
+        document.addEventListener('DOMContentLoaded', function() {
+            const wrapper = document.getElementById('equipment-wrapper');
+            const addBtn = document.getElementById('add-equipment-btn');
+
+            // เพิ่มอุปกรณ์
+            if (addBtn) {
+                addBtn.addEventListener('click', function() {
+                    const newRow = createEquipmentRow();
+                    wrapper.insertBefore(newRow, addBtn);
+                });
+            }
+
+            // ลบอุปกรณ์
+            wrapper.addEventListener('click', function(e) {
+                if (e.target.closest('.remove-equipment')) {
+                    const equipmentRows = wrapper.querySelectorAll('.equipment-row');
+                    if (equipmentRows.length > 1) {
+                        e.target.closest('.equipment-row').remove();
+                    } else {
+                        // ถ้าเหลือแถวเดียว ให้เคลียร์ค่าแทนการลบ
+                        const row = e.target.closest('.equipment-row');
+                        row.querySelectorAll('input').forEach(input => input.value = '');
+                    }
+                }
+            });
+        });
 
         // Handle Add Room Form Submission
         document.getElementById('addRoomForm').addEventListener('submit', function(e) {
@@ -249,6 +353,7 @@
                 });
         });
 
+        // Handle Edit Room Form Submission
         document.getElementById('editRoomForm').addEventListener('submit', function(e) {
             e.preventDefault();
 

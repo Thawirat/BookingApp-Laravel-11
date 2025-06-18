@@ -141,10 +141,10 @@
                             <a href="{{ route('room-types.index') }}" class="nav-link text-gray-700"><i
                                     class="fas fa-tags me-2"></i> จัดการประเภทห้อง</a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ route('equipments.index') }}" class="nav-link text-gray-700"><i
                                     class="fas fa-boxes me-2"></i> จัดการวัสดุ/อุปกรณ์</a>
-                        </li>
+                        </li> --}}
                     @endif
                 @endif
                 @if (Auth::check())
