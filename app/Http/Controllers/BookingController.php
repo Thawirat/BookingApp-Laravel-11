@@ -56,8 +56,7 @@ class BookingController extends Controller
     public function showBookingForm($id)
     {
         try {
-            $room = Room::with('building')->findOrFail($id);
-
+            $room = Room::with(['building', 'equipments'])->findOrFail($id);
             // Get booked time slots
             $bookedTimeSlots = Booking::where('room_id', $id)
                 ->whereIn('status_id', [1, 2, 3])

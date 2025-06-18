@@ -101,6 +101,23 @@
                                         <label class="form-label fw-semibold">วัตถุประสงค์</label>
                                         <textarea name="reason" class="form-control" rows="3"></textarea>
                                     </div>
+                                    <div class="border-0 mt-4 mb-3">
+                                        <div class="fw-bold">อุปกรณ์ในห้อง</div>
+                                        @if ($room->equipments->isEmpty())
+                                            <p>ไม่มีอุปกรณ์ในห้องนี้</p>
+                                        @else
+                                            <ul class="list-group list-group-flush">
+                                                @foreach ($room->equipments as $equipment)
+                                                    <li
+                                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                                        {{ $equipment->name }}
+                                                        <span class="badge bg-primary rounded-pill">
+                                                            จำนวน{{ $equipment->quantity }} รายการ</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </div>
                                     <div class="col-md-12">
                                         <label class="form-label fw-semibold">รายละเอียดเพิ่มเติม(ถ้ามี)</label>
                                         <textarea name="booker_info" class="form-control" rows="3"
@@ -182,7 +199,8 @@
                                 </div>
                                 <!-- Action Buttons -->
                                 <div class="d-flex justify-content-between">
-                                    <button type="button" class="btn btn-danger px-4" onclick="window.location.href='{{ route('rooms.index') }}'">
+                                    <button type="button" class="btn btn-danger px-4"
+                                        onclick="window.location.href='{{ route('rooms.index') }}'">
                                         ยกเลิก
                                     </button>
                                     <button type="submit" class="btn btn-success px-4">
@@ -206,6 +224,7 @@
         .litepicker .day-item[data-tooltip] {
             position: relative;
         }
+
         .litepicker .day-item[data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -220,6 +239,7 @@
             white-space: nowrap;
             z-index: 10;
         }
+
         /* Holiday styling */
         .litepicker .day-item.is-holiday {
             background-color: #fef08a !important;
@@ -227,18 +247,21 @@
             font-weight: bold;
 
         }
+
         /* Booked days styling */
         .litepicker .day-item.is-booked {
             background-color: #bfdbfe !important;
             color: #1e40af !important;
 
         }
+
         /* Selected dates */
         .litepicker .day-item.is-start-date,
         .litepicker .day-item.is-end-date {
             background-color: #FFC107 !important;
             color: #333 !important;
         }
+
         .litepicker .day-item.is-in-range {
             background-color: rgba(255, 193, 7, 0.2) !important;
             color: #333 !important;
@@ -394,7 +417,12 @@
                     const totalMinutes = Math.floor(diffMs / (1000 * 60));
 
                     if (totalMinutes <= 0) {
-                        return { days: 0, hours: 0, minutes: 0, totalMinutes: 0 };
+                        return {
+                            days: 0,
+                            hours: 0,
+                            minutes: 0,
+                            totalMinutes: 0
+                        };
                     }
 
                     const days = Math.floor(totalMinutes / (24 * 60));
@@ -411,7 +439,12 @@
 
                 // แปลงเวลาเป็นรูปแบบ "X วัน Y ชั่วโมง Z นาที"
                 formatDurationDisplay: (duration) => {
-                    const { days, hours, minutes, totalMinutes } = duration;
+                    const {
+                        days,
+                        hours,
+                        minutes,
+                        totalMinutes
+                    } = duration;
 
                     if (totalMinutes <= 0) {
                         return 'กรุณาเลือกเวลา';
@@ -441,7 +474,12 @@
 
                 // แปลงเวลาเป็นรูปแบบย่อ เช่น "2d 5h 30m"
                 formatDurationShort: (duration) => {
-                    const { days, hours, minutes, totalMinutes } = duration;
+                    const {
+                        days,
+                        hours,
+                        minutes,
+                        totalMinutes
+                    } = duration;
 
                     if (totalMinutes <= 0) {
                         return '-';
@@ -470,7 +508,12 @@
 
                 // คำนวณเวลาสำหรับแสดงผลแบบละเอียด
                 getDetailedDurationInfo: (duration) => {
-                    const { days, hours, minutes, totalMinutes } = duration;
+                    const {
+                        days,
+                        hours,
+                        minutes,
+                        totalMinutes
+                    } = duration;
 
                     const totalHours = Math.floor(totalMinutes / 60);
                     const totalDays = Math.floor(totalMinutes / (24 * 60));
@@ -523,7 +566,7 @@
                     while (currentTime <= '22:00') {
                         const endTime = utils.addHours(currentTime, 1);
                         const isAvailable = !timeManager.isTimeSlotBooked(currentTime, endTime,
-                        bookedSlots);
+                            bookedSlots);
 
                         if (isAvailable) {
                             allSlots.push({
@@ -661,7 +704,8 @@
                         elements.totalDays.innerText = detailedInfo.formatted;
 
                         // เพิ่ม tooltip แสดงข้อมูลเพิ่มเติม
-                        elements.totalDays.title = `รวม: ${detailedInfo.totalMinutes} นาที (${detailedInfo.totalHours} ชั่วโมง)`;
+                        elements.totalDays.title =
+                            `รวม: ${detailedInfo.totalMinutes} นาที (${detailedInfo.totalHours} ชั่วโมง)`;
 
                         // เพิ่ม class สำหรับการแสดงผลที่แตกต่างกัน
                         elements.totalDays.className = 'duration-display';
@@ -680,7 +724,12 @@
 
                     // Log สำหรับ debugging
                     console.log('Duration calculated:', {
-                        input: { startDate, startTime, endDate, endTime },
+                        input: {
+                            startDate,
+                            startTime,
+                            endDate,
+                            endTime
+                        },
                         result: detailedInfo
                     });
                 },
@@ -777,7 +826,8 @@
 
                     // ตรวจสอบระยะเวลาขั้นต่ำ (ถ้าต้องการ)
                     if (duration.totalMinutes < 60) {
-                        const confirmResult = confirm('ระยะเวลาการจองน้อยกว่า 1 ชั่วโมง ต้องการดำเนินการต่อหรือไม่?');
+                        const confirmResult = confirm(
+                            'ระยะเวลาการจองน้อยกว่า 1 ชั่วโมง ต้องการดำเนินการต่อหรือไม่?');
                         if (!confirmResult) {
                             return false;
                         }
