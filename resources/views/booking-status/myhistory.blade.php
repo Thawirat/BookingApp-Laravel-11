@@ -63,7 +63,7 @@
                         @foreach ($bookings as $booking)
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                <td class="text-center">{{ $booking->id }}</td>
+                                <td class="text-center">{{ $booking->ref_number }}</td>
                                 <td class="text-center">{{ $booking->room_name ?? '-' }}</td>
                                 <td class="text-center">{{ $booking->building_name ?? '-' }}</td>
                                 <td class="text-center">

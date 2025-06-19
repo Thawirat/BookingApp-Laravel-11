@@ -86,7 +86,7 @@
 
 <body>
     <div class="doc-number">
-        เลขที่หนังสือ: ศธ. {{ date('Y') }}/{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}
+        เลขที่หนังสือ: ศธ. {{ date('Y') }}/{{ $booking->booking_id}}
     </div>
     <div class="logo">
         <img src="{{ public_path('images/snru.png') }}" alt="University Logo">
@@ -98,7 +98,7 @@
         <div class="grid">
             <div class="box">
                 <ul>
-                    <li><strong>รหัสการจอง:</strong> {{ $booking->id }}</li>
+                    <li><strong>รหัสการจอง:</strong> {{ $booking->booking_id }}</li>
                     <li><strong>วันที่จอง:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}</li>
                     <li><strong>เวลา:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}</li>
                     <li><strong>วันที่สิ้นสุด:</strong> {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}</li>

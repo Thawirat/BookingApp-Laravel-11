@@ -71,7 +71,7 @@
             @foreach ($bookings as $index => $booking)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ $booking->id }}</td>
+                    <td>{{ $booking->booking_id }}</td>
                     <td>{{ $booking->room_name ?? '-' }}</td>
                     <td>{{ $booking->building_name ?? '-' }}</td>
                     <td>{{ \Carbon\Carbon::parse($booking->created_at)->addYears(543)->format('d/m/Y') }}</td>

@@ -35,7 +35,7 @@
     <h2 style="text-align: center;">รายละเอียดการจองห้อง</h2>
 
     <div class="section">
-        <div><span class="label">รหัสการจอง:</span> {{ $booking->id }}</div>
+        <div><span class="label">รหัสการจอง:</span> {{ $booking->booking_id }}</div>
         <div><span class="label">ชื่อห้อง:</span> {{ $booking->room_name ?? '-' }}</div>
         <div><span class="label">อาคาร:</span> {{ $booking->building_name ?? '-' }}</div>
         <div><span class="label">วันที่จอง:</span> {{ \Carbon\Carbon::parse($booking->created_at)->addYears(543)->format('d/m/Y') }}</div>

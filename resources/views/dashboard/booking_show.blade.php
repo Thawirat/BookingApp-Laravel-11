@@ -4,7 +4,7 @@
     <div class="container mt-4">
         <h2>รายละเอียดการจอง</h2>
         <div class="card p-4">
-            <p><strong>รหัสการจอง:</strong> {{ $booking->id ?? '-' }}</p>
+            <p><strong>รหัสการจอง:</strong> {{ $booking->booking_id ?? '-' }}</p>
             <p><strong>ชื่อผู้จอง:</strong> {{ $booking->external_name ?? '-' }}</p>
             <p><strong>อีเมล:</strong> {{ $booking->external_email ?? '-' }}</p>
             <p><strong>เบอร์โทร:</strong> {{ $booking->external_phone ?? '-' }}</p>

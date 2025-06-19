@@ -100,7 +100,7 @@
                                                 <td class="text-center">
                                                     {{ ($bookings->currentPage() - 1) * $bookings->perPage() + $loop->iteration }}
                                                 </td>
-                                                <td class="text-center fw-bold">{{ $booking->id }}</td>
+                                                <td class="text-center fw-bold">{{ $booking->ref_number }}</td>
                                                 <td class="text-center">
                                                     <div class="fw-bold">{{ $booking->external_name }}</div>
                                                     <small class="text-muted">{{ $booking->external_email }}</small>

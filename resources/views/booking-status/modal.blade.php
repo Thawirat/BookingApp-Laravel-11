@@ -16,7 +16,7 @@
                     <div class="col-md-6">
                         <h6 class="fw-semibold text-primary border-bottom pb-1 mb-3">ข้อมูลการจอง</h6>
                         <ul class="list-unstyled small">
-                            <li><strong>รหัสการจอง:</strong> {{ $booking->id }}</li>
+                            <li><strong>รหัสการจอง:</strong> {{ $booking->booking_id }}</li>
                             <li><strong>วันที่จอง:</strong>
                                 {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}</li>
                             <li><strong>เวลา:</strong>
