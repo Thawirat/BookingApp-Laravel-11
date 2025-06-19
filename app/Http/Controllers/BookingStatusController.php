@@ -60,6 +60,7 @@ class BookingStatusController extends Controller
         // บันทึกลง booking_histories
         BookingHistory::create([
             'booking_id'         => $booking->id,
+            'ref_number'         => $booking->booking_id,
             'user_id'            => $booking->user_id,
             'external_name'      => $booking->external_name,
             'external_email'     => $booking->external_email,

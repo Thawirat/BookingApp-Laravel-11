@@ -28,6 +28,7 @@ class Booking_dbController extends Controller
 
             DB::table('booking_history')->insert([
                 'booking_id' => $booking->id,
+                'ref_number' => $booking->booking_id,
                 'user_id' => $booking->user_id,
                 'external_name' => $booking->external_name,
                 'external_email' => $booking->external_email,

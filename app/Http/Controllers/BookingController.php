@@ -203,8 +203,7 @@ class BookingController extends Controller
                 Log::info('No payment slip provided in the request.');
                 $booking->payment_status = 'unpaid';
             }
-            $latest = Booking::max('id') + 1;
-            $booking->booking_id = str_pad(Booking::max('id') + 1, 6, '0', STR_PAD_LEFT);
+            $booking->booking_id = $this->generateBookingId();
             $booking->save();
 
             return redirect()->route('booking.index')->with('success', 'การจองห้องสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันการจอง');
@@ -213,6 +212,21 @@ class BookingController extends Controller
             return back()->with('error', 'เกิดข้อผิดพลาดในการจอง: ' . $e->getMessage())->withInput();
         }
     }
+
+    private function generateBookingId()
+    {
+        $lastBookingId = Booking::withTrashed()->max('booking_id');
+
+        if (!$lastBookingId) {
+            return '000001';
+        }
+
+        $lastNumber = intval($lastBookingId);
+        $newNumber = str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
+
+        return $newNumber;
+    }
+
 
     public function show($id)
     {

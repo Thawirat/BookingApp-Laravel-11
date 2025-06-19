@@ -136,7 +136,7 @@
                                                 </td>
                                             </tr>
                                             @include('booking-status.modal')
-                                            @include('booking.payment-slip')
+                                            {{-- @include('booking.payment-slip') --}}
                                         @empty
                                             <tr>
                                                 <td colspan="8" class="text-center py-4 text-muted">

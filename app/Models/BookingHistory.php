@@ -13,6 +13,7 @@ class BookingHistory extends Model
 
     protected $fillable = [
     'booking_id',
+    'ref_number',
     'user_id',
     'external_name',
     'external_email',

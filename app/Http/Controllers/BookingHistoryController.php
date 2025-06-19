@@ -13,6 +13,7 @@ class BookingHistoryController extends Controller
         $bookingHistory = new BookingHistory;
         $bookingHistory->fill([
             'booking_id' => $booking->id,
+            'ref_number' => $booking->booking_id,
             'user_id' => $booking->user_id,
             'room_id' => $booking->room_id,
             'external_name' => $booking->external_name,
@@ -23,8 +24,8 @@ class BookingHistoryController extends Controller
             'end_time' => $booking->booking_end,
             'purpose' => $booking->reason,
             'status_id' => 6,
-            // 'payment_status' => 'completed',
-            // 'amount' => $booking->total_price,
+            'payment_status' => 'completed',
+            'amount' => $booking->total_price,
             'moved_to_history_at' => now(),
         ]);
         $bookingHistory->save();
