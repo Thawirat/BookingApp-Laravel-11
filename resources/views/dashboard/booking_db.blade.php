@@ -42,19 +42,38 @@
                     </div>
                 </div>
             </div>
+            <form action="{{ route('booking_db') }}" method="GET" class="row g-2 mb-3">
+                <div class="col-md-3">
+                    <input class="form-control" type="text" name="search" value="{{ request('search') }}"
+                        placeholder="ชื่อ/อีเมล/รหัสการจอง...">
+                </div>
+                <div class="btn-group col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> ค้นหา</button>
+                    <a href="{{ route('booking_db') }}" class="btn btn-secondary">ล้างการค้นหา</a>
+                </div>
+                <div class="col-md-2">
+                    <select name="status_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">สถานะทั้งหมด</option>
+                        <option value="3" {{ request('status_id') == '3' ? 'selected' : '' }}>รอดำเนินการ</option>
+                        <option value="4" {{ request('status_id') == '4' ? 'selected' : '' }}>อนุมัติแล้ว</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="sort" class="form-select" onchange="this.form.submit()">
+                        <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>เรียงล่าสุด</option>
+                        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>เรียงเก่าสุด</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="booking_date" value="{{ request('booking_date') }}" class="form-control"
+                        onchange="this.form.submit()">
+                </div>
+            </form>
             <div class="row">
                 <div class="col-12">
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                             <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-list me-2"></i> รายการการจอง</h5>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <button class="btn btn-outline-primary btn-sm" id="openCalendar"><i
-                                    class="fas fa-calendar-alt"></i> เลือกวันที่</button>
-                            <input type="text" id="datepicker" class="form-control"
-                                style="max-width: 150px; opacity: 0; position: absolute;">
-                            <a href="{{ route('booking_history') }}" class="btn btn-outline-secondary btn-sm"><i
-                                    class="fas fa-history"></i> ประวัติการจอง</a>
                         </div>
                         <div class="card-body">
                             @if (session('success'))
