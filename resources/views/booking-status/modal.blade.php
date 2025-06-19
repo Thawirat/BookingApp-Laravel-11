@@ -65,6 +65,7 @@
                         <ul class="list-unstyled small">
                             <li><strong>อาคาร:</strong> {{ $booking->building_name }}</li>
                             <li><strong>ห้อง:</strong> {{ $booking->room_name }}</li>
+                            {{-- <li><strong>รายละเอียด:</strong> {{$booking->room_id->room_details}}</li> --}}
                         </ul>
                     </div>
                 </div>

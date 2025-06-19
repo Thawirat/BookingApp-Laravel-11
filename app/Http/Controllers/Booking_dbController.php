@@ -170,18 +170,25 @@ class Booking_dbController extends Controller
     {
         $now = Carbon::now();
 
-        // ค้นหาการจองที่สิ้นสุดแล้วแต่ยังไม่ได้ทำเครื่องหมายว่าเสร็จสิ้น
         $pastBookings = Booking::where('booking_end', '<', $now)
-            ->whereNotIn('status_id', [5, 6]) // ไม่รวมที่ยกเลิกหรือเสร็จสิ้นแล้ว
+            ->whereNotIn('status_id', [5, 6])
             ->get();
 
         foreach ($pastBookings as $booking) {
-            // อัปเดตสถานะเป็น "ดำเนินการเสร็จสิ้น" (status_id = 6)
-            $booking->status_id = 6;
+            // ปรับสถานะ
+            if ($booking->status_id == 3) {
+                $booking->status_id = 5; // ยกเลิก
+            } elseif ($booking->status_id == 4) {
+                $booking->status_id = 6; // เสร็จสิ้น
+            } else {
+                continue; // ถ้าไม่เข้าเงื่อนไข ข้าม
+            }
             $booking->save();
 
             // ย้ายไปยังประวัติการจอง
             $this->moveToHistory($booking->id);
+            $historyController = new BookingHistoryController;
+            $historyController->addBookingToHistory($booking);
         }
     }
 

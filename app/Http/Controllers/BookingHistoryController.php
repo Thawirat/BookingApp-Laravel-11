@@ -10,22 +10,32 @@ class BookingHistoryController extends Controller
 {
     public function addBookingToHistory($booking)
     {
+        // ตรวจสอบว่า booking นี้มีสถานะอะไร
+        if ($booking->status_id == 3) {
+            $newStatusId = 5; // ยกเลิก
+        } elseif ($booking->status_id == 4) {
+            $newStatusId = 6; // เสร็จสิ้น
+        } else {
+            // ถ้าไม่ใช่สถานะที่ต้องย้ายไป history ให้หยุดการทำงาน
+            return;
+        }
+
         $bookingHistory = new BookingHistory;
         $bookingHistory->fill([
-            'booking_id' => $booking->id,
-            'ref_number' => $booking->booking_id,
-            'user_id' => $booking->user_id,
-            'room_id' => $booking->room_id,
-            'external_name' => $booking->external_name,
-            'external_email' => $booking->external_email,
-            'external_phone' => $booking->external_phone,
-            'booking_date' => now(),
-            'start_time' => $booking->booking_start,
-            'end_time' => $booking->booking_end,
-            'purpose' => $booking->reason,
-            'status_id' => 6,
-            'payment_status' => 'completed',
-            'amount' => $booking->total_price,
+            'booking_id'        => $booking->id,
+            'ref_number'        => $booking->booking_id,
+            'user_id'           => $booking->user_id,
+            'room_id'           => $booking->room_id,
+            'external_name'     => $booking->external_name,
+            'external_email'    => $booking->external_email,
+            'external_phone'    => $booking->external_phone,
+            'booking_date'      => now(),
+            'start_time'        => $booking->booking_start,
+            'end_time'          => $booking->booking_end,
+            'purpose'           => $booking->reason,
+            'status_id'         => $newStatusId,
+            'payment_status'    => 'completed',
+            'amount'            => $booking->total_price,
             'moved_to_history_at' => now(),
         ]);
         $bookingHistory->save();
