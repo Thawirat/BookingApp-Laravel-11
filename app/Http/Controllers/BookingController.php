@@ -95,7 +95,6 @@ class BookingController extends Controller
                     $bookedDetails[$formattedDate] = $bookingInfo;
                 }
             }
-
             // Get holidays
             $holidaysWithNames = $this->holidays;
 
@@ -204,7 +203,8 @@ class BookingController extends Controller
                 Log::info('No payment slip provided in the request.');
                 $booking->payment_status = 'unpaid';
             }
-
+            $latest = Booking::max('id') + 1;
+            $booking->booking_id = str_pad(Booking::max('id') + 1, 6, '0', STR_PAD_LEFT);
             $booking->save();
 
             return redirect()->route('booking.index')->with('success', 'การจองห้องสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันการจอง');

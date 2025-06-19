@@ -162,19 +162,19 @@ class Booking_dbController extends Controller
         }
     }
 
-    public function confirmPayment(UpdateBookingPaymentRequest $request, $id)
-    {
-        $booking = Booking::findOrFail($id);
+    // public function confirmPayment(UpdateBookingPaymentRequest $request, $id)
+    // {
+    //     $booking = Booking::findOrFail($id);
 
-        if ($request->hasFile('payment_slip')) {
-            $booking->payment_slip = $request->file('payment_slip')->store('payment_slips', 'public');
-        }
+    //     if ($request->hasFile('payment_slip')) {
+    //         $booking->payment_slip = $request->file('payment_slip')->store('payment_slips', 'public');
+    //     }
 
-        $booking->payment_status = $request->payment_status;
-        $booking->verified_at = now();
-        $booking->save();
+    //     $booking->payment_status = $request->payment_status;
+    //     $booking->verified_at = now();
+    //     $booking->save();
 
-        return redirect()->route('booking_db')
-            ->with('success', 'สถานะการชำระเงินถูกอัปเดตเรียบร้อยแล้ว');
-    }
+    //     return redirect()->route('booking_db')
+    //         ->with('success', 'สถานะการชำระเงินถูกอัปเดตเรียบร้อยแล้ว');
+    // }
 }

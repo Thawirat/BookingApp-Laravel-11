@@ -23,8 +23,8 @@ class BookingHistoryController extends Controller
             'end_time' => $booking->booking_end,
             'purpose' => $booking->reason,
             'status_id' => 6,
-            'payment_status' => 'completed',
-            'amount' => $booking->total_price,
+            // 'payment_status' => 'completed',
+            // 'amount' => $booking->total_price,
             'moved_to_history_at' => now(),
         ]);
         $bookingHistory->save();

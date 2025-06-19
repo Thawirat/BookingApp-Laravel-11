@@ -39,6 +39,7 @@ class Booking extends Model
     }
 
     protected $fillable = [
+        'booking_id',
         'user_id',
         'external_name',
         'external_email',
@@ -62,7 +63,18 @@ class Booking extends Model
         'participant_count',
         'booker_info',
         'delete_at',
-
-
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($booking) {
+            // สร้าง booking_id ถ้ายังไม่มี
+            if (empty($booking->booking_id)) {
+                $latestId = Booking::max('id') + 1;
+                $booking->booking_id = str_pad($latestId, 6, '0', STR_PAD_LEFT);
+            }
+        });
+    }
 }
