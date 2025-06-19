@@ -19,7 +19,7 @@ class BookingStatusController extends Controller
         $date = $request->input('booking_date');
 
         // ดึงรายการจองของผู้ใช้พร้อมความสัมพันธ์
-        $query = Booking::with(['room', 'building'])
+        $query = Booking::with(['room.equipments', 'building'])
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc');
 

@@ -12,55 +12,48 @@
     <div class="calendar-grid">
         @foreach ($calendarData as $week)
             @foreach ($week as $day)
-                <div class="calendar-day {{ $day['today'] ? 'today' : '' }} {{ $day['currentMonth'] ? '' : 'other-month' }}">
+                <div
+                    class="calendar-day {{ $day['today'] ? 'today' : '' }} {{ $day['currentMonth'] ? '' : 'other-month' }}">
                     <div class="day-header">
                         <span class="day-number">{{ $day['day'] }}</span>
                     </div>
 
                     <div class="day-content">
-                        @foreach ($allBookings as $booking)
+                        @php
+                            $bookingCount = 0;
+                            $maxVisible = 3;
+                        @endphp
+                        @foreach ($allBookings as $index => $booking)
                             @php
                                 $startDate = \Carbon\Carbon::parse($booking->booking_start)->startOfDay();
                                 $endDate = \Carbon\Carbon::parse($booking->booking_end)->startOfDay();
                                 $currentDate = \Carbon\Carbon::parse($day['date'])->startOfDay();
-
                                 $isInRange = $currentDate->between($startDate, $endDate);
                                 $isSameDay = $startDate->equalTo($endDate);
-                                $isVisible = !in_array($booking->status_id, [1, 2]);
+                                $isVisible = !in_array($booking->status_id, [1, 2,5,6]);
                                 $isStart = $currentDate->equalTo($startDate);
                                 $isEnd = $currentDate->equalTo($endDate);
                                 $isMiddle = $isInRange && !$isStart && !$isEnd;
                             @endphp
 
                             @if ($isVisible && $isInRange)
-                                @if ($isSameDay)
-                                    <div class="event event-dot"
-                                         style="background-color: {{ $booking->statusColor }};"
-                                         data-bs-toggle="tooltip"
-                                         data-bs-custom-class="custom-tooltip"
-                                         title="{{ $booking->room_name }} ({{ $booking->external_name }})
-                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} -
-                                                {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}">
-                                        <span class="event-title">{{ $booking->room_name }}</span>
-                                    </div>
-                                @else
-                                    <div class="event event-bar
-                                         {{ $isStart ? 'event-start' : '' }}
-                                         {{ $isEnd ? 'event-end' : '' }}
-                                         {{ $isMiddle ? 'event-middle' : '' }}"
-                                         style="background-color: {{ $booking->statusColor }};"
-                                         data-bs-toggle="tooltip"
-                                         data-bs-custom-class="custom-tooltip"
-                                         title="{{ $booking->room_name }} ({{ $booking->external_name }})
-                                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('d M H:i') }} -
-                                                {{ \Carbon\Carbon::parse($booking->booking_end)->format('d M H:i') }}">
-                                        @if ($isStart)
-                                            <span class="event-title">{{ $booking->room_name }}</span>
-                                        @endif
-                                    </div>
-                                @endif
+                                @php $bookingCount++; @endphp
+
+                                <div class="event {{ $bookingCount > $maxVisible ? 'd-none more-booking' : '' }}"
+                                    style="background-color: {{ $booking->statusColor }};" data-bs-toggle="tooltip"
+                                    data-bs-custom-class="custom-tooltip"
+                                    title="{{ $booking->room_name }} ({{ $booking->external_name }})
+                    {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} -
+                    {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}">
+                                    <span class="event-title">{{ $booking->room_name }}</span>
+                                </div>
                             @endif
                         @endforeach
+
+                        @if ($bookingCount > $maxVisible)
+                            <button class="btn btn-sm btn-link p-0 mt-1 show-more-bookings">+ ดูการจองอีก
+                                {{ $bookingCount - $maxVisible }} รายการ</button>
+                        @endif
                     </div>
                 </div>
             @endforeach
@@ -74,7 +67,7 @@
         border-radius: 8px;
         padding: 15px;
         font-family: 'Kanit', sans-serif;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .calendar-header {
@@ -310,31 +303,38 @@
 
     /* ปรับสีให้สวยขึ้น */
     .event {
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Initialize tooltips with custom options
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-        new bootstrap.Tooltip(tooltipTriggerEl, {
-            html: true,
-            placement: 'top',
-            container: 'body'
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips with custom options
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl, {
+                html: true,
+                placement: 'top',
+                container: 'body'
+            });
+        });
+        document.querySelectorAll('.show-more-bookings').forEach(button => {
+            button.addEventListener('click', function() {
+                const parent = button.closest('.calendar-day');
+                const hiddenBookings = parent.querySelectorAll('.more-booking');
+                hiddenBookings.forEach(item => item.classList.remove('d-none'));
+                button.remove();
+            });
+        });
+        // Add click event for events
+        document.querySelectorAll('.event').forEach(event => {
+            event.addEventListener('click', function() {
+                // Show more details or open modal
+                const tooltip = bootstrap.Tooltip.getInstance(event);
+                if (tooltip) {
+                    tooltip.hide();
+                }
+            });
         });
     });
-
-    // Add click event for events
-    document.querySelectorAll('.event').forEach(event => {
-        event.addEventListener('click', function() {
-            // Show more details or open modal
-            const tooltip = bootstrap.Tooltip.getInstance(event);
-            if (tooltip) {
-                tooltip.hide();
-            }
-        });
-    });
-});
 </script>

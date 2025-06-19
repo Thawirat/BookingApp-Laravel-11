@@ -43,15 +43,7 @@ class BookingHistoryController extends Controller
 
     public function index(Request $request)
     {
-        $query = DB::table('booking_history')
-            ->leftJoin('status', 'booking_history.status_id', '=', 'status.status_id')
-            ->leftJoin('users', 'booking_history.user_id', '=', 'users.id')
-            ->select(
-                'booking_history.*',
-                'status.status_name',
-                'users.name as user_name'
-            );
-
+         $query = BookingHistory::with(['room.equipments', 'user', 'status']);
         // 🔍 ค้นหาข้อมูล
         if ($request->filled('search')) {
             $search = $request->search;

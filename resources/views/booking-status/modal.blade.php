@@ -26,7 +26,21 @@
                             <li><strong>วันที่สิ้นสุด:</strong>
                                 {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}</li>
                             <li><strong>วัตถุประสงค์:</strong> {{ $booking->reason ?? 'ไม่ระบุ' }}</li>
-                            <li><strong>จำนวนผู้เข้าร่วม:</strong> {{ $booking->participant_count ?? 'ไม่ระบุ' }} คน</li>
+                            <li><strong>จำนวนผู้เข้าร่วม:</strong> {{ $booking->participant_count ?? 'ไม่ระบุ' }} คน
+                            </li>
+
+                            <li>
+                                <strong>อุปกรณ์ในห้อง:</strong>
+                                @if ($booking->room && $booking->room->equipments && $booking->room->equipments->count())
+                                    <ul class="ps-3 mb-0">
+                                        @foreach ($booking->room->equipments as $equipment)
+                                            <li>{{ $equipment->name }} ({{ $equipment->quantity }} ชิ้น)</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    ไม่มีอุปกรณ์
+                                @endif
+                            </li>
                             <li><strong>รายละเอียดเพิ่มเติม:</strong> {{ $booking->booker_info ?? 'ไม่ระบุ' }}</li>
                             {{-- <li><strong>สถานะการชำระเงิน:</strong>
                                 <span
@@ -65,14 +79,17 @@
                         <ul class="list-unstyled small">
                             <li><strong>อาคาร:</strong> {{ $booking->building_name }}</li>
                             <li><strong>ห้อง:</strong> {{ $booking->room_name }}</li>
-                            {{-- <li><strong>รายละเอียด:</strong> {{$booking->room_id->room_details}}</li> --}}
+                            @if (!empty($booking->room) && $booking->room->room_details)
+                                <li><strong>ชั้น:</strong> {{ $booking->room->class }}</li>
+                                <li><strong>รายละเอียด:</strong> {{ $booking->room->room_details }}</li>
+                            @endif
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="modal-footer bg-light rounded-bottom-4">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i> ปิด
+                    ปิด
                 </button>
             </div>
         </div>

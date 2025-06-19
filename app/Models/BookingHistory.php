@@ -55,4 +55,6 @@ class BookingHistory extends Model
         return $this->belongsTo(Building::class);
     }
 
+    
+
 }

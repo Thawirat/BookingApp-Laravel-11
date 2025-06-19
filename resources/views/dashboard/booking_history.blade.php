@@ -131,7 +131,7 @@
                                                 @if ($booking->status_id == 5) bg-danger
                                                 @elseif($booking->status_id == 6) bg-primary
                                                 @else bg-secondary @endif">
-                                                        {{ $booking->status_name }}
+                                                        {{ $booking->status->status_name }}
                                                     </span>
                                                 </td>
                                                 <td class="text-center">
