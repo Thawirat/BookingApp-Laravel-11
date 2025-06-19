@@ -87,7 +87,8 @@
                                                 <td class="text-center">
                                                     {{ ($bookings->currentPage() - 1) * $bookings->perPage() + $loop->iteration }}
                                                 </td>
-                                                <td><span class="badge bg-light text-dark">{{ $booking->id }}</span></td>
+                                                <td><span class="badge bg-light text-dark">{{ $booking->booking_id }}</span>
+                                                </td>
                                                 <td><span class="fw-bold">{{ $booking->room_name }}</span></td>
                                                 <td>
                                                     <div class="fw-bold">{{ $booking->external_name }}</div>
@@ -158,48 +159,48 @@
             </div>
         </div>
     </div>
-@endsection
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var datepicker = document.getElementById("datepicker");
-        var modal = document.getElementById('paymentSlipModal{{ $booking->id ?? 'unknown' }}');
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-        var calendar = flatpickr(datepicker, {
-            dateFormat: "Y-m-d",
-            defaultDate: "{{ request('booking_date') }}",
-            onChange: function(selectedDates, dateStr, instance) {
-                if (dateStr) {
-                    window.location.href = `{{ route('booking_db') }}?booking_date=${dateStr}`;
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var datepicker = document.getElementById("datepicker");
+
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            var calendar = flatpickr(datepicker, {
+                dateFormat: "Y-m-d",
+                defaultDate: "{{ request('booking_date') }}",
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (dateStr) {
+                        window.location.href = `{{ route('booking_db') }}?booking_date=${dateStr}`;
+                    }
                 }
-            }
-        });
+            });
 
-        document.getElementById("openCalendar").addEventListener("click", function() {
-            calendar.open(); // เปิด Flatpickr ทันทีเมื่อกดปุ่ม
-        });
-    });
-    // เมื่อ Modal เปิด
-    modal.addEventListener('shown.bs.modal', function() {
-        // ซ่อนเนื้อหาหลักจากโปรแกรมอ่านหน้าจอ
-        document.querySelectorAll('body > *:not([aria-hidden="true"]):not(.modal-backdrop)').forEach(function(
-            el) {
-            if (el !== modal) {
-                el.setAttribute('aria-hidden', 'true');
-            }
-        });
+            document.getElementById("openCalendar").addEventListener("click", function() {
+                calendar.open(); // เปิด Flatpickr ทันทีเมื่อกดปุ่ม
+            });
 
-        // โฟกัสไปที่ปุ่มปิด
-        this.querySelector('[data-bs-dismiss="modal"]').focus();
-    });
+            // ทำงานกับ modal หลายอัน
+            document.querySelectorAll('.modal').forEach(function(modal) {
+                modal.addEventListener('shown.bs.modal', function() {
+                    document.querySelectorAll(
+                        'body > *:not([aria-hidden="true"]):not(.modal-backdrop)').forEach(
+                        function(el) {
+                            if (el !== modal) {
+                                el.setAttribute('aria-hidden', 'true');
+                            }
+                        });
+                    this.querySelector('[data-bs-dismiss="modal"]')?.focus();
+                });
 
-    // เมื่อ Modal ปิด
-    modal.addEventListener('hidden.bs.modal', function() {
-        // คืนสถานะ aria-hidden ของเนื้อหาหลัก
-        document.querySelectorAll('body > *[aria-hidden="true"]').forEach(function(el) {
-            el.removeAttribute('aria-hidden');
+                modal.addEventListener('hidden.bs.modal', function() {
+                    document.querySelectorAll('body > *[aria-hidden="true"]').forEach(function(el) {
+                        el.removeAttribute('aria-hidden');
+                    });
+                });
+            });
         });
-    });
-</script>
+    </script>
+@endsection
