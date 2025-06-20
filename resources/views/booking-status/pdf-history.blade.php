@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
-    <title>รายงานประวัติการจองห้อง</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ประวัติการจองห้อง</title>
     <style>
         @font-face {
             font-family: 'THSarabun';
@@ -18,357 +20,434 @@
             font-style: normal;
         }
 
-        @page {
-            margin: 2cm;
-            size: A4;
-        }
-
         body {
-            font-family: "THSarabun", sans-serif;
-            font-size: 16px;
-            line-height: 1.5;
-            color: #000;
+            font-family: "THSarabun", "TH Sarabun New", Arial, sans-serif;
+            font-size: 14pt;
+            line-height: 1.0;
             margin: 0;
             padding: 0;
+            color: #000;
+        }
+
+        .page-container {
+            box-sizing: border-box;
+            margin: auto;
+            background: #fff;
+            position: relative;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #333;
+            margin-bottom: 15px;
         }
 
-        .university-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 15px;
-            background: #f0f0f0;
-            border: 2px solid #333;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+        .logo img {
+            height: 45px;
+            margin-bottom: 8px;
+        }
+
+        .org-name {
+            font-size: 16pt;
             font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
         }
 
-        h1 {
-            font-size: 22px;
-            font-weight: bold;
-            margin: 10px 0 5px;
-            color: #333;
-        }
-
-        h2 {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 5px 0 15px;
-            color: #555;
-        }
-
-        .report-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .info-section {
-            flex: 1;
-        }
-
-        .info-label {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .info-value {
-            margin-left: 10px;
-            color: #555;
-        }
-
-        table {
+        .doc-header {
+            display: table;
             width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 14px;
+            margin-bottom: 15px;
         }
 
-        th {
-            background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
-            border: 1px solid #666;
-            padding: 12px 8px;
-            font-weight: bold;
-            text-align: center;
-            color: #333;
-        }
-
-        td {
-            border: 1px solid #888;
-            padding: 10px 8px;
+        .doc-header>div {
+            display: table-cell;
             vertical-align: middle;
         }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f0f0f0;
-        }
-
-        .center {
-            text-align: center;
-        }
-
-        .left {
+        .doc-number {
+            font-size: 12pt;
+            font-weight: bold;
+            width: 25%;
             text-align: left;
         }
 
-        .status-approved {
-            color: #28a745;
+        .doc-type {
+            font-size: 16pt;
             font-weight: bold;
-        }
-
-        .status-pending {
-            color: #ffc107;
-            font-weight: bold;
-        }
-
-        .status-cancelled {
-            color: #dc3545;
-            font-weight: bold;
-        }
-
-        .payment-paid {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .payment-pending {
-            color: #ffc107;
-            font-weight: bold;
-        }
-
-        .payment-unpaid {
-            color: #dc3545;
-            font-weight: bold;
-        }
-
-        .summary {
-            margin: 30px 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-        }
-
-        .summary-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-        }
-
-        .summary-item {
             text-align: center;
-            padding: 15px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 3px;
+            width: 50%;
+            color: #000;
         }
 
-        .summary-number {
-            font-size: 24px;
+        .doc-spacer {
+            width: 25%;
+        }
+
+        .dotted-line {
+            border-bottom: 1px solid #666;
+            margin: 12px 0;
+            height: 0;
+
+        }
+
+        .section {
+            margin-bottom: 8px;
+            clear: both;
+        }
+
+        .section-header {
+            display: table;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .section-label {
+            display: table-cell;
             font-weight: bold;
-            color: #007bff;
+            width: 80px;
+            color: #000;
+            vertical-align: top;
         }
 
-        .summary-label {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
+        .section-content {
+            display: table-cell;
+            border-bottom: 1px dotted #999;
+            min-height: 18px;
+            padding-bottom: 2px;
+            padding-left: 5px;
+            width: auto;
         }
 
-        .footer {
-            margin-top: 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+        .content-box {
+            border: 1px solid #000;
+            padding: 12px;
+            margin: 15px 0;
+            background-color: #fff;
+        }
+
+        .content-text {
+            text-align: justify;
+            line-height: 1.0;
+            color: #000;
+        }
+
+        .content-text p {
+            margin: 0 0 8px 0;
+        }
+
+        .equipment-list {
+            margin: 8px 0;
+            padding-left: 18px;
+            list-style: none;
+        }
+
+        .equipment-list li {
+            margin-bottom: 4px;
+            color: #000;
+        }
+
+        .right-align {
+            text-align: right;
+            margin-top: 20px;
+            width: 100%;
         }
 
         .signature-section {
             text-align: center;
-            min-width: 200px;
+            margin-top: 15px;
+            display: inline-block;
+            width: 250px;
         }
 
         .signature-line {
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #000;
             width: 200px;
-            height: 60px;
-            margin: 20px auto 10px;
+            margin: 15px auto 8px auto;
+            height: 0;
         }
 
-        .signature-label {
-            font-weight: bold;
-            margin-bottom: 5px;
+        .contact-details {
+            margin-top: 12px;
+            font-size: 14pt;
+            color: #000;
+            text-align: right;
         }
 
-        .signature-name {
+        .contact-details div {
             margin-bottom: 3px;
         }
 
-        .signature-date {
-            font-size: 14px;
-            color: #666;
+        .footer-section {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dotted #666;
         }
 
-        .print-info {
-            font-size: 12px;
-            color: #888;
-            text-align: left;
+        .footer-title {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
         }
 
-        .page-number {
-            position: fixed;
-            bottom: 1cm;
-            right: 1cm;
-            font-size: 12px;
-            color: #666;
+        .approval-box {
+            border: 1px solid #000;
+            padding: 12px;
+            margin: 15px 0;
+            background-color: #fff;
+            text-align: center;
         }
 
-        /* PDF specific styles */
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
+        .approval-status {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #000;
+        }
 
-            .no-print {
-                display: none;
-            }
+        .checkbox-container {
+            margin-bottom: 15px;
+        }
+
+        .checkbox-item {
+            display: inline-block;
+            margin: 0 30px;
+            font-size: 14pt;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            width: 12px;
+            height: 12px;
+        }
+
+        .approval-signature {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .approval-signature .signature-line {
+            width: 180px;
+            margin: 15px auto 8px auto;
+        }
+
+        /* สำหรับ DomPDF */
+        table {
+            border-collapse: collapse;
+        }
+
+        .table-layout {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-layout td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .content-paragraph {
+            margin-bottom: 8px;
+        }
+
+        .inline-strong {
+            font-weight: bold;
+        }
+
+        .stamp-status {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            /* transform: rotate(-20deg); */
+            font-size: 28pt;
+            font-weight: bold;
+            color: white;
+            padding: 10px 30px;
+            /* border: 3px solid #333; */
+            /* border-radius: 8px; */
+            /* background-color: #004cff; */
+            /* opacity: 0.85; */
+            z-index: 999;
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        <div class="university-logo">LOGO</div>
-        <h1>มหาวิทยาลัยตัวอย่าง</h1>
-        <h2>รายงานประวัติการจองห้อง</h2>
-    </div>
 
-    <div class="report-info">
-        <div class="info-section">
-            <div><span class="info-label">ผู้ใช้งาน:</span><span class="info-value">{{ Auth::user()->name }}</span></div>
-            <div><span class="info-label">รหัสผู้ใช้:</span><span class="info-value">{{ Auth::user()->id ?? 'N/A' }}</span></div>
+    @foreach ($bookings as $booking)
+        @php
+            if ($booking->status_id === 6) {
+                $stampText = 'ดำเนินการเสร็จสิ้น';
+                $stampColor = '#004cff';
+            } elseif ($booking->status_id === 5) {
+                $stampText = 'ยกเลิกการจอง';
+                $stampColor = '#dc3545';
+            } elseif ($booking->status_id === 8) {
+                $stampText = 'ไม่อนุมัติการจอง';
+                $stampColor = '#6c757d';
+            }
+        @endphp
+        <div class="stamp-status" style="background-color: {{ $stampColor }};">
+            {{ $stampText }}
         </div>
-        <div class="info-section">
-            <div><span class="info-label">วันที่พิมพ์:</span><span class="info-value">{{ \Carbon\Carbon::now()->addYears(543)->format('d/m/Y H:i:s') }}</span></div>
-            <div><span class="info-label">เลขที่เอกสาร:</span><span class="info-value">RPT-{{ date('Ymd') }}-{{ str_pad(Auth::id() ?? 1, 4, '0', STR_PAD_LEFT) }}</span></div>
-        </div>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 5%;">ลำดับ</th>
-                <th style="width: 12%;">รหัสการจอง</th>
-                <th style="width: 18%;">ชื่อห้อง</th>
-                <th style="width: 15%;">อาคาร</th>
-                <th style="width: 10%;">วันที่จอง</th>
-                <th style="width: 13%;">เริ่มต้น</th>
-                <th style="width: 13%;">สิ้นสุด</th>
-                <th style="width: 7%;">สถานะ</th>
-                <th style="width: 7%;">ชำระเงิน</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($bookings as $index => $booking)
-                <tr>
-                    <td class="center">{{ $index + 1 }}</td>
-                    <td class="center">{{ $booking->booking_id }}</td>
-                    <td class="left">{{ $booking->room_name ?? '-' }}</td>
-                    <td class="left">{{ $booking->building_name ?? '-' }}</td>
-                    <td class="center">{{ \Carbon\Carbon::parse($booking->created_at)->addYears(543)->format('d/m/Y') }}</td>
-                    <td class="center">{{ \Carbon\Carbon::parse($booking->booking_start)->addYears(543)->format('d/m/Y H:i') }}</td>
-                    <td class="center">{{ \Carbon\Carbon::parse($booking->booking_end)->addYears(543)->format('d/m/Y H:i') }}</td>
-                    <td class="center">
-                        @php
-                            $statusClass = [
-                                'approved' => 'status-approved',
-                                'pending' => 'status-pending',
-                                'cancelled' => 'status-cancelled'
-                            ][$booking->status->status_name ?? ''] ?? '';
-                        @endphp
-                        <span class="{{ $statusClass }}">{{ $booking->status->status_name ?? '-' }}</span>
-                    </td>
-                    <td class="center">
-                        @php
-                            $paymentData = [
-                                'paid' => ['text' => 'ชำระแล้ว', 'class' => 'payment-paid'],
-                                'pending' => ['text' => 'รอตรวจสอบ', 'class' => 'payment-pending'],
-                                'unpaid' => ['text' => 'ยังไม่ชำระ', 'class' => 'payment-unpaid'],
-                                'cancelled' => ['text' => 'ยกเลิก', 'class' => 'payment-cancelled']
-                            ][$booking->payment_status] ?? ['text' => 'ไม่ทราบ', 'class' => ''];
-                        @endphp
-                        <span class="{{ $paymentData['class'] }}">{{ $paymentData['text'] }}</span>
-                    </td>
-                </tr>
-            @endforeach
-            @if(count($bookings) == 0)
-                <tr>
-                    <td colspan="9" class="center" style="padding: 30px; color: #666; font-style: italic;">
-                        ไม่พบข้อมูลการจองห้อง
-                    </td>
-                </tr>
-            @endif
-        </tbody>
-    </table>
-
-    <div class="summary">
-        <div class="summary-title">สรุปข้อมูลการจอง</div>
-        <div class="summary-grid">
-            <div class="summary-item">
-                <div class="summary-number">{{ count($bookings) }}</div>
-                <div class="summary-label">จำนวนการจองทั้งหมด</div>
+        <div class="page-container">
+            <div style="text-align: right; font-size: 12pt; font-weight: bold; margin: 15px 25px 5px 0;">
+                <span class="inline-strong">รหัสการจอง:</span>
+                {{ \Carbon\Carbon::now()->format('Y') + 543 }}/{{ $booking->ref_number }}
             </div>
-            <div class="summary-item">
-                <div class="summary-number">{{ collect($bookings)->where('payment_status', 'paid')->count() }}</div>
-                <div class="summary-label">ชำระเงินแล้ว</div>
+            <div class="header">
+                <div class="logo">
+                    <img src="{{ public_path('images/snru.png') }}" alt="University Logo">
+                </div>
+                <div class="org-name">มหาวิทยาลัยราชภัฏสกลนคร</div>
             </div>
-            <div class="summary-item">
-                <div class="summary-number">{{ collect($bookings)->where('payment_status', 'pending')->count() }}</div>
-                <div class="summary-label">รอตรวจสอบ</div>
+            <div class="dotted-line"></div>
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-label">ส่วนราชการ</div>
+                    <div class="section-content">{{ $booking->external_address ?? '' }}</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-label">ที่</div>
+                    <div class="section-content"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-label">เรื่อง</div>
+                    <div class="section-content">ขออนุญาตใช้ {{ $booking->room_name ?? '' }}</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-label">วันที่</div>
+                    <div class="section-content">
+                        {{ \Carbon\Carbon::now()->format('d/m/') . (\Carbon\Carbon::now()->format('Y') + 543) }}
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-label">เรียน</div>
+                    <div class="section-content"></div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <div class="content-text">
+                    <div class="content-paragraph">
+                        <span class="inline-strong">ข้าพเจ้า</span>
+                        {{ $booking->external_name ?? '.............................' }}
+                        <span class="inline-strong">สังกัด</span>
+                        {{ $booking->external_address ?? 'มหาวิทยาลัยราชภัฎสกลนคร' }}
+                        มีความประสงค์จะขอใช้ห้อง <span
+                            class="inline-strong">{{ $booking->room_name ?? '.............................' }}</span>
+                    </div>
+                    <div class="content-paragraph">
+                        <span class="inline-strong">ในวันที่</span>
+                        {{ $booking->booking_start ? \Carbon\Carbon::parse($booking->booking_start)->format('d/m/') . (\Carbon\Carbon::parse($booking->booking_start)->format('Y') + 543) : '.............................' }}
+                        <span class="inline-strong">เวลา</span>
+                        {{ $booking->booking_start ? \Carbon\Carbon::parse($booking->booking_start)->format('H:i') : '.....' }}
+                        น.
+                        <span class="inline-strong">ถึงวันที่</span>
+                        {{ $booking->booking_end ? \Carbon\Carbon::parse($booking->booking_end)->format('d/m/') . (\Carbon\Carbon::parse($booking->booking_end)->format('Y') + 543) : '.............................' }}
+                        <span class="inline-strong">เวลา</span>
+                        {{ $booking->booking_end ? \Carbon\Carbon::parse($booking->booking_end)->format('H:i') : '.....' }}
+                        น.
+                    </div>
+
+                    <div class="content-paragraph">
+                        <span class="inline-strong">มีวัตถุประสงค์เพื่อ</span>
+                        {{ $booking->reason ?? '.............................' }}
+                        ซึ่งมีจำนวนผู้เข้าร่วมทั้งหมด <span
+                            class="inline-strong">{{ $booking->participant_count ?? '.....' }} คน</span>
+                    </div>
+
+                    <div class="content-paragraph">
+                        <span class="inline-strong">พร้อมนี้ ขอความอนุเคราะห์อุปกรณ์ดังนี้</span>
+                    </div>
+                    <ul class="equipment-list">
+                        @forelse ($booking->room->equipments ?? [] as $equipment)
+                            <li>- {{ $equipment->name }} {{ $equipment->pivot->quantity ?? '' }}
+                                จำนวน {{ $equipment->quantity ?? '' }} ชิ้น</li>
+                        @empty
+                            ไม่มีอุปกรณ์
+                        @endforelse
+                    </ul>
+
+                    <div class="content-paragraph">
+                        <span class="inline-strong">รายละเอียดเพิ่มเติม:</span>
+                        {{ $booking->booker_info ?? 'ไม่มีรายละเอียดเพิ่มเติม' }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-details">
+                <span>จึงเรียนมาเพื่อโปรดพิจารณา</span>
+                <div>
+                    <strong>{{ $booking->external_name ?? '.............................' }}</strong>
+                </div>
+                <div><strong>ตำแหน่ง: </strong>
+                    {{ $booking->user->position ?? '.............................' }}
+                </div>
+                <div>
+                    <strong>โทรศัพท์: </strong>
+                    {{ $booking->external_phone ?? '.............................' }}
+                </div>
+                <div>
+                    <strong>อีเมล: </strong>
+                    {{ $booking->external_email ?? '.............................' }}
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <div class="footer-title">สำหรับเจ้าหน้าที่</div>
+
+                @if (isset($booking->status_id))
+                    @if ($booking->status_id === 6)
+                        <div class="approval-box">
+                            <div class="approval-status">อนุมัติให้ใช้{{ $booking->room_name }}</div>
+                            <div class="approval-signature">
+                                <div class="signature-line"></div>
+                                <div style="font-weight: bold;">
+                                    ผู้อนุมัติ: {{ $booking->approver_name ?? '.............................' }}
+                                </div>
+                                <div style="font-weight: bold;">
+                                    ตำแหน่ง: {{ $booking->approver_position ?? '.............................' }}
+                                </div>
+                            </div>
+                        </div>
+                    @elseif ($booking->status_id === 5)
+                        <div class="approval-box">
+                            <div class="approval-status">ยกเลิกการจอง{{ $booking->room_name }}</div>
+                            <div style="font-weight: bold;">
+                                ผู้อนุมัติ: {{ $booking->approver_name ?? 'ไม่มีการอนุมัติ' }}
+                            </div>
+                        </div>
+                    @elseif ($booking->status_id === 8)
+                        <div class="approval-box">
+                            <div class="approval-status">ไม่อนุมัติให้ใช้{{ $booking->room_name }}</div>
+                            <div class="approval-signature">
+                                <div style="font-weight: bold;">
+                                    ผู้อนุมัติ: {{ $booking->approver_name ?? '.............................' }}
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="approval-box">
+                            <div class="approval-status">อยู่ระหว่างรอดำเนินการ</div>
+                        </div>
+                    @endif
+                @endif
             </div>
         </div>
-    </div>
-
-    <div class="footer">
-        <div class="print-info">
-            <div>พิมพ์โดย: ระบบจองห้องออนไลน์</div>
-            <div>IP Address: {{ request()->ip() ?? 'N/A' }}</div>
-            <div>เวลาพิมพ์: {{ \Carbon\Carbon::now()->addYears(543)->format('d/m/Y H:i:s') }} น.</div>
-        </div>
-
-        <div class="signature-section">
-            <div class="signature-line"></div>
-            <div class="signature-label">ผู้พิมพ์รายงาน</div>
-            <div class="signature-name">{{ Auth::user()->name }}</div>
-            <div class="signature-date">{{ \Carbon\Carbon::now()->addYears(543)->format('d/m/Y') }}</div>
-        </div>
-    </div>
-
-    <div class="page-number">หน้า 1</div>
+    @endforeach
 </body>
+
 </html>

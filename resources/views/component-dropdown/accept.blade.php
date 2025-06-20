@@ -7,7 +7,7 @@
             @elseif($booking->status_id == 5) bg-danger
             @else bg-secondary @endif"
         data-bs-toggle="tooltip" data-bs-placement="top"
-        title="อนุมัติโดย: {{ $booking->approver_name ?? 'ยังไม่มีผู้อนุมัติ' }}">
+        title="อนุมัติโดย: {{ $booking->approver_name ?? 'ยังไม่มีผู้อนุมัติ' }} {{ $booking->approver_position ? 'ตำแหน่ง: ' . $booking->approver_position : '' }}">
         {{ $booking->status->status_name ?? '-' }}
     </span>
 

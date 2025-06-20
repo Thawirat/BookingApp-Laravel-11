@@ -377,8 +377,8 @@ class BookingController extends Controller
             ->orderBy('moved_to_history_at', 'desc')
             ->get();
 
-        $pdf = Pdf::loadView('booking-status.pdf-history', compact('bookings'));
-        return $pdf->download('ประวัติการจองห้อง.pdf');
+        $pdf = Pdf::loadView('booking-status.pdf-history', compact('bookings'))->setPaper('A4', 'portrait');
+        return $pdf->stream('ประวัติการจองห้อง.pdf');
     }
     public function downloadHistoryPdf($id)
     {
@@ -388,7 +388,7 @@ class BookingController extends Controller
             abort(403, 'คุณไม่มีสิทธิ์ดูข้อมูลนี้');
         }
 
-        $pdf = Pdf::loadView('booking-status.pdf-single-history', compact('booking'));
-        return $pdf->download('การจองห้อง_' . $booking->room_name . '.pdf');
+        $pdf = Pdf::loadView('booking-status.pdf-single-history', compact('booking'))->setPaper('A4', 'portrait');
+        return $pdf->stream('การจองห้อง' . $booking->room_name . '.pdf');
     }
 }

@@ -316,7 +316,6 @@
                     มีความประสงค์จะขอใช้ห้อง <span
                         class="inline-strong">{{ $booking->room_name ?? '.............................' }}</span>
                 </div>
-
                 <div class="content-paragraph">
                     <span class="inline-strong">ในวันที่</span>
                     {{ $booking->booking_start ? \Carbon\Carbon::parse($booking->booking_start)->format('d/m/') . (\Carbon\Carbon::parse($booking->booking_start)->format('Y') + 543) : '.............................' }}
@@ -362,7 +361,7 @@
                 <strong>{{ $booking->external_name ?? '.............................' }}</strong>
             </div>
             <div><strong>ตำแหน่ง: </strong>
-                {{ $booking->external_position ?? '.............................' }}
+                {{ $booking->user->position ?? '.............................' }}
             </div>
             <div>
                 <strong>โทรศัพท์: </strong>
@@ -386,6 +385,9 @@
                             <div style="font-weight: bold;">
                                 ผู้อนุมัติ: {{ $booking->approver_name ?? '.............................' }}
                             </div>
+                            <div style="font-weight: bold;">
+                                ตำแหน่ง: {{ $booking->approver_position ?? '.............................' }}
+                            </div>
                         </div>
                     </div>
                 @elseif ($booking->status_id === 5)
@@ -395,6 +397,9 @@
                             <div class="signature-line"></div>
                             <div style="font-weight: bold;">
                                 ผู้อนุมัติ: {{ $booking->approver_name ?? '.............................' }}
+                            </div>
+                            <div style="font-weight: bold;">
+                                ตำแหน่ง: {{ $booking->approver_position ?? '.............................' }}
                             </div>
                         </div>
                     </div>

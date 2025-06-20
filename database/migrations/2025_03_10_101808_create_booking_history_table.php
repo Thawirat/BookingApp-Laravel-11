@@ -24,6 +24,8 @@ class CreateBookingHistoryTable extends Migration
             $table->unsignedBigInteger('status_id'); // รหัสสถานะการจอง
             $table->string('status_name')->nullable(); // ชื่อสถานะการจอง
             $table->text('reason')->nullable(); // เหตุผลในการเปลี่ยนแปลงสถานะ
+            $table->string('approver_name')->nullable();
+            $table->string('approver_position')->nullable();
             $table->decimal('total_price', 10, 2)->nullable(); // ค่าบริการรวม (ถ้ามี)
             $table->string('payment_status')->nullable();
             $table->boolean('is_external')->default(false); // ระบุว่าผู้จองเป็นบุคคลภายนอกหรือไม่

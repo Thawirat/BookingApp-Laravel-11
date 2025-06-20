@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('payment_slip')->nullable(); // เส้นทางไฟล์สลิปการโอนเงิน
             $table->timestamp('verified_at')->nullable();
             $table->string('approver_name')->nullable();
-
+            $table->string('approver_position')->nullable();
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');

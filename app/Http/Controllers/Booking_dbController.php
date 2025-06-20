@@ -42,6 +42,8 @@ class Booking_dbController extends Controller
                 'status_id' => $booking->status_id,
                 'status_name' => $booking->status_name,
                 'reason' => $booking->reason,
+                'approver_name' => $booking->approver_name,
+                'approver_position'=> $booking->approver_position,
                 'total_price' => $booking->total_price,
                 'payment_status' => $booking->payment_status,
                 'is_external' => $booking->is_external,
@@ -139,6 +141,7 @@ class Booking_dbController extends Controller
         $booking->status_id = $status->status_id;
         // เพิ่มชื่อผู้อนุมัติ
         $booking->approver_name = Auth::user()->name;
+        $booking->approver_position = Auth::user()->position;
         $booking->save();
 
         // ตรวจสอบว่าสถานะเป็น 6 และเรียกใช้ moveToHistory
