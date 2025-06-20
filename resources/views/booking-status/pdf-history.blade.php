@@ -270,6 +270,10 @@
             /* opacity: 0.85; */
             z-index: 999;
         }
+
+        .page-break {
+            page-break-after: always;
+        }
     </style>
 </head>
 
@@ -447,6 +451,9 @@
                 @endif
             </div>
         </div>
+        @if (!$loop->last)
+            <div class="page-break"></div>
+        @endif
     @endforeach
 </body>
 
