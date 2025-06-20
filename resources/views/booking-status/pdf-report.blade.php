@@ -84,9 +84,10 @@
         }
 
         .dotted-line {
-            border-bottom: 1px dotted #666;
+            border-bottom: 1px solid #666;
             margin: 12px 0;
             height: 0;
+
         }
 
         .section {
@@ -167,7 +168,7 @@
 
         .contact-details {
             margin-top: 12px;
-            font-size: 12pt;
+            font-size: 14pt;
             color: #000;
             text-align: right;
         }
@@ -184,7 +185,7 @@
 
         .footer-title {
             text-align: center;
-            font-size: 14pt;
+            font-size: 16pt;
             font-weight: bold;
             margin-bottom: 15px;
             color: #000;
@@ -258,24 +259,17 @@
 
 <body>
     <div class="page-container">
+        <div style="text-align: right; font-size: 12pt; font-weight: bold; margin: 15px 25px 5px 0;">
+            <span class="inline-strong">รหัสการจอง:</span>
+            {{ \Carbon\Carbon::now()->format('Y') + 543 }}/{{ $booking->booking_id }}
+        </div>
         <div class="header">
             <div class="logo">
                 <img src="{{ public_path('images/snru.png') }}" alt="University Logo">
             </div>
             <div class="org-name">มหาวิทยาลัยราชภัฏสกลนคร</div>
         </div>
-
-        <div class="doc-header">
-            <div class="doc-number">
-                <span class="inline-strong">รหัสการจอง:</span>
-                {{ \Carbon\Carbon::now()->format('Y') + 543 }}/{{ $booking->booking_id }}
-            </div>
-            <div class="doc-type">ขออนุญาตใช้ห้องประชุม</div>
-            <div class="doc-spacer"></div>
-        </div>
-
         <div class="dotted-line"></div>
-
         <div class="section">
             <div class="section-header">
                 <div class="section-label">ส่วนราชการ</div>
@@ -318,7 +312,7 @@
                     <span class="inline-strong">ข้าพเจ้า</span>
                     {{ $booking->external_name ?? '.............................' }}
                     <span class="inline-strong">สังกัด</span>
-                    {{ $booking->external_address ?? '.............................' }}
+                    {{ $booking->external_address ?? 'มหาวิทยาลัยราชภัฎสกลนคร' }}
                     มีความประสงค์จะขอใช้ห้อง <span
                         class="inline-strong">{{ $booking->room_name ?? '.............................' }}</span>
                 </div>
@@ -362,23 +356,22 @@
             </div>
         </div>
 
-        <div class="right-align">
-            <div style="font-size: 16pt; margin-bottom: 10px;">
-                <span class="inline-strong">จึงเรียนมาเพื่อโปรดพิจารณา</span>
-                <div style="font-size: 16pt; font-weight: bold;">
-                    ({{ $booking->external_name ?? '.............................' }})
-                </div>
-                <div style="font-size: 16pt; color: #000; margin-top: 5px;"><strong>ตำแหน่ง</strong>
-                    {{ $booking->external_position ?? '.............................' }}
-                </div>
-            </div>
-        </div>
-
         <div class="contact-details">
-            <div><span class="inline-strong">โทรศัพท์:</span>
-                {{ $booking->external_phone ?? '.............................' }}</div>
-            <div><span class="inline-strong">อีเมล:</span>
-                {{ $booking->external_email ?? '.............................' }}</div>
+            <span>จึงเรียนมาเพื่อโปรดพิจารณา</span>
+            <div>
+                <strong>{{ $booking->external_name ?? '.............................' }}</strong>
+            </div>
+            <div><strong>ตำแหน่ง: </strong>
+                {{ $booking->external_position ?? '.............................' }}
+            </div>
+            <div>
+                <strong>โทรศัพท์: </strong>
+                {{ $booking->external_phone ?? '.............................' }}
+            </div>
+            <div>
+                <strong>อีเมล: </strong>
+                {{ $booking->external_email ?? '.............................' }}
+            </div>
         </div>
 
         <div class="footer-section">
@@ -387,7 +380,7 @@
             @if (isset($booking->status_id))
                 @if ($booking->status_id === 4)
                     <div class="approval-box">
-                        <div class="approval-status">อนุมัติให้ใช้{{$booking->room_name}}</div>
+                        <div class="approval-status">อนุมัติให้ใช้{{ $booking->room_name }}</div>
                         <div class="approval-signature">
                             <div class="signature-line"></div>
                             <div style="font-weight: bold;">
@@ -397,7 +390,7 @@
                     </div>
                 @elseif ($booking->status_id === 5)
                     <div class="approval-box">
-                        <div class="approval-status">ไม่อนุมัติให้ใช้{{$booking->room_name}}</div>
+                        <div class="approval-status">ไม่อนุมัติให้ใช้{{ $booking->room_name }}</div>
                         <div class="approval-signature">
                             <div class="signature-line"></div>
                             <div style="font-weight: bold;">
