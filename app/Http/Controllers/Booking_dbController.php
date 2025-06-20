@@ -63,75 +63,62 @@ class Booking_dbController extends Controller
     {
         $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอินอยู่
 
-        // เรียกใช้งานระบบ auto-complete สำหรับจองที่หมดอายุ
-        $this->autoCompletePastBookings();
+        $this->autoCompletePastBookings(); // เรียกใช้งานระบบ auto-complete
 
-        // เริ่มสร้าง query
-        $query = DB::table('bookings')
-            ->whereNull('deleted_at')
-            ->leftJoin('status', 'bookings.status_id', '=', 'status.status_id')
-            ->leftJoin('users', 'bookings.user_id', '=', 'users.id')
-            ->leftJoin('rooms', 'bookings.room_id', '=', 'rooms.room_id')
-            ->select(
-                'bookings.*',
-                'status.status_name',
-                'users.name as user_name',
-                'rooms.room_name'
-            );
+        // ✅ เริ่ม query ด้วย Eloquent + load ความสัมพันธ์ room และ status
+        $query = Booking::with(['room', 'status', 'user'])
+            ->whereNull('deleted_at');
 
-        // ถ้าเป็น sub-admin ให้กรองเฉพาะอาคารที่ดูแล
+        // กรอง sub-admin
         if ($user->hasRole('sub-admin')) {
             $buildingIds = $user->buildings()->pluck('buildings.id')->toArray();
-            $query->whereIn('bookings.building_id', $buildingIds);
+            $query->whereIn('building_id', $buildingIds);
         }
 
-        // ไม่แสดงการจองที่เสร็จสิ้น (6) และยกเลิก (5)
-        $query->whereNotIn('bookings.status_id', [5, 6]);
+        // ไม่แสดงสถานะ ยกเลิก(5) และเสร็จสิ้น(6)
+        $query->whereNotIn('status_id', [5, 6]);
 
-        // 🔍 ค้นหาจาก booking_id, ชื่อผู้จอง, หรือชื่อ user
+        // 🔍 ค้นหา
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('bookings.booking_id', 'like', "%{$search}%")
-                    ->orWhere('bookings.external_name', 'like', "%{$search}%")
-                    ->orWhere('users.name', 'like', "%{$search}%")
-                    ->orWhere('rooms.room_name', 'like', "%{$search}%");
+                $q->where('booking_id', 'like', "%{$search}%")
+                    ->orWhere('external_name', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('room', function ($q2) use ($search) {
+                        $q2->where('room_name', 'like', "%{$search}%");
+                    });
             });
         }
 
-        // 📆 กรองตามวันจอง
+        // กรองตามวันที่
         if ($request->filled('booking_date')) {
-            $query->whereDate('bookings.created_at', $request->booking_date);
+            $query->whereDate('created_at', $request->booking_date);
         }
-
-        // 📆 กรองตามวันที่เริ่มต้น
         if ($request->filled('date_from')) {
-            $query->whereDate('bookings.booking_start', '>=', $request->date_from);
+            $query->whereDate('booking_start', '>=', $request->date_from);
         }
-
-        // 📆 กรองตามวันที่สิ้นสุด
         if ($request->filled('date_to')) {
-            $query->whereDate('bookings.booking_end', '<=', $request->date_to);
+            $query->whereDate('booking_end', '<=', $request->date_to);
         }
 
-        // ✅ กรองตามสถานะ
         if ($request->filled('status_id')) {
-            $query->where('bookings.status_id', $request->status_id);
+            $query->where('status_id', $request->status_id);
         }
 
-        // 🔃 เรียงลำดับตามวันที่จอง
         $sort = $request->get('sort', 'desc');
-        $query->orderBy('bookings.created_at', $sort);
+        $query->orderBy('created_at', $sort);
 
-        // 👉 ดึงรายการ bookings พร้อม paginate
         $bookings = $query->paginate(10)->appends($request->all());
 
-        // 👉 คำนวณสถิติต่าง ๆ
-        $totalBookings = DB::table('bookings')->whereNull('deleted_at')->count();
-        $pendingBookings = DB::table('bookings')->where('status_id', 3)->whereNull('deleted_at')->count(); // รอดำเนินการ
-        $confirmedBookings = DB::table('bookings')->where('status_id', 4)->whereNull('deleted_at')->count(); // อนุมัติแล้ว
+        // 👉 สถิติ
+        $totalBookings = Booking::whereNull('deleted_at')->count();
+        $pendingBookings = Booking::where('status_id', 3)->whereNull('deleted_at')->count();
+        $confirmedBookings = Booking::where('status_id', 4)->whereNull('deleted_at')->count();
 
-        // 👉 ดึงข้อมูลสถานะทั้งหมด (หากต้องการใช้ใน dropdown)
+        // ดึงข้อมูลสถานะทั้งหมด
         $statuses = DB::table('status')->get();
 
         return view('dashboard.booking_db', compact(

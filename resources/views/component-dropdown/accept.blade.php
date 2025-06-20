@@ -2,14 +2,15 @@
     {{-- ป้ายสถานะ --}}
     <span
         class="badge
-                                                                @if ($booking->status_id == 3) bg-warning
-                                                                @elseif($booking->status_id == 4) bg-success
-                                                                @elseif($booking->status_id == 5) bg-danger
-                                                                @else bg-secondary @endif"
+            @if ($booking->status_id == 3) bg-warning
+            @elseif($booking->status_id == 4) bg-success
+            @elseif($booking->status_id == 5) bg-danger
+            @else bg-secondary @endif"
         data-bs-toggle="tooltip" data-bs-placement="top"
         title="อนุมัติโดย: {{ $booking->approver_name ?? 'ยังไม่มีผู้อนุมัติ' }}">
-        {{ $booking->status_name }}
+        {{ $booking->status->status_name ?? '-' }}
     </span>
+
     {{-- ปุ่มเปลี่ยนสถานะ --}}
     <div class="dropdown">
         <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"

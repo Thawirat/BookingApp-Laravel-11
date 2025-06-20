@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>รายละเอียดการจอง {{ $booking->room_name }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>บันทึกข้อความ - ขออนุญาตใช้{{ $booking->room_name ?? 'ห้องประชุม' }}</title>
     <style>
         @font-face {
             font-family: 'THSarabun';
@@ -20,112 +21,396 @@
         }
 
         body {
-            font-family: "THSarabun", sans-serif;
-            font-size: 16pt;
-            line-height: 1.6;
-            padding: 30px;
+            font-family: "THSarabun", "TH Sarabun New", Arial, sans-serif;
+            font-size: 14pt;
+            line-height: 1.0;
+            margin: 0;
+            padding: 0;
+            color: #000;
         }
 
-        h1, h3 {
-            text-align: center;
+        .page-container {
+            box-sizing: border-box;
+            margin: auto;
+            background: #fff;
+            position: relative;
         }
 
-        .logo {
+        .header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .logo img {
-            height: 80px;
+            height: 45px;
+            margin-bottom: 8px;
+        }
+
+        .org-name {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        .doc-header {
+            display: table;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .doc-header>div {
+            display: table-cell;
+            vertical-align: middle;
         }
 
         .doc-number {
-            text-align: right;
-            font-size: 14pt;
-            margin-bottom: 20px;
+            font-size: 12pt;
+            font-weight: bold;
+            width: 25%;
+            text-align: left;
+        }
+
+        .doc-type {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            width: 50%;
+            color: #000;
+        }
+
+        .doc-spacer {
+            width: 25%;
+        }
+
+        .dotted-line {
+            border-bottom: 1px dotted #666;
+            margin: 12px 0;
+            height: 0;
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 8px;
+            clear: both;
         }
 
-        .section-title {
-            font-size: 18pt;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #000;
-            padding-bottom: 5px;
+        .section-header {
+            display: table;
+            width: 100%;
+            margin-bottom: 5px;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        .section-label {
+            display: table-cell;
+            font-weight: bold;
+            width: 80px;
+            color: #000;
+            vertical-align: top;
         }
 
-        ul {
+        .section-content {
+            display: table-cell;
+            border-bottom: 1px dotted #999;
+            min-height: 18px;
+            padding-bottom: 2px;
+            padding-left: 5px;
+            width: auto;
+        }
+
+        .content-box {
+            border: 1px solid #000;
+            padding: 12px;
+            margin: 15px 0;
+            background-color: #fff;
+        }
+
+        .content-text {
+            text-align: justify;
+            line-height: 1.0;
+            color: #000;
+        }
+
+        .content-text p {
+            margin: 0 0 8px 0;
+        }
+
+        .equipment-list {
+            margin: 8px 0;
+            padding-left: 18px;
             list-style: none;
-            padding-left: 0;
         }
 
-        li {
-            margin-bottom: 6px;
+        .equipment-list li {
+            margin-bottom: 4px;
+            color: #000;
         }
 
-        .note {
+        .right-align {
+            text-align: right;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .signature-section {
+            text-align: center;
+            margin-top: 15px;
+            display: inline-block;
+            width: 250px;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid #000;
+            width: 200px;
+            margin: 15px auto 8px auto;
+            height: 0;
+        }
+
+        .contact-details {
+            margin-top: 12px;
+            font-size: 12pt;
+            color: #000;
+            text-align: right;
+        }
+
+        .contact-details div {
+            margin-bottom: 3px;
+        }
+
+        .footer-section {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dotted #666;
+        }
+
+        .footer-title {
+            text-align: center;
             font-size: 14pt;
-            margin-top: 40px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
         }
 
-        .box {
-            border: 1px solid #aaa;
-            padding: 15px;
-            border-radius: 6px;
+        .approval-box {
+            border: 1px solid #000;
+            padding: 12px;
+            margin: 15px 0;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .approval-status {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .checkbox-container {
+            margin-bottom: 15px;
+        }
+
+        .checkbox-item {
+            display: inline-block;
+            margin: 0 30px;
+            font-size: 14pt;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            width: 12px;
+            height: 12px;
+        }
+
+        .approval-signature {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .approval-signature .signature-line {
+            width: 180px;
+            margin: 15px auto 8px auto;
+        }
+
+        /* สำหรับ DomPDF */
+        table {
+            border-collapse: collapse;
+        }
+
+        .table-layout {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-layout td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .content-paragraph {
+            margin-bottom: 8px;
+        }
+
+        .inline-strong {
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
-    <div class="doc-number">
-        เลขที่หนังสือ: ศธ. {{ date('Y') }}/{{ $booking->booking_id}}
-    </div>
-    <div class="logo">
-        <img src="{{ public_path('images/snru.png') }}" alt="University Logo">
-    </div>
-    <h3>รายละเอียดการจองห้องประชุม<br>{{ $booking->room_name }}</h3>
-
-    <div class="section">
-        <div class="section-title">ข้อมูลการจอง</div>
-        <div class="grid">
-            <div class="box">
-                <ul>
-                    <li><strong>รหัสการจอง:</strong> {{ $booking->booking_id }}</li>
-                    <li><strong>วันที่จอง:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}</li>
-                    <li><strong>เวลา:</strong> {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}</li>
-                    <li><strong>วันที่สิ้นสุด:</strong> {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}</li>
-                </ul>
+    <div class="page-container">
+        <div class="header">
+            <div class="logo">
+                <img src="{{ public_path('images/snru.png') }}" alt="University Logo">
             </div>
-            <div class="box">
-                <ul>
-                    <li><strong>วัตถุประสงค์:</strong> {{ $booking->reason ?? 'ไม่ระบุ' }}</li>
-                    <li><strong>จำนวนผู้เข้าร่วม:</strong> {{ $booking->participant_count ?? 'ไม่ระบุ' }} คน</li>
-                    <li><strong>รายละเอียดเพิ่มเติม:</strong> {{ $booking->booker_info ?? 'ไม่ระบุ' }}</li>
-                    <li><strong>อาคาร:</strong> {{ $booking->building_name }}</li>
-                    <li><strong>ห้อง:</strong> {{ $booking->room_name }}</li>
-                </ul>
+            <div class="org-name">มหาวิทยาลัยราชภัฏสกลนคร</div>
+        </div>
+
+        <div class="doc-header">
+            <div class="doc-number">
+                <span class="inline-strong">รหัสการจอง:</span>
+                {{ \Carbon\Carbon::now()->format('Y') + 543 }}/{{ $booking->booking_id }}
+            </div>
+            <div class="doc-type">ขออนุญาตใช้ห้องประชุม</div>
+            <div class="doc-spacer"></div>
+        </div>
+
+        <div class="dotted-line"></div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-label">ส่วนราชการ</div>
+                <div class="section-content">{{ $booking->external_address ?? '' }}</div>
             </div>
         </div>
-    </div>
 
-    <div class="section">
-        <div class="section-title">ข้อมูลผู้จอง</div>
-        <div class="box">
-            <ul>
-                <li><strong>ชื่อผู้จอง:</strong> {{ $booking->external_name }}</li>
-                <li><strong>อีเมล:</strong> {{ $booking->external_email }}</li>
-                <li><strong>โทรศัพท์:</strong> {{ $booking->external_phone }}</li>
-                <li><strong>ตำแหน่ง:</strong> {{ $booking->external_position ?? 'ไม่ระบุ' }}</li>
-                <li><strong>ที่อยู่/หน่วยงาน:</strong> {{ $booking->external_address ?? 'ไม่ระบุ' }}</li>
-            </ul>
+        <div class="section">
+            <div class="section-header">
+                <div class="section-label">ที่</div>
+                <div class="section-content"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-label">เรื่อง</div>
+                <div class="section-content">ขออนุญาตใช้ {{ $booking->room_name ?? '' }}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-label">วันที่</div>
+                <div class="section-content">
+                    {{ \Carbon\Carbon::now()->format('d/m/') . (\Carbon\Carbon::now()->format('Y') + 543) }}
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-header">
+                <div class="section-label">เรียน</div>
+                <div class="section-content"></div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <div class="content-text">
+                <div class="content-paragraph">
+                    <span class="inline-strong">ข้าพเจ้า</span>
+                    {{ $booking->external_name ?? '.............................' }}
+                    <span class="inline-strong">สังกัด</span>
+                    {{ $booking->external_address ?? '.............................' }}
+                    มีความประสงค์จะขอใช้ห้อง <span
+                        class="inline-strong">{{ $booking->room_name ?? '.............................' }}</span>
+                </div>
+
+                <div class="content-paragraph">
+                    <span class="inline-strong">ในวันที่</span>
+                    {{ $booking->booking_start ? \Carbon\Carbon::parse($booking->booking_start)->format('d/m/') . (\Carbon\Carbon::parse($booking->booking_start)->format('Y') + 543) : '.............................' }}
+                    <span class="inline-strong">เวลา</span>
+                    {{ $booking->booking_start ? \Carbon\Carbon::parse($booking->booking_start)->format('H:i') : '.....' }}
+                    น.
+                    <span class="inline-strong">ถึงวันที่</span>
+                    {{ $booking->booking_end ? \Carbon\Carbon::parse($booking->booking_end)->format('d/m/') . (\Carbon\Carbon::parse($booking->booking_end)->format('Y') + 543) : '.............................' }}
+                    <span class="inline-strong">เวลา</span>
+                    {{ $booking->booking_end ? \Carbon\Carbon::parse($booking->booking_end)->format('H:i') : '.....' }}
+                    น.
+                </div>
+
+                <div class="content-paragraph">
+                    <span class="inline-strong">มีวัตถุประสงค์เพื่อ</span>
+                    {{ $booking->reason ?? '.............................' }}
+                    ซึ่งมีจำนวนผู้เข้าร่วมทั้งหมด <span
+                        class="inline-strong">{{ $booking->participant_count ?? '.....' }} คน</span>
+                </div>
+
+                <div class="content-paragraph">
+                    <span class="inline-strong">พร้อมนี้ ขอความอนุเคราะห์อุปกรณ์ดังนี้</span>
+                </div>
+                <ul class="equipment-list">
+                    @forelse ($booking->room->equipments ?? [] as $equipment)
+                        <li>- {{ $equipment->name }} {{ $equipment->pivot->quantity ?? '' }}
+                            จำนวน {{ $equipment->quantity ?? '' }} ชิ้น</li>
+                    @empty
+                        ไม่มีอุปกรณ์
+                    @endforelse
+                </ul>
+
+                <div class="content-paragraph">
+                    <span class="inline-strong">รายละเอียดเพิ่มเติม:</span>
+                    {{ $booking->booker_info ?? 'ไม่มีรายละเอียดเพิ่มเติม' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="right-align">
+            <div style="font-size: 16pt; margin-bottom: 10px;">
+                <span class="inline-strong">จึงเรียนมาเพื่อโปรดพิจารณา</span>
+                <div style="font-size: 16pt; font-weight: bold;">
+                    ({{ $booking->external_name ?? '.............................' }})
+                </div>
+                <div style="font-size: 16pt; color: #000; margin-top: 5px;"><strong>ตำแหน่ง</strong>
+                    {{ $booking->external_position ?? '.............................' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-details">
+            <div><span class="inline-strong">โทรศัพท์:</span>
+                {{ $booking->external_phone ?? '.............................' }}</div>
+            <div><span class="inline-strong">อีเมล:</span>
+                {{ $booking->external_email ?? '.............................' }}</div>
+        </div>
+
+        <div class="footer-section">
+            <div class="footer-title">สำหรับเจ้าหน้าที่</div>
+
+            @if (isset($booking->status_id))
+                @if ($booking->status_id === 4)
+                    <div class="approval-box">
+                        <div class="approval-status">อนุมัติให้ใช้{{$booking->room_name}}</div>
+                        <div class="approval-signature">
+                            <div class="signature-line"></div>
+                            <div style="font-weight: bold;">
+                                ผู้อนุมัติ: {{ $booking->approver_name ?? '.............................' }}
+                            </div>
+                        </div>
+                    </div>
+                @elseif ($booking->status_id === 5)
+                    <div class="approval-box">
+                        <div class="approval-status">ไม่อนุมัติให้ใช้{{$booking->room_name}}</div>
+                        <div class="approval-signature">
+                            <div class="signature-line"></div>
+                            <div style="font-weight: bold;">
+                                ผู้อนุมัติ: {{ $booking->approver_name ?? '.............................' }}
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="approval-box">
+                        <div class="approval-status">อยู่ระหว่างรอดำเนินการ</div>
+                    </div>
+                @endif
+            @endif
         </div>
     </div>
 </body>

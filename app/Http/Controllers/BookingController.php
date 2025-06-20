@@ -358,15 +358,18 @@ class BookingController extends Controller
     {
         $booking = Booking::findOrFail($id);
 
-        $pdf = Pdf::loadView('booking-status.pdf-report', compact('booking'));
-        return $pdf->download('บันทึกการจอง' . $booking->room_name . '.pdf');
+        $pdf = Pdf::loadView('booking-status.pdf-report', compact('booking'))
+            ->setPaper('A4', 'portrait'); // กำหนดขนาดและแนวกระดาษ
+
+        return $pdf->stream('บันทึกการจอง' . $booking->room_name . '.pdf');
     }
-    public function downloadSlipPdf($id)
-    {
-        $booking = Booking::findOrFail($id);
-        $pdf = Pdf::loadView('booking.slip', compact('booking'));
-        return $pdf->download('ใบเสร็จรับเงินเลขที่' . $booking->id . '.pdf');
-    }
+
+    // public function downloadSlipPdf($id)
+    // {
+    //     $booking = Booking::findOrFail($id);
+    //     $pdf = Pdf::loadView('booking.slip', compact('booking'));
+    //     return $pdf->download('ใบเสร็จรับเงินเลขที่' . $booking->id . '.pdf');
+    // }
 
     public function downloadAllHistoryPdf()
     {
