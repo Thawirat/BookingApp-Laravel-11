@@ -42,6 +42,8 @@ class Booking_dbController extends Controller
                 'status_id' => $booking->status_id,
                 'status_name' => $booking->status_name,
                 'reason' => $booking->reason,
+                'participant_count' => $booking->participant_count,
+                'booker_info' => $booking->booker_info,
                 'approver_name' => $booking->approver_name,
                 'approver_position'=> $booking->approver_position,
                 'total_price' => $booking->total_price,

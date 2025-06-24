@@ -144,7 +144,7 @@
                                                     </div>
                                                 </td>
                                             </tr>
-                                            @include('booking-status.modal')
+                                            @include('components.modal.history')
                                         @empty
                                             <tr>
                                                 <td colspan="9" class="text-center py-4 text-muted">
