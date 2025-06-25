@@ -23,105 +23,113 @@
                                 <input type="hidden" name="building_name"
                                     value="{{ $room->building->building_name ?? 'ไม่ระบุ' }}">
                                 <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-
                                 <div class="row g-3">
-                                    <!-- Building Name -->
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">อาคาร</label>
-                                        <input class="form-control bg-light" type="text"
-                                            value="{{ $room->building->building_name ?? 'ไม่ระบุ' }}" readonly>
-                                    </div>
-
-                                    <!-- Room Name -->
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">ห้อง <span
-                                                class="text-danger">*</span></label>
-                                        <input class="form-control bg-light" type="text" value="{{ $room->room_name }}"
-                                            readonly>
-                                    </div>
-
-                                    <!-- User Name -->
+                                    <!-- หัวเรื่อง -->
                                     <div class="col-md-12">
+                                        <label class="form-label fw-semibold">ชื่อเรื่อง <span
+                                                class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="title" required>
+                                    </div>
+
+                                    <!-- ข้อมูลผู้จอง -->
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold">ชื่อผู้จอง <span
                                                 class="text-danger">*</span></label>
                                         @if (auth()->check())
                                             <input class="form-control" type="text" name="external_name"
-                                                value="{{ auth()->user()->name }}">
+                                                value="{{ auth()->user()->name }}" required>
                                         @else
                                             <input class="form-control" name="external_name" type="text" required>
                                         @endif
                                     </div>
 
-                                    <!-- Email -->
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">อีเมล <span
-                                                class="text-danger">*</span></label>
-                                        @if (auth()->check())
-                                            <input class="form-control" type="email" name="external_email"
-                                                value="{{ auth()->user()->email }}">
-                                        @else
-                                            <input class="form-control" type="email" name="external_email" required>
-                                        @endif
-                                    </div>
-
-                                    <!-- Phone -->
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">เบอร์โทร <span
-                                                class="text-danger">*</span></label>
-                                        @if (auth()->check())
-                                            <input class="form-control" type="tel" name="external_phone"
-                                                value="{{ auth()->user()->phone_number ?? '' }}"
-                                                {{ auth()->user()->phone_number ? '' : '' }}>
-                                        @else
-                                            <input class="form-control" type="tel" name="external_phone" required>
-                                        @endif
-                                    </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">ตำแหน่ง <span
                                                 class="text-danger">*</span></label>
                                         @if (auth()->check())
                                             <input class="form-control" type="text" name="external_position"
-                                                value="{{ auth()->user()->department ?? '' }}">
+                                                value="{{ auth()->user()->department ?? '' }}" required>
                                         @else
                                             <input class="form-control" type="text" name="external_position" required>
                                         @endif
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">อีเมล <span
+                                                class="text-danger">*</span></label>
+                                        @if (auth()->check())
+                                            <input class="form-control" type="email" name="external_email"
+                                                value="{{ auth()->user()->email }}" required>
+                                        @else
+                                            <input class="form-control" type="email" name="external_email" required>
+                                        @endif
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">เบอร์โทร <span
+                                                class="text-danger">*</span></label>
+                                        @if (auth()->check())
+                                            <input class="form-control" type="tel" name="external_phone"
+                                                value="{{ auth()->user()->phone_number ?? '' }}" required>
+                                        @else
+                                            <input class="form-control" type="tel" name="external_phone" required>
+                                        @endif
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">หน่วยงาน <span
+                                                class="text-danger">*</span></label>
+                                        @if (auth()->check())
+                                            <input class="form-control" type="text" name="external_org"
+                                                value="{{ auth()->user()->department ?? '' }}" required>
+                                        @else
+                                            <input class="form-control" type="text" name="external_org" required>
+                                        @endif
+                                    </div>
+
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">ที่อยู่/หน่วยงาน <span
                                                 class="text-danger">*</span></label>
                                         @if (auth()->check())
                                             <input class="form-control" type="text" name="external_address"
-                                                value="{{ auth()->user()->address ?? '' }}">
+                                                value="{{ auth()->user()->address ?? '' }}" required>
                                         @else
                                             <input class="form-control" type="text" name="external_address" required>
                                         @endif
                                     </div>
-                                    <!-- Reason -->
-                                    <div class="col-md-12">
-                                        <label class="form-label fw-semibold">วัตถุประสงค์</label>
-                                        <textarea name="reason" class="form-control" rows="3"></textarea>
-                                    </div>
-                                    <div class="border-0 mt-4 mb-3">
-                                        <div class="fw-bold">อุปกรณ์ในห้อง</div>
-                                        @if ($room->equipments->isEmpty())
-                                            <p>ไม่มีอุปกรณ์ในห้องนี้</p>
+
+                                    <!-- ข้อมูลผู้ประสานงาน -->
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">ชื่อผู้ประสาน <span
+                                                class="text-danger">*</span></label>
+                                        @if (auth()->check())
+                                            <input class="form-control" type="text" name="coordinator_name"
+                                                value="{{ auth()->user()->name }}" required>
                                         @else
-                                            <ul class="list-group list-group-flush">
-                                                @foreach ($room->equipments as $equipment)
-                                                    <li
-                                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                                        {{ $equipment->name }}
-                                                        <span class="badge bg-primary rounded-pill">
-                                                            จำนวน{{ $equipment->quantity }} รายการ</span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
+                                            <input class="form-control" name="coordinator_name" type="text" required>
                                         @endif
                                     </div>
-                                    <div class="col-md-12">
-                                        <label class="form-label fw-semibold">รายละเอียดเพิ่มเติม(ถ้ามี)</label>
-                                        <textarea name="booker_info" class="form-control" rows="3"
-                                            placeholder="ระบุรายละเอียดเพิ่มเติม เช่น ต้องการวัสดุ/อุปกรณ์..."></textarea>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">เบอร์โทรติดต่อผู้ประสาน <span
+                                                class="text-danger">*</span></label>
+                                        @if (auth()->check())
+                                            <input class="form-control" type="tel" name="coordinator_phone"
+                                                value="{{ auth()->user()->phone_number ?? '' }}" required>
+                                        @else
+                                            <input class="form-control" type="tel" name="coordinator_phone" required>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">หน่วยงานผู้ประสาน <span
+                                                class="text-danger">*</span></label>
+                                        @if (auth()->check())
+                                            <input class="form-control" type="text" name="coordinator_department"
+                                                value="{{ auth()->user()->address ?? '' }}" required>
+                                        @else
+                                            <input class="form-control" type="text" name="coordinator_department"
+                                                required>
+                                        @endif
                                     </div>
                                     <!-- จำนวนผู้เข้าร่วม -->
                                     <div class="col-md-6">
@@ -130,82 +138,171 @@
                                         <input class="form-control" type="number" name="participant_count"
                                             min="1" required>
                                     </div>
-                                </div>
-                                <!-- Date Selection Box -->
-                                <div class="border-0 mt-4 mb-3">
-                                    <div class="card-body p-4 text-center">
-                                        <div class="d-flex justify-content-center align-items-center mb-3 flex-wrap gap-3">
-                                            <div>
-                                                <div class="h5 fw-bold mb-1" id="checkInDate">กรุณาเลือกวันเช็คอิน</div>
-                                                <div class="small text-muted">เช็คอิน</div>
-                                            </div>
-                                            <div class="h4 mx-3 text-warning">→</div>
-                                            <div>
-                                                <div class="h5 fw-bold mb-1" id="checkOutDate">กรุณาเลือกวันเช็คเอาท์
-                                                </div>
-                                                <div class="small text-muted">เช็คเอาท์</div>
-                                            </div>
-                                        </div>
 
-                                        <button id="toggleCalendar" type="button"
-                                            class="btn btn-warning px-4 py-2 fw-semibold">
-                                            <i class="bi bi-calendar-date me-2"></i>เลือกวันจอง
-                                        </button>
-                                        <input type="hidden" name="booking_start" id="booking_start">
-                                        <input type="hidden" name="booking_end" id="booking_end">
-
-                                        <div class="md-4 text-start">
-                                            <h6 class="fw-bold mb-2">หมายเหตุ:</h6>
-                                            <!-- วันหยุดนักขัตฤกษ์ -->
-                                            <div class="d-flex align-items-center md-6">
-                                                <span class="d-inline-block rounded-circle me-2"
-                                                    style="width: 16px; height: 16px; background-color: #fef08a;"></span>
-                                                <span class="small">วันหยุดนักขัตฤกษ์</span>
-                                            </div>
-                                            <!-- วันที่มีการจองแล้ว -->
-                                            <div class="d-flex align-items-center md-6">
-                                                <span class="d-inline-block rounded-circle me-2"
-                                                    style="width: 16px; height: 16px; background-color: #bfdbfe;"></span>
-                                                <span class="small">วันที่มีการจองแล้ว
-                                                    (สามารถจองได้หากช่วงเวลาไม่ซ้อนกัน)</span>
-                                            </div>
-                                        </div>
+                                    <!-- วัตถุประสงค์ -->
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-semibold">วัตถุประสงค์ <span
+                                                class="text-danger">*</span></label>
+                                        <textarea name="reason" class="form-control" rows="3" required></textarea>
                                     </div>
-                                </div>
-                                <!-- Time Selection Box -->
-                                <div class=" border-0 mb-4">
-                                    <div class="card-body p-4">
-                                        <h5 class="fw-bold mb-3">เวลาจอง</h5>
-                                        <!-- Update the time inputs -->
+
+                                    <!-- รายละเอียดเพิ่มเติม -->
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-semibold">รายละเอียดกิจกรรม<span
+                                                class="text-danger">*</span></label>
+                                        <textarea name="booker_info" class="form-control" rows="3" placeholder="ระบุกิจกรรมที่จะเกิดขึ้น..." required></textarea>
+                                    </div>
+
+                                    <!-- อุปกรณ์ในห้อง -->
+                                    <div class="col-md-12 mt-3">
+                                        <div class="fw-bold">อุปกรณ์ในห้อง</div>
+                                        @if ($room->equipments->isEmpty())
+                                            <p class="text-muted">ไม่มีอุปกรณ์ในห้องนี้</p>
+                                        @else
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ชื่ออุปกรณ์</th>
+                                                            <th>จำนวน</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($room->equipments as $equipment)
+                                                            <tr>
+                                                                <td>{{ $equipment->name }}</td>
+                                                                <td>{{ $equipment->quantity }} รายการ</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="alert alert-warning mt-2 p-2 text-wrap text-break">
+                                        <strong>หมายเหตุ: </strong>
+                                        @if ($room->room_type === 3)
+                                            งานวีดีโอ/ชุดเครื่องเสียงสำหรับงานดนตรี/อื่นๆ ให้ติดต่อเจ้าหน้าที่โสต
+                                            ในวันที่เข้าจองห้องในระบบ
+                                        @elseif ($room->room_type === 8)
+                                            อุปกรณ์ที่ต้องการใช้ ให้ติดต่อเจ้าหน้าที่โสตในวันที่เข้าจองห้องในระบบ
+                                        @else
+                                            หากต้องการอุปกรณ์เพิ่มเติม กรุณาติดต่อเจ้าหน้าที่ดูแลอาคาร ในวันที่เข้าจองห้องในระบบ
+                                        @endif
+                                    </div>
+                                    <!-- วันจัดและเก็บสถานที่ -->
+                                    <div class="col-md-12 mt-4">
+                                        <h5 class="fw-bold mb-3">วันจัดเตรียมและเก็บสถานที่</h5>
                                         <div class="row g-3">
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold">เวลาเข้า</label>
-                                                <input type="time" id="check_in_time" name="check_in_time"
-                                                    step="60" min="08:00" max="22:59">
-                                                <div class="form-text">เวลาเข้าต้องอยู่ระหว่าง 08:00 - 22:00 น.</div>
+                                                <label class="form-label fw-semibold"
+                                                    id="setup_date">วันจัดสถานที่</label>
+                                                <input type="date" class="form-control" name="setup_date"
+                                                    id="setup_date" required>
+                                                <div class="form-text"id="setup_date_display">โปรดเลือกวันจัดเตรียมสถานที่
+                                                    (ภายในเวลาราชการ)</div>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold">เวลาออก</label>
-                                                <input type="time" id="check_out_time" name="check_out_time"
-                                                    step="60" min="08:01" max="23:00">
-                                                <div class="form-text">เวลาออกต้องอยู่ระหว่าง 09:00 - 23:00 น.</div>
+                                                <label class="form-label fw-semibold">วันเก็บสถานที่</label>
+                                                <input type="date" class="form-control" name="teardown_date" required>
+                                                <div class="form-text">โปรดเลือกวันเก็บสถานที่ (ภายในเวลาราชการ)</div>
                                             </div>
                                         </div>
-                                        <p class="small text-muted mt-3 mb-0">
-                                            <i class="bi bi-info-circle me-1"></i>
-                                            หมายเหตุ: เวลาจองเริ่มตั้งแต่ 8:00 น. ถึง 23:00 น. ของแต่ละวัน
-                                        </p>
                                     </div>
-                                </div>
-                                <!-- Action Buttons -->
-                                <div class="d-flex justify-content-between">
-                                    <button type="button" class="btn btn-danger px-4"
-                                        onclick="window.location.href='{{ route('rooms.index') }}'">
-                                        ยกเลิก
-                                    </button>
-                                    <button type="submit" class="btn btn-success px-4">
-                                        ยืนยันการจอง
-                                    </button>
+
+                                    <!-- วันที่จอง -->
+                                    <div class="col-md-12 mt-4">
+                                        <div class="card p-4">
+                                            <h5 class="fw-bold mb-3">วันที่จอง</h5>
+                                            <div
+                                                class="d-flex justify-content-center align-items-center mb-3 flex-wrap gap-3">
+                                                <div>
+                                                    <div class="h5 fw-bold mb-1" id="checkInDate">กรุณาเลือกวันเริ่มต้น
+                                                    </div>
+                                                    <div class="small text-muted">เริ่มต้น</div>
+                                                </div>
+                                                <div class="h4 mx-3 text-warning">→</div>
+                                                <div>
+                                                    <div class="h5 fw-bold mb-1" id="checkOutDate">กรุณาเลือกวันสิ้นสุด
+                                                    </div>
+                                                    <div class="small text-muted">สิ้นสุด</div>
+                                                </div>
+                                            </div>
+                                            <button id="toggleCalendar" type="button"
+                                                class="btn btn-warning px-4 py-2 fw-semibold">
+                                                <i class="bi bi-calendar-date me-2"></i>เลือกวันจอง
+                                            </button>
+                                            <input type="hidden" name="booking_start" id="booking_start">
+                                            <input type="hidden" name="booking_end" id="booking_end">
+
+                                            <div class="mt-3 text-start">
+                                                <h6 class="fw-bold mb-2">หมายเหตุ:</h6>
+                                                <ul class="list-unstyled small">
+                                                    @if ($room->room_type === 3)
+                                                        <li class="alert alert-warning mt-2 p-2 text-wrap text-break">
+                                                            ใช้ห้องนอกเวลาราชการให้ติดต่อเจ้าหน้าที่อาคารและโสตในวันที่เข้าจองห้องในระบบ
+                                                        </li>
+                                                    @elseif ($room->room_type === 8)
+                                                        <li class="alert alert-warning mt-2 p-2 text-wrap text-break">
+                                                            ใช้ห้องนอกเวลาราชการให้ติดต่อเจ้าหน้าที่โสตในวันที่เข้าจองห้องในระบบ
+                                                        </li>
+                                                    @endif
+                                                    <li class="alert alert-warning mt-2 p-2 text-wrap text-break">
+                                                        สามารถใช้ห้องได้ในเวลาราชการเท่านั้น หากใช้ห้องนอกเวลาให้ติดต่อเจ้าหน้าที่ดูแลอาคารในวันที่เข้าจองห้องในระบบ
+                                                    </li>
+                                                    <li class="mb-1">
+                                                        <span class="d-inline-block rounded-circle me-2"
+                                                            style="width: 16px; height: 16px; background-color: #fef08a;"></span>
+                                                        วันหยุดนักขัตฤกษ์
+                                                    </li>
+                                                    <li>
+                                                        <span class="d-inline-block rounded-circle me-2"
+                                                            style="width: 16px; height: 16px; background-color: #bfdbfe;"></span>
+                                                        วันที่มีการจองแล้ว (สามารถจองได้หากช่วงเวลาไม่ซ้อนกัน)
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- เวลาจอง -->
+                                    <div class="col-md-12 mt-4">
+                                        <div class="card p-4">
+                                            <h5 class="fw-bold mb-3">เวลาจอง</h5>
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-semibold">เวลาเข้า <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="time" id="check_in_time" name="check_in_time"
+                                                        class="form-control" step="60" min="08:00"
+                                                        max="22:59" required>
+                                                    <div class="form-text">เวลาเข้าต้องอยู่ระหว่าง 08:00 - 22:00 น.</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-semibold">เวลาออก <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="time" id="check_out_time" name="check_out_time"
+                                                        class="form-control" step="60" min="08:01"
+                                                        max="23:00" required>
+                                                    <div class="form-text">เวลาออกต้องอยู่ระหว่าง 09:00 - 23:00 น.</div>
+                                                </div>
+                                            </div>
+                                            <p class="small text-muted mt-3 mb-0">
+                                                <i class="bi bi-info-circle me-1"></i>
+                                                หมายเหตุ: เวลาจองเริ่มตั้งแต่ 8:00 น. ถึง 23:00 น. ของแต่ละวัน
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- ปุ่มยืนยัน -->
+                                    <div class="col-md-12 mt-4 d-flex justify-content-between">
+                                        <button type="button" class="btn btn-danger px-4"
+                                            onclick="window.location.href='{{ route('rooms.index') }}'">
+                                            ยกเลิก
+                                        </button>
+                                        <button type="submit" class="btn btn-success px-4">
+                                            ยืนยันการจอง
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -268,6 +365,21 @@
         }
     </style>
     <script>
+        document.getElementById('setup_date').addEventListener('change', function() {
+            const dateValue = this.value;
+            if (dateValue) {
+                const date = new Date(dateValue);
+                const day = date.getDate();
+                const month = date.getMonth() + 1; // เดือนเริ่มที่ 0
+                const year = date.getFullYear() + 543; // แปลง ค.ศ. → พ.ศ.
+
+                const formatted = `วันที่เลือก: ${day}/${month}/${year}`;
+                document.getElementById('setup_date_display').innerText = formatted;
+            } else {
+                document.getElementById('setup_date_display').innerText =
+                    'โปรดเลือกวันจัดเตรียมสถานที่ (ภายในเวลาราชการ)';
+            }
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const bookingForm = document.getElementById('bookingForm');
 

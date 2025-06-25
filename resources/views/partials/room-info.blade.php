@@ -1,6 +1,6 @@
 <div class="card rounded-lg border-0 mb-4">
     <div class="card-header bg-white py-3 border-bottom">
-        <h4 class="mb-0 fw-bold">ข้อมูลห้องพัก</h4>
+        <h4 class="mb-0 fw-bold">รายละเอียดสถานที่/ห้อง/อาคาร</h4>
     </div>
     <div class="card-body p-4">
         <!-- Room Image -->

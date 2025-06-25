@@ -1,6 +1,6 @@
 <div class="card rounded-lg border-0">
     <div class="card-header bg-white py-3 border-bottom">
-        <h4 class="mb-0 fw-bold">สรุปการจอง</h4>
+        <h4 class="mb-0 fw-bold">สรุปเวลาการจอง</h4>
     </div>
     <div class="card-body p-4">
         <!-- Price Summary -->

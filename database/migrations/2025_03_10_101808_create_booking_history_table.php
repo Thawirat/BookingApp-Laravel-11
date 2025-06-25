@@ -21,10 +21,17 @@ class CreateBookingHistoryTable extends Migration
             $table->string('room_name')->nullable(); // ชื่อห้อง
             $table->dateTime('booking_start'); // เวลาเริ่มต้นการจอง
             $table->dateTime('booking_end'); // เวลาสิ้นสุดการจอง
+            $table->string('title')->nullable(); // ✅ ชื่อเรื่อง
+            $table->date('setup_date')->nullable(); // ✅ วันที่จัดสถานที่
+            $table->date('teardown_date')->nullable(); // ✅ วันเก็บสถานที่
+            $table->text('additional_equipment')->nullable(); // ✅ อุปกรณ์เพิ่มเติม
+            $table->string('coordinator_name')->nullable(); // ✅ ผู้ประสาน
+            $table->string('coordinator_phone')->nullable(); // ✅ เบอร์โทรผู้ประสาน
+            $table->string('coordinator_department')->nullable(); // ✅ หน่วยงานผู้ประสาน
             $table->unsignedBigInteger('status_id'); // รหัสสถานะการจอง
             $table->string('status_name')->nullable(); // ชื่อสถานะการจอง
             $table->text('reason')->nullable(); // เหตุผลในการเปลี่ยนแปลงสถานะ
-             $table->text('booker_info')->nullable();
+            $table->text('booker_info')->nullable();
             $table->unsignedInteger('participant_count')->nullable();
             $table->string('approver_name')->nullable();
             $table->string('approver_position')->nullable();

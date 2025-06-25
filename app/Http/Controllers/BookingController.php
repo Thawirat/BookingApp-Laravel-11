@@ -125,13 +125,19 @@ class BookingController extends Controller
                 'building_id' => 'required|exists:buildings,id',
                 'room_name' => 'required|string|max:255',
                 'building_name' => 'required|string|max:255',
+                'title' => 'required|string|max:255',
                 'external_name' => 'required|string|max:255',
                 'external_email' => 'required|email|max:255',
                 'external_phone' => 'required|string|max:20',
                 'external_position' => 'required|string|max:255',
                 'external_address' => 'required|string|max:255',
+                'coordinator_name' => 'required|string|max:255',
+                'coordinator_phone' => 'required|string|max:20',
+                'coordinator_department' => 'required|string|max:255',
                 'booking_start' => 'required|date|after_or_equal:today',
                 'booking_end' => 'required|date|after_or_equal:booking_start',
+                'setup_date' => 'required|date|after_or_equal:today',
+                'teardown_date' => 'required|date|after_or_equal:setup_date',
                 'check_in_time' => [
                     'required',
                     'date_format:H:i',
@@ -144,18 +150,18 @@ class BookingController extends Controller
                     'after:check_in_time',
                     'before_or_equal:23:00'
                 ],
-                'reason' => 'nullable|string',
+                'reason' => 'required|string|max:500',
+                'participant_count' => 'required|integer|min:1',
+                'additional_equipment' => 'nullable|string|max:500',
+                'booker_info' => 'nullable|string|max:500',
                 'payment_slip' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-                'participant_count' => 'nullable|integer|min:1',
-                'purpose' => 'nullable|string',
-                'booker_info' => 'nullable|string'
             ]);
 
             // Combine date and time
             $bookingStart = Carbon::parse($validated['booking_start'])->format('Y-m-d') . ' ' . $validated['check_in_time'];
             $bookingEnd = Carbon::parse($validated['booking_end'])->format('Y-m-d') . ' ' . $validated['check_out_time'];
 
-            // Check for conflict
+            // Check for booking conflict
             $existingBooking = Booking::where('room_id', $validated['room_id'])
                 ->where(function ($query) use ($bookingStart, $bookingEnd) {
                     $query->where(function ($q) use ($bookingStart, $bookingEnd) {
@@ -163,20 +169,33 @@ class BookingController extends Controller
                             ->where('booking_end', '>', $bookingStart);
                     });
                 })
+                ->whereNotIn('status_id', [4, 5]) // ไม่นับการจองที่ถูกยกเลิกหรือปฏิเสธ
                 ->exists();
 
             if ($existingBooking) {
-                return back()->withErrors(['message' => 'ช่วงเวลาที่เลือก已被预订']);
+                return back()->withErrors(['message' => 'ห้องนี้มีการจองแล้วในช่วงเวลาที่เลือก กรุณาเลือกช่วงเวลาอื่น']);
             }
 
             // Create booking
-            $booking = new Booking;
+            $booking = new Booking();
             $booking->fill($validated);
-            $booking->status_id = 3;
-            $booking->is_external = true;
             $booking->booking_start = $bookingStart;
             $booking->booking_end = $bookingEnd;
-            $booking->total_price = null; // ไม่ใช้ service_rates แล้ว กำหนดเป็น null หรือไม่ต้องเซตก็ได้
+            $booking->status_id = 3; // ตั้งค่าเริ่มต้นเป็น "รออนุมัติ"
+            $booking->is_external = true;
+            $booking->total_price = 0; // ตั้งค่าเริ่มต้น
+
+            // Set coordinator information
+            $booking->coordinator_name = $validated['coordinator_name'];
+            $booking->coordinator_phone = $validated['coordinator_phone'];
+            $booking->coordinator_department = $validated['coordinator_department'];
+
+            // Set setup and teardown dates
+            $booking->setup_date = $validated['setup_date'];
+            $booking->teardown_date = $validated['teardown_date'];
+
+            // Set additional equipment if provided
+            $booking->additional_equipment = $validated['additional_equipment'] ?? null;
 
             if (auth()->check()) {
                 $booking->user_id = auth()->id();
@@ -203,13 +222,26 @@ class BookingController extends Controller
                 Log::info('No payment slip provided in the request.');
                 $booking->payment_status = 'unpaid';
             }
+
             $booking->booking_id = $this->generateBookingId();
             $booking->save();
 
-            return redirect()->route('booking.index')->with('success', 'การจองห้องสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันการจอง');
+            // Log successful booking
+            Log::info('Booking created successfully', ['booking_id' => $booking->id]);
+
+            // Send notification
+            $this->sendBookingConfirmation($booking);
+
+            return redirect()->route('booking.index')
+                ->with('success', 'การจองห้องสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันการจอง');
         } catch (\Exception $e) {
-            Log::error('Booking failed: ' . $e->getMessage(), ['request' => $request->all()]);
-            return back()->with('error', 'เกิดข้อผิดพลาดในการจอง: ' . $e->getMessage())->withInput();
+            Log::error('Booking failed: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()
+                ->with('error', 'เกิดข้อผิดพลาดในการจอง: ' . $e->getMessage())
+                ->withInput();
         }
     }
 

@@ -63,7 +63,15 @@ class Booking extends Model
         'participant_count',
         'booker_info',
         'delete_at',
+        'title',
+        'coordinator_name',
+        'coordinator_phone',
+        'coordinator_department',
+        'setup_date',
+        'teardown_date',
+        'additional_equipment',
     ];
+
 
     public static function boot()
     {

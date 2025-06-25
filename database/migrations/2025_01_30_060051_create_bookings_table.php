@@ -25,6 +25,13 @@ return new class extends Migration
             $table->unsignedBigInteger('room_id'); // รหัสห้อง
             $table->unsignedBigInteger('status_id'); // รหัสสถานะการจอง
             $table->string('status_name')->nullable();
+            $table->string('title')->nullable(); // ✅ ชื่อเรื่อง
+            $table->date('setup_date')->nullable(); // ✅ วันที่จัดสถานที่
+            $table->date('teardown_date')->nullable(); // ✅ วันเก็บสถานที่
+            $table->text('additional_equipment')->nullable(); // ✅ อุปกรณ์เพิ่มเติม
+            $table->string('coordinator_name')->nullable(); // ✅ ผู้ประสาน
+            $table->string('coordinator_phone')->nullable(); // ✅ เบอร์โทรผู้ประสาน
+            $table->string('coordinator_department')->nullable(); // ✅ หน่วยงานผู้ประสาน
             $table->dateTime('booking_start'); // เวลาเริ่มต้นการจอง
             $table->dateTime('booking_end'); // เวลาสิ้นสุดการจอง
             $table->text('reason')->nullable(); // เหตุผลในการจอง
