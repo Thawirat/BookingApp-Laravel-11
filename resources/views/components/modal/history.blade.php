@@ -17,6 +17,7 @@
                         <h6 class="fw-semibold text-primary border-bottom pb-1 mb-3">ข้อมูลการจอง</h6>
                         <ul class="list-unstyled small">
                             <li><strong>รหัสการจอง:</strong> {{ $booking->ref_number }}</li>
+                            <li><strong>เรื่อง:</strong> {{ $booking->title }}</li>
                             <li><strong>วันที่จอง:</strong>
                                 {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}</li>
                             <li><strong>เวลา:</strong>
@@ -28,7 +29,7 @@
                             <li><strong>วัตถุประสงค์:</strong> {{ $booking->reason ?? 'ไม่ระบุ' }}</li>
                             <li><strong>จำนวนผู้เข้าร่วม:</strong> {{ $booking->participant_count ?? 'ไม่ระบุ' }} คน
                             </li>
-
+                            <li><strong>รายละเอียดกิจกรรม:</strong> {{ $booking->booker_info ?? 'ไม่ระบุ' }}</li>
                             <li>
                                 <strong>อุปกรณ์ในห้อง:</strong>
                                 @if ($booking->room && $booking->room->equipments && $booking->room->equipments->count())
@@ -41,7 +42,7 @@
                                     ไม่มีอุปกรณ์
                                 @endif
                             </li>
-                            <li><strong>รายละเอียดเพิ่มเติม:</strong> {{ $booking->booker_info ?? 'ไม่ระบุ' }}</li>
+                            {{-- <li><strong>รายละเอียดเพิ่มเติม:</strong> {{ $booking->booker_info ?? 'ไม่ระบุ' }}</li> --}}
                             {{-- <li><strong>สถานะการชำระเงิน:</strong>
                                 <span
                                     class="badge dropdown-toggle
@@ -71,6 +72,9 @@
                             <li><strong>โทรศัพท์:</strong> {{ $booking->external_phone }}</li>
                             <li><strong>ตำแหน่ง:</strong> {{ $booking->external_position ?? 'ไม่ระบุ' }}</li>
                             <li><strong>ที่อยู่/หน่วยงาน:</strong> {{ $booking->external_address ?? 'ไม่ระบุ' }}</li>
+                            <li><strong>ชื่อผู้ประสาน:</strong> {{ $booking->coordinator_name }}</li>
+                            <li><strong>โทรศัพท์ผู้ประสาน:</strong> {{ $booking->coordinator_phone }}</li>
+                            <li><strong>ที่อยู่/หน่วยงานผู้ประสาน:</strong> {{ $booking->coordinator_department ?? 'ไม่ระบุ' }}</li>
                         </ul>
                     </div>
                     <!-- Room Info -->

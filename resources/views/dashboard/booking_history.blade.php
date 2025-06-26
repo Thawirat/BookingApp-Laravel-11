@@ -130,16 +130,21 @@
                                                         class="badge
                                                 @if ($booking->status_id == 5) bg-danger
                                                 @elseif($booking->status_id == 6) bg-primary
+                                                @elseif($booking->status_id == 8) bg-danger
                                                 @else bg-secondary @endif">
                                                         {{ $booking->status->status_name }}
                                                     </span>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
-                                                        <a href="#" class="btn btn-outline-info btn-sm view-details"
+                                                        <a href="#" class="btn btn-outline-primary btn-sm view-details"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#detailsModal{{ $booking->id }}">
-                                                            <i class="fas fa-eye"></i> รายละเอียด
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a href="{{ route('bookings.download.pdf', $booking->id) }}"
+                                                            class="btn btn-outline-danger btn-sm">
+                                                            <i class="fas fa-file-pdf me-1"></i>
                                                         </a>
                                                     </div>
                                                 </td>

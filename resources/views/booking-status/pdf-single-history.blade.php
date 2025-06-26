@@ -320,7 +320,7 @@
         <div class="section">
             <div class="section-header">
                 <div class="section-label">เรื่อง</div>
-                <div class="section-content">ขออนุญาตใช้ {{ $booking->room_name ?? '' }}</div>
+                <div class="section-content"> {{ $booking->title ?? 'ขออนุญาตใช้' . ($booking->room_name ?? 'ห้องประชุม') }}</div>
             </div>
         </div>
 

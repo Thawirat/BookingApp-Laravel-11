@@ -33,6 +33,15 @@ class BookingHistory extends Model
     'created_at',
     'updated_at',
     'moved_to_history_at',
+    'title',
+    'setup_date',
+    'teardown_date',
+    'additional_equipment',
+    'coordinator_name',
+    'coordinator_phone',
+    'coordinator_department',
+    'booker_info',
+    'participant_count'
 ];
 
     public function user()
@@ -55,6 +64,6 @@ class BookingHistory extends Model
         return $this->belongsTo(Building::class);
     }
 
-    
+
 
 }

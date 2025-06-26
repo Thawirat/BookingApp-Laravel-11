@@ -37,13 +37,20 @@ class BookingHistoryController extends Controller
             'payment_status'    => 'completed',
             'amount'            => $booking->total_price,
             'moved_to_history_at' => now(),
+            'title' => $booking->title ?? null,
+            'setup_date' => $booking->setup_date ?? null,
+            'teardown_date' => $booking->teardown_date ?? null,
+            'additional_equipment' => $booking->additional_equipment ?? null,
+            'coordinator_name' => $booking->coordinator_name ?? null,
+            'coordinator_phone' => $booking->coordinator_phone ?? null,
+            'coordinator_department' => $booking->coordinator_department ?? null,
         ]);
         $bookingHistory->save();
     }
 
     public function index(Request $request)
     {
-         $query = BookingHistory::with(['room.equipments', 'user', 'status']);
+        $query = BookingHistory::with(['room.equipments', 'user', 'status']);
         // 🔍 ค้นหาข้อมูล
         if ($request->filled('search')) {
             $search = $request->search;

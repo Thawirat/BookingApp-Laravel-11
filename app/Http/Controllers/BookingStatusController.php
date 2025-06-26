@@ -80,6 +80,13 @@ class BookingStatusController extends Controller
             'created_at'         => $booking->created_at,
             'updated_at'         => $booking->updated_at,
             'moved_to_history_at' => now(),
+            'title' => $booking->title ?? null,
+            'setup_date' => $booking->setup_date ?? null,
+            'teardown_date' => $booking->teardown_date ?? null,
+            'additional_equipment' => $booking->additional_equipment ?? null,
+            'coordinator_name' => $booking->coordinator_name ?? null,
+            'coordinator_phone' => $booking->coordinator_phone ?? null,
+            'coordinator_department' => $booking->coordinator_department ?? null,
         ]);
 
         // ลบการจองจาก booking ปกติ

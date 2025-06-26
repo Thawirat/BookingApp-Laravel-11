@@ -148,7 +148,7 @@
                                                             data-bs-target="#detailsModal{{ $booking->id }}">
                                                             <i class="fas fa-eye"></i> ดูรายละเอียด
                                                         </a>
-                                                        <a href="{{ route('bookingslip.download.pdf', $booking->id) }}"
+                                                        <a href="{{ route('mybookings.download.pdf', $booking->id) }}"
                                                             class="btn btn-outline-danger">
                                                             <i class="fas fa-file-pdf me-1"></i> ดาวน์โหลดไฟล์ PDF
                                                         </a>

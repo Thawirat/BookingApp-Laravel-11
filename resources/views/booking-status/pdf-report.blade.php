@@ -287,7 +287,7 @@
         <div class="section">
             <div class="section-header">
                 <div class="section-label">เรื่อง</div>
-                <div class="section-content">ขออนุญาตใช้ {{ $booking->room_name ?? '' }}</div>
+                <div class="section-content">{{ $booking->title ?? '' }}</div>
             </div>
         </div>
 
@@ -349,8 +349,8 @@
                 </ul>
 
                 <div class="content-paragraph">
-                    <span class="inline-strong">รายละเอียดเพิ่มเติม:</span>
-                    {{ $booking->booker_info ?? 'ไม่มีรายละเอียดเพิ่มเติม' }}
+                    <span class="inline-strong">รายละเอียดกิจกรรม:</span>
+                    {{ $booking->booker_info ?? 'ไม่มีรายละเอียด' }}
                 </div>
             </div>
         </div>
