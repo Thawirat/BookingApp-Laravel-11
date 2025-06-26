@@ -30,7 +30,7 @@
                                 $currentDate = \Carbon\Carbon::parse($day['date'])->startOfDay();
                                 $isInRange = $currentDate->between($startDate, $endDate);
                                 $isSameDay = $startDate->equalTo($endDate);
-                                $isVisible = !in_array($booking->status_id, [1, 2,5,6]);
+                                $isVisible = !in_array($booking->status_id, [1, 2, 5, 6]);
                                 $isStart = $currentDate->equalTo($startDate);
                                 $isEnd = $currentDate->equalTo($endDate);
                                 $isMiddle = $isInRange && !$isStart && !$isEnd;
@@ -39,12 +39,24 @@
                             @if ($isVisible && $isInRange)
                                 @php $bookingCount++; @endphp
 
-                                <div class="event {{ $bookingCount > $maxVisible ? 'd-none more-booking' : '' }}"
+                                @php
+                                    $eventClass = 'event';
+                                    if ($isStart && $isEnd) {
+                                        $eventClass .= ' event-start event-end';
+                                    } elseif ($isStart) {
+                                        $eventClass .= ' event-start';
+                                    } elseif ($isEnd) {
+                                        $eventClass .= ' event-end';
+                                    } elseif ($isMiddle) {
+                                        $eventClass .= ' event-middle';
+                                    }
+                                @endphp
+
+                                <div class="{{ $eventClass }} {{ $bookingCount > $maxVisible ? 'd-none more-booking' : '' }}"
                                     style="background-color: {{ $booking->statusColor }};" data-bs-toggle="tooltip"
                                     data-bs-custom-class="custom-tooltip"
-                                    title="{{ $booking->room_name }} ({{ $booking->external_name }})
-                    {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} -
-                    {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}">
+                                    title="{{ $booking->room_name }} ({{ $booking->external_name }}) {{ \Carbon\Carbon::parse($booking->booking_start)->locale('th')->copy()->addYears(543)->isoFormat('D/MM/YYYY HH:mm') }}
+ - {{ \Carbon\Carbon::parse($booking->booking_end)->locale('th')->copy()->addYears(543)->isoFormat(' D/MM/YYYY HH:mm') }}">
                                     <span class="event-title">{{ $booking->room_name }}</span>
                                 </div>
                             @endif
