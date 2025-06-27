@@ -33,7 +33,22 @@
                     <h3 class="fw-bold">{{ $totalBookings }} การจองทั้งหมด</h3>
                     <p class="mt-2">การจองทั้งหมดที่มีในระบบ</p>
                 </div>
-
+                @if (Auth::check() && Auth::user()->isSubAdmin())
+                    @php
+                        $role = Auth::user()->getRoleNames()->first();
+                        $roleDisplay =
+                            [
+                                'sub-admin' => 'ผู้ดูแลอาคาร',
+                            ][$role] ?? $role;
+                    @endphp
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <div class="text-sky-500 text-5xl mb-4">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="fw-bold">{{ $totalbuildingBookings }} การจองในห้องทั้งหมด</h3>
+                        <p class="mt-2">การจองทั้งหมดในห้องที่อยู่ในการดูแล</p>
+                    </div>
+                @endif
                 <!-- Card: Dashboard ผู้ดูแล -->
                 @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
                     @php
@@ -44,19 +59,16 @@
                                 'sub-admin' => 'ผู้ดูแลอาคาร',
                             ][$role] ?? $role;
                     @endphp
-
-                    <div class="md:col-span-3">
-                        <a href="{{ route('dashboard') }}" class="block" style="text-decoration: none;">
-                            <div
-                                class="bg-white border border-blue-500 rounded-lg p-6 text-center shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-1">
-                                <div class="flex flex-col items-center">
-                                    <i class="fas fa-user-shield text-blue-500 text-5xl mb-4"></i>
-                                    <h3 class="text-2xl fw-bold text-gray-800">สำหรับ {{ $roleDisplay }}</h3>
-                                    <p class="text-gray-500 mt-2">จัดการระบบสำหรับ {{ $roleDisplay }}</p>
-                                </div>
+                    <a href="{{ route('dashboard') }}" class="block" style="text-decoration: none;">
+                        <div
+                            class="bg-white border border-blue-500 rounded-lg p-6 text-center shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-1">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-user-shield text-blue-500 text-5xl mb-4"></i>
+                                <h3 class="text-2xl fw-bold text-gray-800">สำหรับ {{ $roleDisplay }}</h3>
+                                <p class="text-gray-500 mt-2">จัดการระบบสำหรับ {{ $roleDisplay }}</p>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 @endif
             </div>
             <!-- การจองของฉัน -->

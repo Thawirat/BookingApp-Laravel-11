@@ -73,12 +73,16 @@ class DashboardController extends Controller
 
         // ดึงจำนวนห้องทั้งหมดจากฐานข้อมูล
         $user = Auth::user();
+        $myBookings = collect(); // ✅ ป้องกัน error
+        $totalmyBookings = 0;
+        $totalbuildingBookings = 0;
 
         if ($user->hasRole('sub-admin')) {
             $buildingIds = $user->buildings->pluck('id');
 
             $totalRooms = \App\Models\Room::whereIn('building_id', $buildingIds)->count();
-            $totalBookings = Booking::whereIn('building_id', $buildingIds)->count();
+            $totalbuildingBookings = Booking::whereIn('building_id', $buildingIds)->count();
+            $totalBookings = \App\Models\Booking::count();
             $totalBuildings = count($buildingIds);
             $totalUsers = 1; // หรือกรองเฉพาะ user ที่อยู่ในอาคารนั้น
 
@@ -120,7 +124,7 @@ class DashboardController extends Controller
             $featuredRooms = Room::with('building')->latest()->limit(10)->get();
         }
 
-        return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings', 'myBookings', 'totalmyBookings', 'featuredRooms'));
+        return view('index', compact('totalRooms', 'totalUsers', 'totalBookings', 'totalBuildings', 'myBookings', 'totalmyBookings', 'featuredRooms','totalbuildingBookings'));
     }
     public function __construct()
     {

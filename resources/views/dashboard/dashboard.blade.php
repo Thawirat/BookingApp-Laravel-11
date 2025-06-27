@@ -31,6 +31,25 @@
                 </div>
             @endforeach
         </div>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a href="{{ route('booking_db') }}" class="btn btn-outline-primary">
+                <i class="fas fa-calendar-check me-1"></i> การจองห้อง
+            </a>
+            <a href="{{ route('manage_rooms.index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-building me-1"></i> จัดการห้องและอาคาร
+            </a>
+            <a href="{{ route('booking_history') }}" class="btn btn-outline-primary">
+                <i class="fas fa-history me-1"></i> ประวัติการจอง
+            </a>
+            @if (Auth::user()->isAdmin())
+                <a href="{{ route('manage_users.index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-users-cog me-1"></i> จัดการผู้ใช้
+                </a>
+                <a href="{{ route('room-types.index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-tags me-1"></i> จัดการประเภทห้อง
+                </a>
+            @endif
+        </div>
         <div class="row">
             <!-- การจองล่าสุด -->
             <div class="col-md-8">
