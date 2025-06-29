@@ -122,7 +122,7 @@ class Booking_dbController extends Controller
         $sort = $request->get('sort', 'desc');
         $query->orderBy('created_at', $sort);
 
-        $bookings = $query->paginate(10)->appends($request->all());
+        $bookings = $query->paginate(50)->appends($request->all());
 
         // 👉 สถิติ
         $totalBookings = Booking::whereNull('deleted_at')->count();

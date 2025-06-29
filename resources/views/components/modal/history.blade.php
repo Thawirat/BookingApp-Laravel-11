@@ -18,14 +18,17 @@
                         <ul class="list-unstyled small">
                             <li><strong>รหัสการจอง:</strong> {{ $booking->ref_number }}</li>
                             <li><strong>เรื่อง:</strong> {{ $booking->title }}</li>
+                            <li><strong>สถานะการจอง:</strong> {{ $booking->status->status_name }}</li>
                             <li><strong>วันที่จอง:</strong>
-                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}</li>
-                            <li><strong>เวลา:</strong>
-                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }} -
-                                {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
-                            </li>
+                                {{ \Carbon\Carbon::parse($booking->booking_created_at)->addYear(543)->format('d/m/Y') }}</li>
+                            <li><strong>วันที่เริ่มต้น:</strong>
+                                {{ \Carbon\Carbon::parse($booking->booking_start)->addYear(543)->format('d/m/Y') }}</li>
                             <li><strong>วันที่สิ้นสุด:</strong>
-                                {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}</li>
+                                {{ \Carbon\Carbon::parse($booking->booking_end)->addYear(543)->format('d/m/Y') }}</li>
+                            <li><strong>เวลา:</strong>
+                                {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }}น. -
+                                {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}น.
+                            </li>
                             <li><strong>วัตถุประสงค์:</strong> {{ $booking->reason ?? 'ไม่ระบุ' }}</li>
                             <li><strong>จำนวนผู้เข้าร่วม:</strong> {{ $booking->participant_count ?? 'ไม่ระบุ' }} คน
                             </li>
@@ -35,7 +38,7 @@
                                 @if ($booking->room && $booking->room->equipments && $booking->room->equipments->count())
                                     <ul class="ps-3 mb-0">
                                         @foreach ($booking->room->equipments as $equipment)
-                                            <li>{{ $equipment->name }} ({{ $equipment->quantity }} ชิ้น)</li>
+                                            <li>{{ $equipment->name }} {{ $equipment->quantity }} รายการ</li>
                                         @endforeach
                                     </ul>
                                 @else

@@ -130,7 +130,7 @@ class BookingHistoryController extends Controller
         }
 
         // เรียงลำดับและแบ่งหน้า
-        $bookingHistories = $query->paginate(10);
+        $bookingHistories = $query->paginate(50);
 
         return view('dashboard.booking_history', compact('bookingHistories'));
     }

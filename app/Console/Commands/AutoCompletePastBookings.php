@@ -9,32 +9,32 @@ use Carbon\Carbon;
 
 class AutoCompletePastBookings extends Command
 {
-    protected $signature = 'booking:auto-complete';
-    protected $description = 'Update bookings that are past and move them to history';
+    // protected $signature = 'booking:auto-complete';
+    // protected $description = 'Update bookings that are past and move them to history';
 
-    public function handle()
-    {
-        $now = Carbon::now();
+    // public function handle()
+    // {
+    //     $now = Carbon::now();
 
-        $pastBookings = Booking::where('booking_end', '<', $now)
-            ->whereNotIn('status_id', [5, 6])
-            ->get();
+    //     $pastBookings = Booking::where('booking_end', '<', $now)
+    //         ->whereNotIn('status_id', [5, 6])
+    //         ->get();
 
-        foreach ($pastBookings as $booking) {
-            if ($booking->status_id == 3) {
-                $booking->status_id = 5;
-            } elseif ($booking->status_id == 4) {
-                $booking->status_id = 6;
-            } else {
-                continue;
-            }
+    //     foreach ($pastBookings as $booking) {
+    //         if ($booking->status_id == 3) {
+    //             $booking->status_id = 5;
+    //         } elseif ($booking->status_id == 4) {
+    //             $booking->status_id = 6;
+    //         } else {
+    //             continue;
+    //         }
 
-            $booking->save();
+    //         $booking->save();
 
-            $historyController = new BookingHistoryController;
-            $historyController->addBookingToHistory($booking);
-        }
+    //         $historyController = new BookingHistoryController;
+    //         $historyController->addBookingToHistory($booking);
+    //     }
 
-        $this->info("Auto-complete bookings finished.");
-    }
+    //     $this->info("Auto-complete bookings finished.");
+    // }
 }

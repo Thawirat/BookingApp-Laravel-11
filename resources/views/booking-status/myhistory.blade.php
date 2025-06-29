@@ -53,21 +53,21 @@
                             <th class="text-center">สถานะ</th>
                             {{-- <th class="text-center">การชำระเงิน</th> --}}
                             <th class="text-center">รายละเอียด</th>
-                            <th class="text-center"><a href="{{ route('bookings.download.all.pdf') }}"
+                            {{-- <th class="text-center"><a href="{{ route('bookings.download.all.pdf') }}"
                                     class="btn btn-outline-danger btn-sm">
                                     <i class="fas fa-file-pdf me-1">ดาวโหลดทั้งหมด</i>
-                                </a></th>
+                                </a></th> --}}
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($bookings as $booking)
                             <tr>
-                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center"> {{ $loop->iteration + ($bookings->firstItem() - 1) }} </td>
                                 <td class="text-center">{{ $booking->ref_number }}</td>
                                 <td class="text-center">{{ $booking->room_name ?? '-' }}</td>
                                 <td class="text-center">{{ $booking->building_name ?? '-' }}</td>
                                 <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($booking->crated_at)->addyear(543)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($booking->created_at)->addyear(543)->format('d/m/Y') }}
                                 </td>
                                 <td class="text-center">
                                     <div><strong>เริ่ม:</strong>
@@ -128,7 +128,7 @@
                                         <i class="fas fa-file-pdf me-1"></i>
                                     </a> --}}
                                 </td>
-                                @include('booking-status.modal')
+                                @include('components.modal.history', ['booking' => $booking])
                             </tr>
                         @endforeach
                     </tbody>

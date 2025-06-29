@@ -186,6 +186,7 @@
             sidebar.classList.remove('sidebar-open');
             overlay.classList.remove('active');
         });
+        moment.locale('th');
     </script>
     @stack('scripts')
 </body>

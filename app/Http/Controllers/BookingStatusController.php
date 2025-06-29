@@ -41,7 +41,7 @@ class BookingStatusController extends Controller
         if ($date) {
             $query->whereDate('booking_start', $date);
         }
-        $bookings = $query->paginate(40);
+        $bookings = $query->paginate(50);
 
         return view('booking-status.index', compact('bookings', 'search', 'status', 'date'));
     }

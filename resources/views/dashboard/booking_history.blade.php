@@ -79,19 +79,19 @@
                                 </div>
                             @endif
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle table-bordered shadow-sm">
+                                <table class="table table-striped table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
                                             <th class="text-center">ลำดับที่</th>
                                             <th class="text-center">รหัสการจอง</th>
+                                            <th class="text-center">ห้องที่จอง</th>
                                             <th class="text-center">ผู้จองห้อง</th>
                                             <th class="text-center">เบอร์โทรศัพท์</th>
-                                            <th class="text-center">ชื่อห้อง</th>
                                             <th class="text-center">วันที่จอง</th>
-                                            <th class="text-center">วันที่เริ่มต้น-สิ้นสุด</th>
-                                            {{-- <th>สถานะการชำระเงิน</th> --}}
-                                            <th class="text-center">สถานะ</th>
-                                            <th class="text-center">รายละเอียด</th>
+                                            <th class="text-center">วันที่เริ่มต้น-สิ้นสุดการจอง</th>
+                                            {{-- <th class="text-center">สถานะการชำระเงิน</th> --}}
+                                            <th class="text-center">สถานะการอนุมัติ</th>
+                                            <th class="text-center">การดำเนินการ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -100,25 +100,33 @@
                                                 <td class="text-center">
                                                     {{ ($bookings->currentPage() - 1) * $bookings->perPage() + $loop->iteration }}
                                                 </td>
-                                                <td class="text-center fw-bold">{{ $booking->ref_number }}</td>
+                                                <td class="text-center"><span
+                                                        class="badge bg-light text-dark">{{ $booking->ref_number }}</span>
+                                                </td>
+                                                <td class="text-center"><span class="fw-bold">{{ $booking->room_name }}</span></td>
                                                 <td class="text-center">
                                                     <div class="fw-bold">{{ $booking->external_name }}</div>
                                                     <small class="text-muted">{{ $booking->external_email }}</small>
                                                 </td>
                                                 <td class="text-center">{{ $booking->external_phone }}</td>
-                                                <td class="text-center">{{ $booking->room_name }}</td>
                                                 <td class="text-center">
-                                                    {{ \Carbon\Carbon::parse($booking->created_at)->addyear(543)->format('d/m/Y') }}
+                                                    <div><i class="far fa-calendar-alt me-1"></i>
+                                                        {{ \Carbon\Carbon::parse($booking->created_at)->addYear(543)->format('d/m/Y') }}
+                                                    </div>
                                                 </td>
                                                 <td class="text-center">
-                                                    <div><strong>เริ่ม:</strong>
-                                                        วันที่
-                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->addYears(543)->format('d/m/Y เวลา H:i') }}
-                                                        น.</div>
-                                                    <div><strong>สิ้นสุด:</strong>
-                                                        วันที่
-                                                        {{ \Carbon\Carbon::parse($booking->booking_end)->addYears(543)->format('d/m/Y เวลา H:i') }}
-                                                        น.</div>
+                                                    <div>
+                                                        <i class="far fa-calendar-alt me-1"></i>
+                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->addYear(543)->format('d/m/Y') }}
+                                                        -
+                                                        {{ \Carbon\Carbon::parse($booking->booking_end)->addYear(543)->format('d/m/Y') }}
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        <i class="far fa-clock me-1"></i>
+                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }}น.
+                                                        -
+                                                        {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}น.
+                                                    </small>
                                                 </td>
                                                 {{-- <td>
                                             <span class="badge {{ $booking->payment_status == 'ชำระแล้ว' ? 'bg-success' : 'bg-warning' }}">
@@ -137,7 +145,8 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
-                                                        <a href="#" class="btn btn-outline-primary btn-sm view-details"
+                                                        <a href="#"
+                                                            class="btn btn-outline-primary btn-sm view-details"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#detailsModal{{ $booking->id }}">
                                                             <i class="fas fa-eye"></i>

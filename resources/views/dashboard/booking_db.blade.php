@@ -116,21 +116,21 @@
                                                 <td>{{ $booking->external_phone }}</td>
                                                 <td>
                                                     <div><i class="far fa-calendar-alt me-1"></i>
-                                                        {{ \Carbon\Carbon::parse($booking->created_at)->format('d/m/Y') }}
+                                                        {{ \Carbon\Carbon::parse($booking->created_at)->addYear(543)->format('d/m/Y') }}
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div>
                                                         <i class="far fa-calendar-alt me-1"></i>
-                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->format('d/m/Y') }}
+                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->addYear(543)->format('d/m/Y') }}
                                                         -
-                                                        {{ \Carbon\Carbon::parse($booking->booking_end)->format('d/m/Y') }}
+                                                        {{ \Carbon\Carbon::parse($booking->booking_end)->addYear(543)->format('d/m/Y') }}
                                                     </div>
                                                     <small class="text-muted">
                                                         <i class="far fa-clock me-1"></i>
-                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }}
+                                                        {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }}น.
                                                         -
-                                                        {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}
+                                                        {{ \Carbon\Carbon::parse($booking->booking_end)->format('H:i') }}น.
                                                     </small>
                                                 </td>
                                                 {{-- <td class="text-center">
@@ -221,5 +221,6 @@
                 });
             });
         });
+        moment.locale('th');
     </script>
 @endsection
