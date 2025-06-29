@@ -49,12 +49,23 @@ class MoveCompletedBookingsToHistory extends Command
                         'status_id'          => $booking->status_id,
                         'status_name'        => optional($booking->status)->name,
                         'reason'             => $booking->reason,
+                        'participant_count' => $booking->participant_count,
+                        'booker_info' => $booking->booker_info,
+                        'approver_name' => $booking->approver_name,
+                        'approver_position' => $booking->approver_position,
                         'total_price'        => $booking->amount,
                         'payment_status'     => $booking->payment_status,
                         'is_external'        => $booking->is_external,
                         'created_at'         => now(),
                         'updated_at'         => now(),
                         'moved_to_history_at' => now(),
+                        'title' => $booking->title ?? null,
+                        'setup_date' => $booking->setup_date ?? null,
+                        'teardown_date' => $booking->teardown_date ?? null,
+                        'additional_equipment' => $booking->additional_equipment ?? null,
+                        'coordinator_name' => $booking->coordinator_name ?? null,
+                        'coordinator_phone' => $booking->coordinator_phone ?? null,
+                        'coordinator_department' => $booking->coordinator_department ?? null,
                     ]);
 
                     if (!in_array($booking->status_id, [5, 6])) {
