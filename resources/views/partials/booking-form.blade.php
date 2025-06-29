@@ -187,7 +187,8 @@
                                         @elseif ($room->room_type === 8)
                                             อุปกรณ์ที่ต้องการใช้ ให้ติดต่อเจ้าหน้าที่โสตในวันที่เข้าจองห้องในระบบ
                                         @else
-                                            หากต้องการอุปกรณ์เพิ่มเติม กรุณาติดต่อเจ้าหน้าที่ดูแลอาคาร ในวันที่เข้าจองห้องในระบบ
+                                            หากต้องการอุปกรณ์เพิ่มเติม กรุณาติดต่อเจ้าหน้าที่ดูแลอาคาร
+                                            ในวันที่เข้าจองห้องในระบบ
                                         @endif
                                     </div>
                                     <!-- วันจัดและเก็บสถานที่ -->
@@ -198,14 +199,17 @@
                                                 <label class="form-label fw-semibold"
                                                     id="setup_date">วันจัดสถานที่</label>
                                                 <input type="date" class="form-control" name="setup_date"
-                                                    id="setup_date" required>
+                                                    id="setup_date" required placeholder="วัน/เดือน/ปี">
                                                 <div class="form-text"id="setup_date_display">โปรดเลือกวันจัดเตรียมสถานที่
                                                     (ภายในเวลาราชการ)</div>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label fw-semibold">วันเก็บสถานที่</label>
-                                                <input type="date" class="form-control" name="teardown_date" required>
-                                                <div class="form-text">โปรดเลือกวันเก็บสถานที่ (ภายในเวลาราชการ)</div>
+                                                <label
+                                                    class="form-label fw-semibold"id="teardown_date">วันเก็บสถานที่</label>
+                                                <input type="text" class="form-control" name="teardown_date"
+                                                    id="teardown_date" required placeholder="วัน/เดือน/ปี">
+                                                <div class="form-text" id="teardown_date_display">โปรดเลือกวันเก็บสถานที่
+                                                    (ภายในเวลาราชการ)</div>
                                             </div>
                                         </div>
                                     </div>
@@ -248,7 +252,8 @@
                                                         </li>
                                                     @endif
                                                     <li class="alert alert-warning mt-2 p-2 text-wrap text-break">
-                                                        สามารถใช้ห้องได้ในเวลาราชการเท่านั้น หากใช้ห้องนอกเวลาให้ติดต่อเจ้าหน้าที่ดูแลอาคารในวันที่เข้าจองห้องในระบบ
+                                                        สามารถใช้ห้องได้ในเวลาราชการเท่านั้น
+                                                        หากใช้ห้องนอกเวลาให้ติดต่อเจ้าหน้าที่ดูแลอาคารในวันที่เข้าจองห้องในระบบ
                                                     </li>
                                                     <li class="mb-1">
                                                         <span class="d-inline-block rounded-circle me-2"
@@ -279,7 +284,7 @@
                                                     <div class="form-text">เวลาเข้าต้องอยู่ระหว่าง 08:00 - 22:00 น.</div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label class="form-label fw-semibold">เวลาออก <span
+                                                    <label class="form-label fw-semibold">เวลาออก (ต้องมากว่าเวลาเข้า)<span
                                                             class="text-danger">*</span></label>
                                                     <input type="time" id="check_out_time" name="check_out_time"
                                                         class="form-control" step="60" min="08:01"
@@ -380,6 +385,21 @@
                     'โปรดเลือกวันจัดเตรียมสถานที่ (ภายในเวลาราชการ)';
             }
         });
+        document.getElementById('teardown_date').addEventListener('change', function() {
+            const dateValue = this.value;
+            if (dateValue) {
+                const date = new Date(dateValue);
+                const day = date.getDate();
+                const month = date.getMonth() + 1; // เดือนเริ่มที่ 0
+                const year = date.getFullYear() + 543; // แปลง ค.ศ. → พ.ศ.
+
+                const formatted = `วันที่เลือก: ${day}/${month}/${year}`;
+                document.getElementById('teardown_date_display').innerText = formatted;
+            } else {
+                document.getElementById('teardown_date_display').innerText =
+                    'โปรดเลือกวันเก็บสถานที่ (ภายในเวลาราชการ)';
+            }
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const bookingForm = document.getElementById('bookingForm');
 
@@ -473,6 +493,69 @@
         });
     </script>
     <script>
+        flatpickr("#check_in_time", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i", // เช่น 14:30
+            time_24hr: true, // ใช้เวลา 24 ชม.
+            minuteIncrement: 1, // เลือกได้ทุกนาที (เปลี่ยนเป็น 5, 15 ได้)
+            minTime: "08:00",
+            maxTime: "22:00",
+            defaultDate: "08:00"
+        });
+
+        flatpickr("#check_out_time", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            minuteIncrement: 1,
+            minTime: "08:00",
+            maxTime: "23:00",
+            defaultDate: "09:00"
+        });
+        flatpickr("#setup_date", {
+            dateFormat: "d/m/Y", // แสดงเป็น วัน/เดือน/ปี
+            locale: "th", // ใช้ภาษาไทย
+            defaultDate: null,
+            onReady: updateBuddhistYearInInput,
+            onChange: updateBuddhistYearInInput,
+            onMonthChange: updateBuddhistYearInCalendar,
+            onYearChange: updateBuddhistYearInCalendar
+        });
+
+        flatpickr("#teardown_date", {
+            dateFormat: "d/m/Y", // แสดงเป็น วัน/เดือน/ปี
+            locale: "th", // ใช้ภาษาไทย
+            defaultDate: null,
+            onReady: updateBuddhistYearInInput,
+            onChange: updateBuddhistYearInInput,
+            onMonthChange: updateBuddhistYearInCalendar,
+            onYearChange: updateBuddhistYearInCalendar
+        });
+
+        // แสดงปี พ.ศ. ในช่อง input
+        function updateBuddhistYearInInput(selectedDates, dateStr, instance) {
+            if (selectedDates.length === 0) return;
+
+            const date = selectedDates[0];
+            const d = date.getDate().toString().padStart(2, '0');
+            const m = (date.getMonth() + 1).toString().padStart(2, '0');
+            const y = (date.getFullYear() + 543).toString(); // แปลง ค.ศ. → พ.ศ.
+
+            instance.input.value = `${d}/${m}/${y}`;
+        }
+        // แสดงปี พ.ศ. บน popup ปฏิทิน
+        function updateBuddhistYearInCalendar(selectedDates, dateStr, instance) {
+            setTimeout(() => {
+                const yearElements = instance.calendarContainer.querySelectorAll(
+                    '.flatpickr-current-month .cur-year');
+                yearElements.forEach(el => {
+                    const y = parseInt(el.value);
+                    if (y < 2500) el.value = y + 543;
+                });
+            }, 10);
+        }
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements - เลือกครั้งเดียวแล้วเก็บไว้ใช้
             const elements = {
@@ -706,6 +789,8 @@
                     while (currentDate <= finalDate) {
                         const dateStr = utils.formatDate(currentDate);
                         const dayBookings = config.bookedTimeSlots[dateStr] || [];
+                        const checkStart = startTime;
+                        const checkEnd = endTime;
 
                         dayBookings.forEach(booking => {
                             // ตรวจสอบการซ้อนของเวลา

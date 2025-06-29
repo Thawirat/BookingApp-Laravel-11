@@ -20,10 +20,14 @@
                             <li><strong>เรื่อง:</strong> {{ $booking->title }}</li>
                             <li><strong>สถานะการจอง:</strong> {{ $booking->status->status_name }}</li>
                             <li><strong>วันที่จอง:</strong>
-                                {{ \Carbon\Carbon::parse($booking->booking_created_at)->addYear(543)->format('d/m/Y') }}</li>
-                            <li><strong>วันที่เริ่มต้น:</strong>
-                                {{ \Carbon\Carbon::parse($booking->booking_start)->addYear(543)->format('d/m/Y') }}</li>
-                            <li><strong>วันที่สิ้นสุด:</strong>
+                                {{ \Carbon\Carbon::parse($booking->booking_created_at)->addYear(543)->format('d/m/Y') }}
+                            </li>
+                            <li><strong>วันที่จัด-เก็บสถานที่:</strong>
+                                {{ \Carbon\Carbon::parse($booking->setup_date)->addYear(543)->format('d/m/Y') }} -
+                                {{ \Carbon\Carbon::parse($booking->teardown_date)->addYear(543)->format('d/m/Y') }}
+                            </li>
+                            <li><strong>วันที่เริ่มต้น-วันที่สิ้นสุด:</strong>
+                                {{ \Carbon\Carbon::parse($booking->booking_start)->addYear(543)->format('d/m/Y') }} -
                                 {{ \Carbon\Carbon::parse($booking->booking_end)->addYear(543)->format('d/m/Y') }}</li>
                             <li><strong>เวลา:</strong>
                                 {{ \Carbon\Carbon::parse($booking->booking_start)->format('H:i') }}น. -
@@ -77,7 +81,8 @@
                             <li><strong>ที่อยู่/หน่วยงาน:</strong> {{ $booking->external_address ?? 'ไม่ระบุ' }}</li>
                             <li><strong>ชื่อผู้ประสาน:</strong> {{ $booking->coordinator_name }}</li>
                             <li><strong>โทรศัพท์ผู้ประสาน:</strong> {{ $booking->coordinator_phone }}</li>
-                            <li><strong>ที่อยู่/หน่วยงานผู้ประสาน:</strong> {{ $booking->coordinator_department ?? 'ไม่ระบุ' }}</li>
+                            <li><strong>ที่อยู่/หน่วยงานผู้ประสาน:</strong>
+                                {{ $booking->coordinator_department ?? 'ไม่ระบุ' }}</li>
                         </ul>
                     </div>
                     <!-- Room Info -->

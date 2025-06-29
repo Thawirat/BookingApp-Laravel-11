@@ -136,8 +136,8 @@ class BookingController extends Controller
                 'coordinator_department' => 'required|string|max:255',
                 'booking_start' => 'required|date|after_or_equal:today',
                 'booking_end' => 'required|date|after_or_equal:booking_start',
-                'setup_date' => 'required|date|after_or_equal:today',
-                'teardown_date' => 'required|date|after_or_equal:setup_date',
+                'setup_date' => 'required|string|regex:/^\d{2}\/\d{2}\/\d{4}$/',
+                'teardown_date' => 'required|string|regex:/^\d{2}\/\d{2}\/\d{4}$/',
                 'check_in_time' => [
                     'required',
                     'date_format:H:i',
@@ -190,9 +190,11 @@ class BookingController extends Controller
             $booking->coordinator_phone = $validated['coordinator_phone'];
             $booking->coordinator_department = $validated['coordinator_department'];
 
+            $setup_date = Carbon::createFromFormat('d/m/Y', $request->setup_date)->subYears(543)->format('Y-m-d');
+            $teardown_date = Carbon::createFromFormat('d/m/Y', $request->teardown_date)->subYears(543)->format('Y-m-d');
             // Set setup and teardown dates
-            $booking->setup_date = $validated['setup_date'];
-            $booking->teardown_date = $validated['teardown_date'];
+            $booking->setup_date = $setup_date;
+            $booking->teardown_date = $teardown_date;
 
             // Set additional equipment if provided
             $booking->additional_equipment = $validated['additional_equipment'] ?? null;
@@ -200,6 +202,7 @@ class BookingController extends Controller
             if (auth()->check()) {
                 $booking->user_id = auth()->id();
             }
+
 
             // Handle file upload
             if ($request->hasFile('payment_slip')) {

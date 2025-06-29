@@ -66,7 +66,7 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <!-- Toggle Sidebar Button -->
-        <img src="{{ asset('images/ROOM BOOKINGS.png') }}" alt="SNru Logo" style="width: 100%; height: auto;">
+        <img src="{{ asset('images/snru v.1.png') }}" alt="SNru Logo" style="width: 100%; height: auto;">
         @if (auth()->check())
             <div class="p-3 border-bottom ">
                 <strong class="text text-center">{{ auth()->user()->name }}</strong><br>
