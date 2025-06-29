@@ -25,22 +25,19 @@
                     <p class="mt-2">ห้องที่เปิดให้จอง</p>
                 </div>
 
-                <!-- Card: การจอง -->
-                <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                    <div class="text-yellow-500 text-5xl mb-4">
-                        <i class="fas fa-calendar-check"></i>
+                @php
+                    $role = Auth::user()->getRoleNames()->first();
+                @endphp
+
+                @if ($role === 'admin')
+                    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                        <div class="text-yellow-500 text-5xl mb-4">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="fw-bold">{{ $totalBookings }} การจองทั้งหมด</h3>
+                        <p class="mt-2">การจองทั้งหมดที่มีในระบบ</p>
                     </div>
-                    <h3 class="fw-bold">{{ $totalBookings }} การจองทั้งหมด</h3>
-                    <p class="mt-2">การจองทั้งหมดที่มีในระบบ</p>
-                </div>
-                @if (Auth::check() && Auth::user()->isSubAdmin())
-                    @php
-                        $role = Auth::user()->getRoleNames()->first();
-                        $roleDisplay =
-                            [
-                                'sub-admin' => 'ผู้ดูแลอาคาร',
-                            ][$role] ?? $role;
-                    @endphp
+                @elseif ($role === 'sub-admin')
                     <div class="bg-white rounded-lg shadow-md p-6 text-center">
                         <div class="text-sky-500 text-5xl mb-4">
                             <i class="fas fa-calendar-check"></i>
@@ -49,6 +46,7 @@
                         <p class="mt-2">การจองทั้งหมดในห้องที่อยู่ในการดูแล</p>
                     </div>
                 @endif
+
                 <!-- Card: Dashboard ผู้ดูแล -->
                 @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
                     @php

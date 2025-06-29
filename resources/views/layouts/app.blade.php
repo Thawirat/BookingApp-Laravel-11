@@ -22,7 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/locale/th.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Plugins -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -103,7 +103,10 @@
                     <a href="{{ route('profile.show') }}" class="nav-link text-gray-700"><i
                             class="fas fa-user-circle"></i> โปรไฟล์ของฉัน</a>
                 </li>
-
+                <li class="nav-item">
+                    <a href="{{ route('feedback.create') }}" class="nav-link text-gray-700"><i
+                            class="bi bi-chat-left-dots-fill"></i> แสดงความคิดเห็น</a>
+                </li>
                 @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
                     <hr>
                     <h6 class="sidebar-heading text-white text-center py-2 px-3 mb-3"
@@ -132,6 +135,10 @@
                         <li class="nav-item">
                             <a href="{{ route('room-types.index') }}" class="nav-link text-gray-700"><i
                                     class="fas fa-tags me-2"></i> จัดการประเภทห้อง</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.feedback.index') }}" class="nav-link text-gray-700"><i
+                                    class="bi bi-chat-left-dots-fill"></i> กล่องความคิดเห็น</a>
                         </li>
                         {{-- <li class="nav-item">
                             <a href="{{ route('equipments.index') }}" class="nav-link text-gray-700"><i

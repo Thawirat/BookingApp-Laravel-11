@@ -123,10 +123,10 @@
                                     </button>
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ route('bookings.download.pdf', $booking->id) }}"
+                                    {{-- <a href="{{ route('bookings.download.pdf', $booking->id) }}"
                                         class="btn btn-outline-danger btn-sm">
                                         <i class="fas fa-file-pdf me-1"></i>
-                                    </a>
+                                    </a> --}}
                                 </td>
                                 @include('booking-status.modal')
                             </tr>

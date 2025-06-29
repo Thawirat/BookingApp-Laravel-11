@@ -76,11 +76,11 @@
                                                 <i class="fas fa-eye"></i> ดูรายละเอียดเพิ่มเติม
                                             </button>
                                             @include('booking-status.modal')
-                                            <a href="{{ route('mybookings.download.pdf', $booking->id) }}"
+                                            {{-- <a href="{{ route('mybookings.download.pdf', $booking->id) }}"
                                                 class="btn btn-outline-danger btn-sm flex-grow-1">
                                                 <i class="fas fa-file-pdf me-1"></i> ดาวน์โหลด PDF
-                                            </a>
-                                            <form id="cancel-form-{{ $booking->id }}"
+                                            </a> --}}
+                                            {{-- <form id="cancel-form-{{ $booking->id }}"
                                                 action="{{ route('mybookings.cancel', $booking->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -94,7 +94,7 @@
                                                         <i class="fas fa-times-circle me-1"></i> ยกเลิกการจอง
                                                     </button>
                                                 </div>
-                                            </form>
+                                            </form> --}}
                                         </div>
                                     </div>
                                 </div>

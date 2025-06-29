@@ -142,10 +142,10 @@
                                                             data-bs-target="#detailsModal{{ $booking->id }}">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <a href="{{ route('bookings.download.pdf', $booking->id) }}"
+                                                        {{-- <a href="{{ route('bookings.download.pdf', $booking->id) }}"
                                                             class="btn btn-outline-danger btn-sm">
                                                             <i class="fas fa-file-pdf me-1"></i>
-                                                        </a>
+                                                        </a> --}}
                                                     </div>
                                                 </td>
                                             </tr>

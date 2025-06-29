@@ -21,6 +21,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\FeedbackController;
 
 Route::get('/booking/approve/{id}', [Booking_dbController::class, 'approve'])->name('booking.approve');
 Route::get('/booking/reject/{id}', [Booking_dbController::class, 'reject'])->name('booking.reject');
@@ -141,6 +142,7 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::middleware('auth')->get('/api/users/{id}', [ManageUsersController::class, 'show']);
     Route::middleware('auth')->get('/api/users/{id}/buildings', [ManageUsersController::class, 'getUserBuildings']);
     Route::resource('equipments', EquipmentController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::get('/admin/feedbacks', [FeedbackController::class, 'index'])->name('admin.feedback.index');
 
 });
 
@@ -191,3 +193,5 @@ Route::post('verify-otp', [PasswordResetController::class, 'verifyOtp'])->name('
 Route::get('reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::delete('/my-bookings/{id}/cancel', [\App\Http\Controllers\BookingStatusController::class, 'cancel'])
     ->name('mybookings.cancel');
+Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
+Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
