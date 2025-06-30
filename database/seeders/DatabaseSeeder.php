@@ -18,11 +18,11 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             StatusSeeder::class,
             UserSeeder::class,
-            BuildingSeeder::class,
-            RoomSeeder::class,
             RoomTypeSeeder::class,
-            EquipmentSeeder::class,
-            RoomEquipmentSeeder::class,
+            // BuildingSeeder::class,
+            // RoomSeeder::class,
+            // EquipmentSeeder::class,
+            // RoomEquipmentSeeder::class,
         ]);
     }
 }
