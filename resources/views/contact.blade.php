@@ -13,9 +13,9 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h3 class="card-title">ข้อมูลติดต่อ</h3>
-                    <p class="card-text">อีเมล: support@university.com</p>
+                    {{-- <p class="card-text">อีเมล: support@university.com</p>
                     <p class="card-text">เบอร์โทร: 02-123-4567</p>
-                    <p class="card-text">ที่อยู่: 123 ถนนมหาวิทยาลัย แขวงมหาวิทยาลัย เขตมหาวิทยาลัย กรุงเทพฯ 12345</p>
+                    <p class="card-text">ที่อยู่: 123 ถนนมหาวิทยาลัย แขวงมหาวิทยาลัย เขตมหาวิทยาลัย กรุงเทพฯ 12345</p> --}}
                     <h4 class="mt-4">ติดตามเรา</h4>
                     <div class="mt-2">
                         <a class="text-primary" href="#"><i class="fab fa-facebook-f"></i></a>

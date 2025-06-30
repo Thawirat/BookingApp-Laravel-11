@@ -28,10 +28,10 @@
             <div class="col-md-4 col-lg-3">
                 <h5 class="fw-bold mb-3">ข้อมูลติดต่อ</h5>
                 <p class="mb-2">
-                    <i class="fas fa-envelope me-2"></i> itcenter@snru.ac.th
+                    {{-- <i class="fas fa-envelope me-2"></i> itcenter@snru.ac.th --}}
                 </p>
                 <p class="mb-0">
-                    <i class="fas fa-phone-alt me-2"></i> 042-970-000 ต่อ 1234
+                    {{-- <i class="fas fa-phone-alt me-2"></i> 042-970-000 ต่อ 1234 --}}
                 </p>
             </div>
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Mail;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -19,18 +20,12 @@ class UserApprovedMail extends Mailable
         $this->user = $user;
     }
 
-    public function envelope()
+    public function build()
     {
-        return new Envelope(
-            subject: 'บัญชีของคุณได้รับการอนุมัติ',
-        );
-    }
-
-    public function content(): Content
- {
-        return new Content(
-            markdown: 'emails.users.approved',
-        );
+        $fromName = '=?UTF-8?B?' . base64_encode('ระบบจองห้องประชุมมหาวิทยาลัยราชภัฏสกลนคร') . '?=';
+        return $this->from('no-reply@snru.ac.th', $fromName)
+            ->subject(subject: 'บัญชีของคุณได้รับการอนุมัติ')
+            ->markdown('emails.users.approved');
     }
 
     public function attachments(): array

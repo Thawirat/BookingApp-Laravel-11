@@ -19,7 +19,9 @@ class PasswordResetSuccessMail extends Mailable
 
     public function build()
     {
-        return $this->subject('แจ้งเตือน: คุณได้เปลี่ยนรหัสผ่านสำเร็จแล้ว')
+        $fromName = '=?UTF-8?B?' . base64_encode('ระบบจองห้องประชุมมหาวิทยาลัยราชภัฏสกลนคร') . '?=';
+        return $this->from('no-reply@snru.ac.th', $fromName)
+                    ->subject('แจ้งเตือน: คุณได้เปลี่ยนรหัสผ่านสำเร็จแล้ว')
                     ->view('emails.password-reset-success');
     }
 }

@@ -20,18 +20,12 @@ class UserRejectedMail extends Mailable
         $this->user = $user;
     }
 
-    public function envelope()
+    public function build()
     {
-        return new Envelope(
-            subject: 'บัญชีของคุณไม่ได้รับการอนุมัติ',
-        );
-    }
-
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'emails.users.rejected',
-        );
+        $fromName = '=?UTF-8?B?' . base64_encode('ระบบจองห้องประชุมมหาวิทยาลัยราชภัฏสกลนคร') . '?=';
+        return $this->from('no-reply@snru.ac.th', $fromName)
+            ->subject('บัญชีของคุณไม่ได้รับการอนุมัติ')
+            ->markdown('emails.users.rejected');
     }
 
     public function attachments(): array

@@ -21,7 +21,9 @@ class SendOtpResetMail extends Mailable
 
     public function build()
     {
-        return $this->subject('รหัสยืนยันการรีเซ็ตรหัสผ่าน')
+        $fromName = '=?UTF-8?B?' . base64_encode('ระบบจองห้องประชุมมหาวิทยาลัยราชภัฏสกลนคร') . '?=';
+        return $this->from('no-reply@snru.ac.th', $fromName)
+            ->subject('รหัสยืนยันการรีเซ็ตรหัสผ่าน')
             ->markdown('otp-verify');
     }
 }
