@@ -18,7 +18,7 @@
             <i class="fas fa-edit"></i> เปลี่ยนสถานะ
         </button>
         <ul class="dropdown-menu">
-            @foreach (\App\Enums\BookingStatus::options() as $status => $info)
+            @foreach (\App\Enums\Bookingstatus::options() as $status => $info)
                 <li>
                     <form action="{{ route('booking.update-status', $booking->id) }}" method="POST">
                         @csrf

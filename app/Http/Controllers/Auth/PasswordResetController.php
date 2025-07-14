@@ -25,7 +25,7 @@ class PasswordResetController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        $user = \App\Models\User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
         if (!$user) {
             return back()->withErrors(['email' => 'ไม่พบบัญชีผู้ใช้นี้']);
@@ -54,7 +54,10 @@ class PasswordResetController extends Controller
 
     public function showResetForm(Request $request, $token = null)
     {
-        return view('reset-password', ['token' => $token, 'email' => $request->email]);
+        return view('reset-password', [
+            'token' => $token,
+            'email' => $request->email ?? session('reset_email'),
+        ]);
     }
 
     public function reset(Request $request)
@@ -131,7 +134,7 @@ class PasswordResetController extends Controller
         // OTP ถูกต้อง → ให้ไปหน้ารีเซ็ตรหัสผ่าน
         session(['otp_verified' => true]);
 
-        return redirect()->route('password.reset');
+        return redirect()->route('password.reset', ['token' => $request->otp]);
     }
     public function showResetPasswordForm()
     {

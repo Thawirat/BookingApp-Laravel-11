@@ -67,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/bookings/{id}', [BookingController::class, 'showBookingForm'])->name('bookings.show');
 
 Route::get('/buildings/{id}/rooms', [BuildingController::class, 'fetchRooms']);
-Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index'); // Added route for buildings
+// Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index'); // Added route for buildings
 Route::get('/buildings/{id}', [BuildingController::class, 'show'])->name('buildings.show'); // Route for showing a specific building
 Route::get('/buildings/{id}/rooms', [BuildingController::class, 'fetchRooms'])->name('buildings.fetchRooms'); // Route to fetch rooms for a specific building
 
@@ -105,7 +105,7 @@ Route::middleware(['auth', 'can:admin-or-subadmin'])->group(function () {
     Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db');
     Route::patch('/booking/{id}/update-status', [Booking_dbController::class, 'updateStatus'])->name('booking.update-status');
     // เส้นทางห้อง
-    Route::get('/booking-management', [Booking_dbController::class, 'index'])->name('booking_db');
+    // Route::get('/booking-management', [Booking_dbController::class, 'index'])->name('booking_db');
 
     // เส้นทางเปลี่ยนสถานะการจอง
     Route::patch('/booking/{id}/update-status', [Booking_dbController::class, 'updateStatus'])
@@ -116,8 +116,8 @@ Route::middleware(['auth', 'can:admin-or-subadmin'])->group(function () {
         ->name('booking.confirm-payment');
 
     // การจอง
-    Route::get('/booking_history', [BookingHistoryController::class, 'index'])->name('booking.history');
-    Route::get('/dashboard/booking_history', [App\Http\Controllers\Booking_dbController::class, 'history'])->name('booking_history');
+    // Route::get('/booking_history', [BookingHistoryController::class, 'index'])->name('booking.history');
+    Route::get('/dashboard/booking_history', [App\Http\Controllers\Booking_dbController::class, 'history'])->name('dashboard.booking_history');
     // Room management
     Route::get('/manage-rooms', [ManageRoomsController::class, 'index'])->name('manage_rooms.index');
     Route::get('/manage-rooms/{buildingId}/rooms', [ManageRoomsController::class, 'showRooms'])->name('manage_rooms.show');
@@ -126,13 +126,13 @@ Route::middleware(['auth', 'can:admin-or-subadmin'])->group(function () {
     Route::get('/rooms/{id}', [ManageRoomsController::class, 'showRoomDetails'])->name('manage_rooms.details');
     Route::get('/rooms/{room}/edit', [ManageRoomsController::class, 'edit'])->name('manage_rooms.edit');
     Route::delete('/manage_rooms/{room}', [ManageRoomsController::class, 'destroy'])->name('manage_rooms.destroy');
-    Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db');
+    // Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db');
     Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('booking_history');
 
     // Building management
     Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
     Route::post('/manage-buildings', [ManageBuildingsController::class, 'store'])->name('manage.buildings.store');
-    Route::resource('manage/buildings', ManageBuildingsController::class);
+    // Route::resource('manage/buildings', ManageBuildingsController::class);
 });
 
 Route::middleware(['auth', 'can:admin-only'])->group(function () {
@@ -163,9 +163,9 @@ Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show')
 // routes/web.php
 Route::put('/user/profile', [UserController::class, 'update'])->name('user.updateProfile');
 Route::post('/user/change-password', [UserController::class, 'changePassword'])->name('user.changePassword');
-Route::post('/user/update-all', [UserController::class, 'updateAll'])->name('user.updateAll');
+// Route::post('/user/update-all', [UserController::class, 'updateAll'])->name('user.updateAll');
 Route::post('/payment/upload/{booking}', [BookingController::class, 'uploadSlip'])->name('booking.uploadSlip');
-Route::patch('/booking/{id}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
+// Route::patch('/booking/{id}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
 Route::put('/user/update-all', [UserController::class, 'update'])->name('user.updateAll');
 Route::get('/bookings/{id}/booking-pdf', [BookingController::class, 'downloadBookingPdf'])->name('mybookings.download.pdf');
 Route::get('/bookings/{id}/slip-pdf', [BookingController::class, 'downloadSlipPdf'])->name('bookingslip.download.pdf');
@@ -190,7 +190,7 @@ Route::get('verify-otp', [PasswordResetController::class, 'showOtpForm'])->name(
 // ตรวจสอบ OTP
 Route::post('verify-otp', [PasswordResetController::class, 'verifyOtp'])->name('password.otp.verify');
 // แสดงฟอร์มรีเซ็ตรหัสผ่าน
-Route::get('reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+// Route::get('reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::delete('/my-bookings/{id}/cancel', [\App\Http\Controllers\BookingStatusController::class, 'cancel'])
     ->name('mybookings.cancel');
 Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
