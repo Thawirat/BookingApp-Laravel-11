@@ -80,12 +80,16 @@
                     onclick="togglePasswordVisibility('password_confirmation', this)">
                     <i class="fas fa-eye"></i>
                 </span>
+                <p id="passwordStrengthError" class="text-sm text-red-600 mt-1 hidden">
+                    รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร พร้อมตัวพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข และอักขระพิเศษ
+                </p>
                 <p id="passwordMatchError" class="text-sm text-red-600 mt-1 hidden">รหัสผ่านไม่ตรงกัน</p>
             </div>
             <div>
-                <button
-                    class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
-                    type="submit">สมัครสมาชิก</button>
+                <button id="submitBtn"
+                    class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 opacity-50 cursor-not-allowed"
+                    type="submit" disabled>สมัครสมาชิก</button>
+
             </div>
         </form>
         <p class="mt-6 text-center text-gray-600">มีบัญชีอยู่แล้ว? <a class="text-blue-500 hover:underline"
@@ -121,7 +125,9 @@
         const confirmPasswordInput = document.getElementById("password_confirmation");
         const passwordError = document.getElementById("passwordMatchError");
         const form = document.querySelector("form");
+        const passwordStrengthError = document.getElementById("passwordStrengthError");
 
+        const submitBtn = document.getElementById("submitBtn");
         // Email validation
         emailInput.addEventListener("input", function() {
             const email = emailInput.value.trim();
@@ -150,6 +156,20 @@
             }
         });
 
+        function checkPasswordStrength() {
+            const password = passwordInput.value;
+            const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+            if (!strongRegex.test(password)) {
+                passwordInput.classList.add("border-red-500");
+                passwordStrengthError.classList.remove("hidden");
+                return false;
+            } else {
+                passwordInput.classList.remove("border-red-500");
+                passwordStrengthError.classList.add("hidden");
+                return true;
+            }
+        }
         // Password match validation
         function checkPasswordMatch() {
             if (passwordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value !== "") {
@@ -164,10 +184,42 @@
         passwordInput.addEventListener("input", checkPasswordMatch);
         confirmPasswordInput.addEventListener("input", checkPasswordMatch);
 
+        passwordInput.addEventListener("input", () => {
+            checkPasswordStrength();
+            checkPasswordMatch();
+        });
+
+        function validateFormLive() {
+            let valid = true;
+
+            const email = emailInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (!/^[a-zA-Z0-9._%+-]+@snru\.ac\.th$/i.test(email)) valid = false;
+            if (!/^[0-9]{10}$/.test(phone)) valid = false;
+            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password)) valid = false;
+            if (password !== confirmPassword) valid = false;
+
+            if (valid) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+            }
+        }
+
+        // เรียกฟังก์ชันนี้ทุกครั้งที่ผู้ใช้กรอกข้อมูล
+        [emailInput, phoneInput, passwordInput, confirmPasswordInput].forEach(input => {
+            input.addEventListener("input", validateFormLive);
+        });
+
         form.addEventListener("submit", function(e) {
             let hasError = false;
 
-            // ตรวจสอบอีเมล
+            // อีเมล
             const email = emailInput.value.trim();
             if (!/^[a-zA-Z0-9._%+-]+@snru\.ac\.th$/i.test(email)) {
                 emailInput.classList.add("border-red-500");
@@ -175,7 +227,7 @@
                 hasError = true;
             }
 
-            // ตรวจสอบเบอร์โทร
+            // เบอร์โทร
             const phone = phoneInput.value.replace(/\D/g, '');
             if (!/^[0-9]{10}$/.test(phone)) {
                 phoneInput.classList.add("border-red-500");
@@ -183,7 +235,12 @@
                 hasError = true;
             }
 
-            // ตรวจสอบรหัสผ่านตรงกัน
+            // รหัสผ่านแข็งแรง
+            if (!checkPasswordStrength()) {
+                hasError = true;
+            }
+
+            // รหัสผ่านตรงกัน
             if (passwordInput.value !== confirmPasswordInput.value) {
                 confirmPasswordInput.classList.add("border-red-500");
                 passwordError.classList.remove("hidden");
@@ -191,7 +248,7 @@
             }
 
             if (hasError) {
-                e.preventDefault(); // ป้องกันการ submit ฟอร์ม
+                e.preventDefault(); // ไม่ให้ส่งฟอร์ม
             }
         });
     });

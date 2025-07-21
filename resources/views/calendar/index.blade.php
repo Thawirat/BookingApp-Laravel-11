@@ -80,7 +80,7 @@
                     <div class="card-body">
                         <div class="d-flex flex-wrap gap-3 ps-2">
                             @foreach ($statusList as $status)
-                                @if (!in_array($status['status_id'], [1, 2, 5, 6, 7]))
+                                @if (!in_array($status['status_id'], [1, 2, 5, 6, 7,8]))
                                     {{-- ซ่อนสถานะ 1 และ 2 --}}
                                     <div class="d-flex align-items-center">
                                         <div
