@@ -29,9 +29,15 @@
                 <h5 class="fw-bold mb-3">ข้อมูลติดต่อ</h5>
                 <p class="mb-2">
                     {{-- <i class="fas fa-envelope me-2"></i> itcenter@snru.ac.th --}}
+                    มหาวิทยาลัยราชภัฏสกลนคร เลขที่ 680 ถนนนิตโย ตำบลธาตุเชิงชุม อำเภอเมือง จังหวัดสกลนคร 47000
                 </p>
                 <p class="mb-0">
                     {{-- <i class="fas fa-phone-alt me-2"></i> 042-970-000 ต่อ 1234 --}}
+                    โทรศัพท์ 042-970021 , 042-970094
+                </p>
+                <p class="mb-0">
+                    {{-- <i class="fas fa-fax me-2"></i> 042-970-000 ต่อ 1234 --}}
+                    โทรสาร 042-970022
                 </p>
             </div>
 
@@ -39,9 +45,12 @@
             <div class="col-md-4 col-lg-3">
                 <h5 class="fw-bold mb-3">ติดตามเรา</h5>
                 <div class="d-flex justify-content-center justify-content-md-start gap-3 fs-4">
-                    <a href="https://www.facebook.com/SNRUOfficial" target="_blank" class="text-white link-hover"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.youtube.com/@SNRU" target="_blank" class="text-white link-hover"><i class="fab fa-youtube"></i></a>
-                    <a href="https://www.snru.ac.th/th" target="_blank" class="text-white link-hover"><i class="fas fa-globe"></i></a>
+                    <a href="https://www.facebook.com/SNRUOfficial" target="_blank" class="text-white link-hover"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.youtube.com/@SNRU" target="_blank" class="text-white link-hover"><i
+                            class="fab fa-youtube"></i></a>
+                    <a href="https://www.snru.ac.th/th" target="_blank" class="text-white link-hover"><i
+                            class="fas fa-globe"></i></a>
                 </div>
             </div>
         </div>

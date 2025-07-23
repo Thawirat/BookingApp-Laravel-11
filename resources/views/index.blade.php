@@ -197,10 +197,10 @@
                         </div>
                         <div class="card-body ps-3">
                             <p><i class="fas fa-university me-2 ms-1 text-primary"></i>มหาวิทยาลัยราชภัฏสกลนคร</p>
-                            <p><i class="fas fa-map-marker-alt me-2 ms-1 text-danger"></i>680 ถนนนิตโย ตำบลธาตุเชิงชุม
-                                อำเภอเมือง จังหวัดสกลนคร 47000</p>
-                            {{-- <p><i class="fas fa-phone-alt me-2 ms-1 text-success"></i>042-970021</p>
-                            <p><i class="fas fa-envelope me-2 ms-1 text-warning"></i>booking@snru.ac.th</p> --}}
+                            <p><i class="fas fa-map-marker-alt me-2 ms-1 text-danger"></i>เลขที่ 680 ถนนนิตโย ตำบลธาตุเชิงชุม อำเภอเมือง จังหวัดสกลนคร 47000</p>
+                            <p><i class="fas fa-phone-alt me-2 ms-1 text-success"></i>โทรศัพท์ 042-970021 , 042-970094</p>
+                            <p><i class="fas fa-fax me-2 ms-1 text-success"></i>โทรสาร 042-970022</p>
+                            {{-- <p><i class="fas fa-envelope me-2 ms-1 text-warning"></i>booking@snru.ac.th</p> --}}
                         </div>
                     </div>
                 </div>
