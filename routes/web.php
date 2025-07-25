@@ -130,9 +130,9 @@ Route::middleware(['auth', 'can:admin-or-subadmin'])->group(function () {
     Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('booking_history');
 
     // Building management
-    Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
+    // Route::get('/manage-buildings', [ManageBuildingsController::class, 'index'])->name('manage.buildings');
     Route::post('/manage-buildings', [ManageBuildingsController::class, 'store'])->name('manage.buildings.store');
-    // Route::resource('manage/buildings', ManageBuildingsController::class);
+    Route::resource('manage/buildings', ManageBuildingsController::class);
 });
 
 Route::middleware(['auth', 'can:admin-only'])->group(function () {
