@@ -167,7 +167,7 @@ class ManageRoomsController extends Controller
                     }
 
                     $imageName = time() . '_' . uniqid() . '.' . $extension;
-                    $path = $image->storeAs('public/room_images', $imageName);
+                    $path = $image->storeAs('/room_images', $imageName);
                     if (!$path) {
                         throw new \Exception('Failed to store image');
                     }
@@ -191,9 +191,9 @@ class ManageRoomsController extends Controller
                     RoomEquipment::create([
                         'room_id' => $room->room_id,
                         'building_id' => $room->building_id,
-                        'name' => $name,
-                        'note' => $request->equipment_notes[$index],
-                        'quantity' => $request->equipment_quantities[$index],
+                        'name'        => $name ?: null,
+                        'note'        => $request->equipment_notes[$index] ?? null,
+                        'quantity'    => $request->equipment_quantities[$index] ?? null,
                     ]);
                 }
             }
@@ -295,7 +295,7 @@ class ManageRoomsController extends Controller
                     }
 
                     $imageName = time() . '_' . uniqid() . '.' . $extension;
-                    $imagePath = $image->storeAs('public/room_images', $imageName);
+                    $imagePath = $image->storeAs('/room_images', $imageName);
                     if (!$imagePath) {
                         throw new \Exception('Failed to store image');
                     }
@@ -333,15 +333,15 @@ class ManageRoomsController extends Controller
                     if (!empty($equipment['id']) && $existingEquipments->has($equipment['id'])) {
                         $existingEquipment = $existingEquipments->get($equipment['id']);
                         $existingEquipment->update([
-                            'name' => $equipment['name'],
-                            'quantity' => $equipment['quantity'],
+                            'name' => $equipment['name'] ?? null,
+                            'quantity' => $equipment['quantity'] ?? null,
                             'note' => $equipment['note'] ?? null,
 
                         ]);
                     } else {
                         $room->equipments()->create([
-                            'name' => $equipment['name'],
-                            'quantity' => $equipment['quantity'],
+                            'name' => $equipment['name'] ?? null,
+                            'quantity' => $equipment['quantity'] ?? null,
                             'note' => $equipment['note'] ?? null,
                             'building_id' => $buildingId,
                         ]);

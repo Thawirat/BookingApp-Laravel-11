@@ -46,15 +46,15 @@
                         <div class="row g-2 mb-2 equipment-row">
                             <div class="col-md-4">
                                 <input type="text" name="equipment_names[]" class="form-control"
-                                    placeholder="ชื่ออุปกรณ์" required>
+                                    placeholder="ชื่ออุปกรณ์">
                             </div>
                             <div class="col-md-4">
                                 <input type="text" name="equipment_notes[]" class="form-control"
-                                    placeholder="รายละเอียด" required>
+                                    placeholder="รายละเอียด">
                             </div>
                             <div class="col-md-3">
                                 <input type="number" name="equipment_quantities[]" class="form-control"
-                                    placeholder="จำนวน" min="1" required>
+                                    placeholder="จำนวน" min="1">
                             </div>
                             <div class="col-md-1">
                                 <button type="button" class="btn btn-danger btn-sm remove-equipment"><i
