@@ -86,11 +86,11 @@
                                                 </p>
                                                 <div class="btn-group w-100" role="group">
                                                     <a href="#" class="btn btn-sm btn-warning flex-grow-1"
-                                                        onclick="handleEditRoomClick({{ $room->room_id }})">
+                                                        onclick="handleEditRoomClick({{ $room->building_id }}, {{ $room->room_id }})">
                                                         <i class="fas fa-edit me-1"></i>แก้ไข
                                                     </a>
                                                     <button class="btn btn-sm btn-danger flex-grow-1"
-                                                        onclick="confirmDeleteRoom('{{ $room->room_id }}', '{{ $room->room_name }}')">
+                                                        onclick="confirmDeleteRoom({{ $room->building_id }}, {{ $room->room_id }}, '{{ $room->room_name }}')">
                                                         <i class="fas fa-trash me-1"></i>ลบ
                                                     </button>
                                                 </div>
@@ -111,13 +111,18 @@
     @include('components.modal.rooms.add-room')
     @include('components.modal.rooms.edit-room')
     <script>
-        const roomData = @json($rooms->keyBy('room_id')); // key ตาม room_id
+        const roomData = @json(
+            $rooms->mapWithKeys(function ($room) {
+                return ["{$room->building_id}_{$room->room_id}" => $room];
+            }));
 
-        function handleEditRoomClick(roomId) {
-            const room = roomData[roomId];
+        function handleEditRoomClick(buildingId, roomId) {
+            const key = `${buildingId}_${roomId}`;
+            const room = roomData[key];
             if (!room) return;
 
             openEditRoomModal(
+                buildingId,
                 room.room_id,
                 room.room_name,
                 room.capacity,
@@ -134,7 +139,6 @@
                 }))
             );
         }
-
         // ใช้ DOMContentLoaded เพื่อให้แน่ใจว่า DOM โหลดเสร็จแล้ว
         document.addEventListener('DOMContentLoaded', function() {
             // Handle custom room type for Add Modal
@@ -358,14 +362,14 @@
         }
 
         // Function to open Edit Room Modal
-        function openEditRoomModal(roomId, roomName, capacity, roomTypeName, roomTypeOther, roomDetails, imageUrl,
+        function openEditRoomModal(buildingId, roomId, roomName, capacity, roomTypeName, roomTypeOther, roomDetails, imageUrl,
             roomClass, statusId, equipments) {
 
             const editRoomForm = document.getElementById('editRoomForm');
             if (!editRoomForm) return;
 
             // Set form action
-            editRoomForm.action = `/manage_rooms/${roomId}`;
+            editRoomForm.action = `/buildings/${buildingId}/rooms/${roomId}`;
 
             // Set form values safely
             const setValueSafely = (id, value) => {
@@ -518,10 +522,10 @@
             return row;
         }
 
-        function confirmDeleteRoom(roomId, roomName) {
+        function confirmDeleteRoom(buildingId, roomId, roomName) {
             Swal.fire({
                 title: 'ยืนยันการลบ',
-                text: `คุณแน่ใจหรือไม่ว่าต้องการลบ"${roomName}"`,
+                text: `คุณแน่ใจหรือไม่ว่าต้องการลบ "${roomName}"`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -532,7 +536,7 @@
                 if (result.isConfirmed) {
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = `/manage_rooms/${roomId}`;
+                    form.action = `/buildings/${buildingId}/rooms/${roomId}`;
 
                     const csrf = document.createElement('input');
                     csrf.type = 'hidden';

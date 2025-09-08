@@ -39,7 +39,11 @@ class ManageRoomsController extends Controller
 
         // >>>> ตรงนี้แก้ใหม่
         $buildingIds = $buildingsQueryClone->pluck('id');
-        $rooms = Room::whereIn('building_id', $buildingIds)->get();
+        $rooms = Room::with(['equipments' => function ($q) {
+            $q->whereColumn('building_id', 'building_id');
+        }])
+            ->whereIn('building_id', $buildingIds)
+            ->get();
 
         $status = Status::all();
         $roomTypes = RoomType::all();
@@ -72,12 +76,17 @@ class ManageRoomsController extends Controller
             ->count();
 
         // Get paginated rooms
-        $rooms = Room::with(['building', 'status', 'equipments'])
+        $rooms = Room::with(['building', 'status'])
             ->where('building_id', $building->id)
             ->when(request('search'), function ($query) {
                 $query->where('room_name', 'like', '%' . request('search') . '%');
             })
             ->paginate(12);
+
+        // โหลด equipments ให้ตรงกับ building_id ของแต่ละห้อง
+        $rooms->getCollection()->each(function ($room) {
+            $room->setRelation('equipments', $room->equipments()->get());
+        });
 
         $buildings = Building::all();
         $status = Status::all();
@@ -100,14 +109,13 @@ class ManageRoomsController extends Controller
         return Room::all();
     }
 
-    private function generateRoomId($buildingId)
+    public function generateRoomId($buildingId)
     {
-        // Get the maximum room_id for this building
-        $maxRoomId = Room::where('building_id', $buildingId)
-            ->max('room_id');
+        $lastRoom = Room::where('building_id', $buildingId)
+            ->orderByDesc('room_id')
+            ->first();
 
-        // Return next available room_id
-        return $maxRoomId ? $maxRoomId + 1 : 1;
+        return $lastRoom ? $lastRoom->room_id + 1 : 1;
     }
 
     public function store(Request $request)
@@ -216,7 +224,7 @@ class ManageRoomsController extends Controller
         }
     }
 
-    public function update(Request $request, $roomId)
+    public function update(Request $request, $buildingId, $roomId)
     {
         try {
             // Log the request for debugging
@@ -238,7 +246,9 @@ class ManageRoomsController extends Controller
             ]);
 
             // Find the room to be updated
-            $room = Room::findOrFail($roomId);
+            $room = Room::where('room_id', $roomId)
+                ->where('building_id', $buildingId)
+                ->firstOrFail();
 
             // Check for duplicate room name in the same building
             $existing = Room::where('building_id', $validated['building_id'])
@@ -319,7 +329,10 @@ class ManageRoomsController extends Controller
             // Save room
             $room->save();
             // จัดการอุปกรณ์
-            $existingEquipments = $room->equipments()->get()->keyBy('id');
+            $existingEquipments = $room->equipments()
+                ->where('building_id', $room->building_id)
+                ->get()
+                ->keyBy('id');
 
             // เก็บ id ที่ส่งมาใน request
             $inputEquipmentIds = collect($request->equipments ?? [])->pluck('id')->filter()->all();
@@ -343,11 +356,13 @@ class ManageRoomsController extends Controller
                             'name' => $equipment['name'] ?? null,
                             'quantity' => $equipment['quantity'] ?? null,
                             'note' => $equipment['note'] ?? null,
-                            'building_id' => $buildingId,
+                            'room_id' => $room->room_id,
+                            'building_id' => $room->building_id,
                         ]);
                     }
                 }
             }
+            $room->setRelation('equipments', $room->equipments()->get());
             Log::info('Room updated successfully', $room->toArray());
 
             if ($request->expectsJson()) {
@@ -368,43 +383,18 @@ class ManageRoomsController extends Controller
             return redirect()->back()->with('error', 'Failed to update room. Please try again.');
         }
     }
-    public function destroy($room_id)
+    public function destroy($buildingId, $roomId)
     {
-        // ค้นหาห้องที่ต้องการลบ
-        $room = Room::findOrFail($room_id);
+        $room = Room::where('building_id', $buildingId)
+            ->where('room_id', $roomId)
+            ->firstOrFail();
 
-        // ลบรูปภาพ (ถ้ามี)
         if ($room->image) {
             Storage::delete('public/' . $room->image);
         }
 
-        // ลบห้อง
         $room->delete();
 
-        // ส่งหน้าก่อนหน้าพร้อมข้อความสำเร็จ
         return redirect()->back()->with('success', 'ลบห้องสำเร็จ');
     }
-    // public function subAdminRooms(Request $request)
-    // {
-    //     $user = Auth::user();
-    //     $buildings = Building::whereHas('users', function ($query) use ($user) {
-    //         $query->where('user_id', $user->id);
-    //     })->get();
-
-    //     $query = Room::query();
-
-    //     // If building ID is provided, filter rooms by that building
-    //     if ($request->building) {
-    //         $query->where('building_id', $request->building);
-    //     }
-
-    //     $rooms = $query->whereIn('building_id', $buildings->pluck('id'))
-    //         ->with(['building', 'status'])
-    //         ->when($request->search, function ($query) use ($request) {
-    //             $query->where('room_name', 'like', '%' . $request->search . '%');
-    //         })
-    //         ->paginate(12);
-
-    //     return view('dashboard.sub_admin_rooms', compact('rooms', 'buildings'));
-    // }
 }

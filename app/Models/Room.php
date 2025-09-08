@@ -54,6 +54,7 @@ class Room extends Model
 
     public function equipments()
     {
-        return $this->hasMany(RoomEquipment::class, 'room_id');
+        return $this->hasMany(RoomEquipment::class, 'room_id', 'room_id')
+            ->where('building_id', $this->building_id);
     }
 }

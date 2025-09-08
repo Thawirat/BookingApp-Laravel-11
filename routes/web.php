@@ -122,10 +122,10 @@ Route::middleware(['auth', 'can:admin-or-subadmin'])->group(function () {
     Route::get('/manage-rooms', [ManageRoomsController::class, 'index'])->name('manage_rooms.index');
     Route::get('/manage-rooms/{buildingId}/rooms', [ManageRoomsController::class, 'showRooms'])->name('manage_rooms.show');
     Route::post('/rooms', [ManageRoomsController::class, 'store'])->name('manage_rooms.store');
-    Route::put('/manage_rooms/{room}', [ManageRoomsController::class, 'update'])->name('manage_rooms.update');
+    Route::put('/buildings/{building}/rooms/{room}', [ManageRoomsController::class, 'update'])->name('manage_rooms.update');
     Route::get('/rooms/{id}', [ManageRoomsController::class, 'showRoomDetails'])->name('manage_rooms.details');
-    Route::get('/rooms/{room}/edit', [ManageRoomsController::class, 'edit'])->name('manage_rooms.edit');
-    Route::delete('/manage_rooms/{room}', [ManageRoomsController::class, 'destroy'])->name('manage_rooms.destroy');
+    Route::put('/buildings/{building}/rooms/{room}/edit', [ManageRoomsController::class, 'edit'])->name('manage_rooms.edit');
+    Route::delete('/buildings/{building}/rooms/{room}', [ManageRoomsController::class, 'destroy'])->name('manage_rooms.destroy');
     // Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db');
     Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('booking_history');
 
