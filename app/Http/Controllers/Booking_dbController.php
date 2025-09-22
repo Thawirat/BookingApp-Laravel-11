@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Mail\BookingApprovedMail;
+use App\Mail\BookingRejectedMail;
+use Illuminate\Support\Facades\Mail;
 
 class Booking_dbController extends Controller
 {
@@ -152,6 +155,14 @@ class Booking_dbController extends Controller
         $booking->approver_name = Auth::user()->name;
         $booking->approver_position = Auth::user()->position;
         $booking->save();
+
+        if ($booking->external_email) {
+            if ($status->status_id == 4) { // อนุมัติ
+                Mail::to($booking->external_email)->send(new BookingApprovedMail($booking));
+            } elseif ($status->status_id == 5) { // ไม่อนุมัติ / ปฏิเสธ
+                Mail::to($booking->external_email)->send(new BookingRejectedMail($booking));
+            }
+        }
 
         // ตรวจสอบว่าสถานะเป็น 6 และเรียกใช้ moveToHistory
         if (in_array($status->status_id, [5, 6])) {

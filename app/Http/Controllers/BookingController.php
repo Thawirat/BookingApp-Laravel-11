@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Building;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\BookingHistory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingCreatedMail;
 
 class BookingController extends Controller
 {
@@ -245,6 +248,23 @@ class BookingController extends Controller
             return back()
                 ->with('error', 'เกิดข้อผิดพลาดในการจอง: ' . $e->getMessage())
                 ->withInput();
+        }
+    }
+    protected function sendBookingConfirmation($booking)
+    {
+        // ส่งไป admin ทุกคน
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new BookingCreatedMail($booking));
+        }
+
+        // ส่งไป sub-admin ของอาคารที่เกี่ยวข้อง
+        $subAdmins = User::where('role', 'sub-admin')
+        ->whereHas('buildings', function ($query) use ($booking) {
+            $query->where('building_id', $booking->building_id);
+        })->get();
+        foreach ($subAdmins as $subAdmin) {
+            Mail::to($subAdmin->email)->send(new BookingCreatedMail($booking));
         }
     }
 
