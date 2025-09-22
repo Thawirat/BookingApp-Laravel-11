@@ -167,6 +167,33 @@
             </ul>
         </nav>
     </div>
+    @auth
+        <!-- Floating Notification Button -->
+        <div class="dropdown position-fixed top-0 end-0 m-3" style="z-index: 1060;">
+            <button class="btn btn-light shadow position-relative" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false" title="การแจ้งเตือน">
+                🔔
+                @if (auth()->user()->unreadNotifications->count() > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ auth()->user()->unreadNotifications->count() }}
+                    </span>
+                @endif
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow"
+                style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+                @forelse(auth()->user()->unreadNotifications as $notification)
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            {{ $notification->data['message'] }} <br>
+                            <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                        </a>
+                    </li>
+                @empty
+                    <li><span class="dropdown-item">ไม่มีการแจ้งเตือน</span></li>
+                @endforelse
+            </ul>
+        </div>
+    @endauth
     <!-- Content -->
     <div class="content">
         @yield('content')

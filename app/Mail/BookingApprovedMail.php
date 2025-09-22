@@ -21,7 +21,7 @@ class BookingApprovedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('การจองได้รับการอนุมัติแล้ว')
+        return $this->subject('แจ้งผลการจองห้องประชุมมหาวิทยาลัยราชภัฎสกลนคร')
             ->view('emails.bookings.booking_approved');
     }
 

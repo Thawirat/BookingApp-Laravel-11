@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Mail\BookingApprovedMail;
 use App\Mail\BookingRejectedMail;
 use Illuminate\Support\Facades\Mail;
+use App\Notifications\BookingStatusNotification;
 
 class Booking_dbController extends Controller
 {
@@ -155,6 +156,10 @@ class Booking_dbController extends Controller
         $booking->approver_name = Auth::user()->name;
         $booking->approver_position = Auth::user()->position;
         $booking->save();
+
+        if ($booking->user) {
+            $booking->user->notify(new BookingStatusNotification($booking, $status));
+        }
 
         if ($booking->external_email) {
             if ($status->status_id == 4) { // อนุมัติ
