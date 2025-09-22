@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserRegisteredMail;
 
 class RegisterController extends Controller
 {
@@ -20,6 +22,11 @@ class RegisterController extends Controller
         $this->validator($request->all())->validate();
 
         $user = $this->create($request->all());
+
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new UserRegisteredMail($user));
+        }
 
         return redirect()->route('login')->with('success', 'ลงทะเบียนสำเร็จ กรุณาเข้าสู่ระบบ');
     }
