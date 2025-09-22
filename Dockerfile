@@ -1,51 +1,35 @@
-# Stage 1: Build dependencies
-FROM composer:2 as vendor
-
-WORKDIR /app
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
-
-# Stage 2: Node build for Vite
-FROM node:18 as nodebuilder
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-# Stage 3: Production image
 FROM php:8.2-fpm
+
+WORKDIR /var/www/html
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    zip \
-    unzip \
     git \
     curl \
+    libpng-dev \
     libonig-dev \
     libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    zip \
+    unzip \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install Redis PHP extension
-RUN pecl install redis && docker-php-ext-enable redis
+# Install Composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Copy source
-WORKDIR /var/www/html
-COPY . .
+# Copy project files
+COPY . /var/www/html
 
-# Copy vendor & node build
-# Copy vendor & node build
-COPY --from=vendor /app/vendor ./vendor
-COPY --from=nodebuilder /app/public ./public
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# รัน storage:link ตอน container start
-RUN php artisan storage:link || true
-# Permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Install PHP dependencies
+RUN composer install --no-interaction --optimize-autoloader
+
+# Run migrations (optional, dev only)
+# Note: ใช้ entrypoint script จะดีกว่านี้ เพราะ database ต้องพร้อม
+# RUN php artisan migrate --force
 
 EXPOSE 9000
+
 CMD ["php-fpm"]
