@@ -23,7 +23,7 @@ class SendOtpResetMail extends Mailable
     {
         $fromName = '=?UTF-8?B?' . base64_encode('ระบบจองห้องประชุมมหาวิทยาลัยราชภัฏสกลนคร') . '?=';
         return $this->from('no-reply@snru.ac.th', $fromName)
-            ->subject('รหัสยืนยันการรีเซ็ตรหัสผ่าน')
+            ->subject('แจ้งเตือน: รหัสยืนยันการรีเซ็ตรหัสผ่าน')
             ->markdown('otp-verify');
     }
 }

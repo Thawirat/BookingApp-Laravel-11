@@ -16,8 +16,10 @@
                 style="padding:30px; background: linear-gradient(to right, #ec4899, #60a5fa, #22c55e); color:white; border-top-left-radius:10px; border-top-right-radius:10px; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.1);">
                 <img src="{{ asset('images/snru.png') }}" alt="Logo"
                     style="max-width:100px; margin-bottom:12px; border-radius:50%;">
-                <h2 style="margin:0; font-size:24px; font-weight:600;">ระบบจองห้องประชุมออนไลน์มหาวิทยาลัยราชภัฎสกลนคร
+                <h2 style="margin:0; font-size:22px; font-weight:600; text-align:center;">การจองห้องประชุมไม่ได้รับการอนุมัติ
                 </h2>
+                <p style="margin:5px 0 0; font-size:14px; text-align: center;">
+                    ระบบจองห้องประชุมออนไลน์มหาวิทยาลัยราชภัฏสกลนคร</p>
             </td>
         </tr>
 

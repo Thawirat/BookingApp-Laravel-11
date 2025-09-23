@@ -19,7 +19,7 @@ class BookingRejectedMail extends Mailable
     }
     public function build()
     {
-        return $this->subject('การจองได้รับการปฏิเสธแล้ว')
+        return $this->subject('แจ้งผลการจองห้องประชุมมหาวิทยาลัยราชภัฏสกลนคร')
             ->view('emails.bookings.booking_rejected');
     }
 
