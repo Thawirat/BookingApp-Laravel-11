@@ -170,16 +170,19 @@
     @auth
         <!-- Floating Notification Button -->
         <div class="dropdown position-fixed top-0 end-0 m-3" style="z-index: 1060;">
-            <button class="btn btn-light shadow position-relative" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false" title="การแจ้งเตือน">
+            <button class="btn shadow position-relative d-flex align-items-center justify-content-center" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false" title="การแจ้งเตือน"
+                style="width:50px; height:50px; font-size:18px; background-color:#ffffff; color:#000; border-radius:50%; border:none; box-shadow:0 6px 15px rgba(0,0,0,0.25); transition: transform 0.2s, box-shadow 0.2s;">
                 🔔
                 @if (auth()->user()->unreadNotifications->count() > 0)
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span id="notif-badge"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="font-size:0.65rem; width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0;">
                         {{ auth()->user()->unreadNotifications->count() }}
                     </span>
                 @endif
             </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow"
+            <ul id="notification-list" class="dropdown-menu dropdown-menu-end shadow"
                 style="min-width: 300px; max-height: 400px; overflow-y: auto;">
                 @forelse(auth()->user()->unreadNotifications as $notification)
                     <li>
@@ -191,6 +194,14 @@
                 @empty
                     <li><span class="dropdown-item">ไม่มีการแจ้งเตือน</span></li>
                 @endforelse
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li class="text-center">
+                    <button id="clear-notifications-btn" class="btn btn-sm btn-danger">
+                        ล้างการแจ้งเตือนทั้งหมด
+                    </button>
+                </li>
             </ul>
         </div>
     @endauth
@@ -214,9 +225,58 @@
             overlay.classList.remove('active');
         });
         moment.locale('th');
+        document.getElementById('clear-notifications-btn')?.addEventListener('click', async function() {
+            const res = await fetch("{{ route('notifications.clear') }}", {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    "Accept": "application/json"
+                }
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                // ล้างรายการ
+                document.getElementById('notification-list').innerHTML =
+                    `<li><span class="dropdown-item">ไม่มีการแจ้งเตือน</span></li>`;
+
+                // ลบ badge
+                const badge = document.getElementById('notif-badge');
+                if (badge) badge.remove();
+
+                // แสดง toast
+                const toastEl = document.getElementById('notifToast');
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+        });
+        const notifBtn = document.querySelector('button[title="การแจ้งเตือน"]');
+        notifBtn.addEventListener('mouseover', () => {
+            notifBtn.style.transform = 'scale(1.1)';
+            notifBtn.style.boxShadow = '0 10px 25px rgba(0,0,0,0.35)';
+        });
+        notifBtn.addEventListener('mouseout', () => {
+            notifBtn.style.transform = 'scale(1)';
+            notifBtn.style.boxShadow = '0 6px 15px rgba(0,0,0,0.25)';
+        });
     </script>
     @stack('scripts')
+    <!-- Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 2000">
+        <div id="notifToast" class="toast align-items-center text-bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ล้างการแจ้งเตือนเรียบร้อยแล้ว
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
 </body>
+
 
 </html>
 

@@ -19,10 +19,10 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
             UserSeeder::class,
             RoomTypeSeeder::class,
-            // BuildingSeeder::class,
-            // RoomSeeder::class,
-            // EquipmentSeeder::class,
-            // RoomEquipmentSeeder::class,
+            BuildingSeeder::class,
+            RoomSeeder::class,
+            EquipmentSeeder::class,
+            RoomEquipmentSeeder::class,
         ]);
     }
 }

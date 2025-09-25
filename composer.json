@@ -12,6 +12,7 @@
         "intervention/image": "^2.7",
         "laravel-lang/lang": "^15.22",
         "laravel/framework": "^11.44.7",
+        "laravel/reverb": "*",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "spatie/laravel-ignition": "^2.0",

@@ -36,11 +36,14 @@ class BookingStatusNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'booking_id' => $this->booking->id,
-            'room' => $this->booking->room_name,
-            'building' => $this->booking->building_name,
-            'status' => $this->status->status_name,
-            'message' => "การจองห้อง {$this->booking->room_name} ถูกเปลี่ยนสถานะเป็น {$this->status->status_name}",
+            'booking_id'  => $this->booking->id,
+            'room'        => $this->booking->room_name,
+            'building'    => $this->booking->building_name,
+            'status'      => $this->status->status_name,
+            'user_id'     => $this->booking->user_id,   // ใครเป็นเจ้าของการจอง
+            'building_id' => $this->booking->building_id, // เอาไว้ให้ SubAdmin ใช้กรอง
+            'type'        => 'booking_status', // เผื่อแยกประเภทแจ้งเตือน
+            'message'     => "การจองห้อง {$this->booking->room_name} ถูกเปลี่ยนสถานะเป็น {$this->status->status_name}",
         ];
     }
 

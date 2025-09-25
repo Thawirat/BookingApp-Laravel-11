@@ -29,36 +29,36 @@ class UserSeeder extends Seeder
             ]);
             $admin->assignRole('admin');
         }
-        // if (! User::where('email', 'thawirat.la63@snru.ac.th')->exists()) {
-        //     $admin = User::create([
-        //         'name' => 'ทวีรัตน์ เหลาลอดวัน',
-        //         'email' => 'thawirat.la63@snru.ac.th',
-        //         'password' => Hash::make('snru1249900638936'),
-        //         'role' => 'admin',
-        //         'user_type' => 'internal',
-        //         'phone_number' => '0807721335',
-        //         'position' => 'System Administrator',
-        //         'department' => 'งานพัฒนาระบบสารสนเทศ',
-        //         'address' => 'มหาวิทยาลัยราชภัฏสกลนคร',
-        //         'status' => 'active',
-        //     ]);
-        //     $admin->assignRole('admin');
-        // }
-        // // สร้าง user ที่มี role sub-admin
-        // if (! User::where('email', 'subadmin@snru.ac.th')->exists()) {
-        //     $subAdmin = User::create([
-        //         'name' => 'Sub Admin',
-        //         'email' => 'subadmin@snru.ac.th',
-        //         'password' => Hash::make('12345678'),
-        //         'role' => 'sub-admin',
-        //         'user_type' => 'internal',
-        //         'phone_number' => '0800000001',
-        //         'position' => 'Building Manager',
-        //         'department' => 'Facilities',
-        //         'address' => 'อาคารบริการส่วนกลาง',
-        //     ]);
-        //     $subAdmin->assignRole('sub-admin');
-        // }
+        if (! User::where('email', 'thawirat.la63@snru.ac.th')->exists()) {
+            $admin = User::create([
+                'name' => 'ทวีรัตน์ เหลาลอดวัน',
+                'email' => 'thawirat.la63@snru.ac.th',
+                'password' => Hash::make('snru1249900638936'),
+                'role' => 'admin',
+                'user_type' => 'internal',
+                'phone_number' => '0807721335',
+                'position' => 'System Administrator',
+                'department' => 'งานพัฒนาระบบสารสนเทศ',
+                'address' => 'มหาวิทยาลัยราชภัฏสกลนคร',
+                'status' => 'active',
+            ]);
+            $admin->assignRole('admin');
+        }
+        // สร้าง user ที่มี role sub-admin
+        if (! User::where('email', 'subadmin@snru.ac.th')->exists()) {
+            $subAdmin = User::create([
+                'name' => 'Sub Admin',
+                'email' => 'subadmin@snru.ac.th',
+                'password' => Hash::make('12345678'),
+                'role' => 'sub-admin',
+                'user_type' => 'internal',
+                'phone_number' => '0800000001',
+                'position' => 'Building Manager',
+                'department' => 'Facilities',
+                'address' => 'อาคารบริการส่วนกลาง',
+            ]);
+            $subAdmin->assignRole('sub-admin');
+        }
 
         // // สร้าง regular users โดยใช้ factory พร้อมฟิลด์เพิ่มเติม
         // User::factory()

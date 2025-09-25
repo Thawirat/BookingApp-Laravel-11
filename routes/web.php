@@ -143,7 +143,6 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::middleware('auth')->get('/api/users/{id}/buildings', [ManageUsersController::class, 'getUserBuildings']);
     Route::resource('equipments', EquipmentController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('/admin/feedbacks', [FeedbackController::class, 'index'])->name('admin.feedback.index');
-
 });
 
 // Profile routes
@@ -195,3 +194,10 @@ Route::delete('/my-bookings/{id}/cancel', [\App\Http\Controllers\BookingStatusCo
     ->name('mybookings.cancel');
 Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
 Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])
+        ->name('notifications.index');
+    Route::delete('/notifications/clear', [App\Http\Controllers\NotificationController::class, 'clear'])
+        ->name('notifications.clear');
+});

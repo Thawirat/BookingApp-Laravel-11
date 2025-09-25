@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegisteredMail;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\NewUserRegisteredNotification;
 
 class RegisterController extends Controller
 {
@@ -21,12 +23,17 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
 
+        // ✅ สร้าง user ใหม่
         $user = $this->create($request->all());
 
+        // ✅ ส่ง Email แจ้งเตือนหา admin
         $admins = User::where('role', 'admin')->get();
         foreach ($admins as $admin) {
             Mail::to($admin->email)->send(new UserRegisteredMail($user));
         }
+
+        // ✅ ส่ง Notification ลง database สำหรับ admin
+        Notification::send($admins, new NewUserRegisteredNotification($user));
 
         return redirect()->route('login')->with('success', 'ลงทะเบียนสำเร็จ กรุณาเข้าสู่ระบบ');
     }
@@ -54,11 +61,11 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'department' => $data['department'],
+            'name'         => $data['name'],
+            'email'        => $data['email'],
+            'department'   => $data['department'],
             'phone_number' => $data['phone_number'],
-            'password' => Hash::make($data['password']),
+            'password'     => Hash::make($data['password']),
         ]);
     }
 }
