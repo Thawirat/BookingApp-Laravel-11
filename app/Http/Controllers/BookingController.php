@@ -64,7 +64,7 @@ class BookingController extends Controller
             $room = Room::with(['building', 'equipments'])->findOrFail($id);
             // Get booked time slots
             $bookedTimeSlots = Booking::where('room_id', $id)
-                ->whereIn('status_id', [1, 2, 3])
+                ->whereIn('status_id', [1, 2, 3, 4])
                 ->get(['booking_start', 'booking_end', 'external_name'])
                 ->map(function ($booking) {
                     return [
@@ -78,7 +78,7 @@ class BookingController extends Controller
 
             // Get booked dates
             $bookedDates = Booking::where('room_id', $id)
-                ->whereIn('status_id', [1, 2, 3])
+                ->whereIn('status_id', [1, 2, 3, 4])
                 ->get(['booking_start', 'booking_end', 'external_name']);
 
             // Process booked dates
@@ -168,15 +168,12 @@ class BookingController extends Controller
 
             // Check for booking conflict
             $existingBooking = Booking::where('room_id', $validated['room_id'])
-                ->where(function ($query) use ($bookingStart, $bookingEnd) {
-                    $query->where(function ($q) use ($bookingStart, $bookingEnd) {
-                        $q->where('booking_start', '<', $bookingEnd)
-                            ->where('booking_end', '>', $bookingStart);
-                    });
+                ->where('status_id', 4)
+                ->where(function ($q) use ($bookingStart, $bookingEnd) {
+                    $q->where('booking_start', '<', $bookingEnd)   // ยังน้อยกว่า end ใหม่
+                        ->where('booking_end', '>', $bookingStart); // ยังมากกว่า start ใหม่
                 })
-                ->whereNotIn('status_id', [4, 5]) // ไม่นับการจองที่ถูกยกเลิกหรือปฏิเสธ
                 ->exists();
-
             if ($existingBooking) {
                 return back()->withErrors(['message' => 'ห้องนี้มีการจองแล้วในช่วงเวลาที่เลือก กรุณาเลือกช่วงเวลาอื่น']);
             }
