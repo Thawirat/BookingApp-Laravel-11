@@ -48,7 +48,7 @@
                                                 class="text-danger">*</span></label>
                                         @if (auth()->check())
                                             <input class="form-control" type="text" name="external_position"
-                                                value="{{ auth()->user()->department ?? '' }}" required>
+                                                value="{{ auth()->user()->position ?? '' }}" required>
                                         @else
                                             <input class="form-control" type="text" name="external_position" required>
                                         @endif
@@ -76,7 +76,7 @@
                                         @endif
                                     </div>
 
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <label class="form-label fw-semibold">หน่วยงาน <span
                                                 class="text-danger">*</span></label>
                                         @if (auth()->check())
@@ -96,7 +96,7 @@
                                         @else
                                             <input class="form-control" type="text" name="external_address" required>
                                         @endif
-                                    </div>
+                                    </div> --}}
 
                                     <!-- ข้อมูลผู้ประสานงาน -->
                                     <div class="col-md-6">
@@ -125,7 +125,7 @@
                                                 class="text-danger">*</span></label>
                                         @if (auth()->check())
                                             <input class="form-control" type="text" name="coordinator_department"
-                                                value="{{ auth()->user()->address ?? '' }}" required>
+                                                value="{{ auth()->user()->department ?? '' }}" required>
                                         @else
                                             <input class="form-control" type="text" name="coordinator_department"
                                                 required>
@@ -192,7 +192,7 @@
                                         @endif
                                     </div>
                                     <!-- วันจัดและเก็บสถานที่ -->
-                                    <div class="col-md-12 mt-4">
+                                    {{-- <div class="col-md-12 mt-4">
                                         <h5 class="fw-bold mb-3">วันจัดเตรียมและเก็บสถานที่</h5>
                                         <div class="row g-3">
                                             <div class="col-md-6">
@@ -212,7 +212,7 @@
                                                     (ภายในเวลาราชการ)</div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     <!-- วันที่จอง -->
                                     <div class="col-md-12 mt-4">
@@ -370,36 +370,36 @@
         }
     </style>
     <script>
-        document.getElementById('setup_date').addEventListener('change', function() {
-            const dateValue = this.value;
-            if (dateValue) {
-                const date = new Date(dateValue);
-                const day = date.getDate();
-                const month = date.getMonth() + 1; // เดือนเริ่มที่ 0
-                const year = date.getFullYear() + 543; // แปลง ค.ศ. → พ.ศ.
+        // document.getElementById('setup_date').addEventListener('change', function() {
+        //     const dateValue = this.value;
+        //     if (dateValue) {
+        //         const date = new Date(dateValue);
+        //         const day = date.getDate();
+        //         const month = date.getMonth() + 1; // เดือนเริ่มที่ 0
+        //         const year = date.getFullYear() + 543; // แปลง ค.ศ. → พ.ศ.
 
-                const formatted = `วันที่เลือก: ${day}/${month}/${year}`;
-                document.getElementById('setup_date_display').innerText = formatted;
-            } else {
-                document.getElementById('setup_date_display').innerText =
-                    'โปรดเลือกวันจัดเตรียมสถานที่ (ภายในเวลาราชการ)';
-            }
-        });
-        document.getElementById('teardown_date').addEventListener('change', function() {
-            const dateValue = this.value;
-            if (dateValue) {
-                const date = new Date(dateValue);
-                const day = date.getDate();
-                const month = date.getMonth() + 1; // เดือนเริ่มที่ 0
-                const year = date.getFullYear() + 543; // แปลง ค.ศ. → พ.ศ.
+        //         const formatted = `วันที่เลือก: ${day}/${month}/${year}`;
+        //         document.getElementById('setup_date_display').innerText = formatted;
+        //     } else {
+        //         document.getElementById('setup_date_display').innerText =
+        //             'โปรดเลือกวันจัดเตรียมสถานที่ (ภายในเวลาราชการ)';
+        //     }
+        // });
+        // document.getElementById('teardown_date').addEventListener('change', function() {
+        //     const dateValue = this.value;
+        //     if (dateValue) {
+        //         const date = new Date(dateValue);
+        //         const day = date.getDate();
+        //         const month = date.getMonth() + 1; // เดือนเริ่มที่ 0
+        //         const year = date.getFullYear() + 543; // แปลง ค.ศ. → พ.ศ.
 
-                const formatted = `วันที่เลือก: ${day}/${month}/${year}`;
-                document.getElementById('teardown_date_display').innerText = formatted;
-            } else {
-                document.getElementById('teardown_date_display').innerText =
-                    'โปรดเลือกวันเก็บสถานที่ (ภายในเวลาราชการ)';
-            }
-        });
+        //         const formatted = `วันที่เลือก: ${day}/${month}/${year}`;
+        //         document.getElementById('teardown_date_display').innerText = formatted;
+        //     } else {
+        //         document.getElementById('teardown_date_display').innerText =
+        //             'โปรดเลือกวันเก็บสถานที่ (ภายในเวลาราชการ)';
+        //     }
+        // });
         document.addEventListener('DOMContentLoaded', function() {
             const bookingForm = document.getElementById('bookingForm');
 

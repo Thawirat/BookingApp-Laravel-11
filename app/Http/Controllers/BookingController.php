@@ -134,15 +134,15 @@ class BookingController extends Controller
                 'external_name' => 'required|string|max:255',
                 'external_email' => 'required|email|max:255',
                 'external_phone' => 'required|string|max:20',
-                'external_position' => 'required|string|max:255',
-                'external_address' => 'required|string|max:255',
+                'external_position' => 'nullable|string|max:255',
+                'external_address' => 'nullable|string|max:255',
                 'coordinator_name' => 'required|string|max:255',
                 'coordinator_phone' => 'required|string|max:20',
                 'coordinator_department' => 'required|string|max:255',
                 'booking_start' => 'required|date|after_or_equal:today',
                 'booking_end' => 'required|date|after_or_equal:booking_start',
-                'setup_date' => 'required|string|regex:/^\d{2}\/\d{2}\/\d{4}$/',
-                'teardown_date' => 'required|string|regex:/^\d{2}\/\d{2}\/\d{4}$/',
+                // 'setup_date' => 'required|string|regex:/^\d{2}\/\d{2}\/\d{4}$/',
+                // 'teardown_date' => 'required|string|regex:/^\d{2}\/\d{2}\/\d{4}$/',
                 'check_in_time' => [
                     'required',
                     'date_format:H:i',
@@ -192,11 +192,11 @@ class BookingController extends Controller
             $booking->coordinator_phone = $validated['coordinator_phone'];
             $booking->coordinator_department = $validated['coordinator_department'];
 
-            $setup_date = Carbon::createFromFormat('d/m/Y', $request->setup_date)->subYears(543)->format('Y-m-d');
-            $teardown_date = Carbon::createFromFormat('d/m/Y', $request->teardown_date)->subYears(543)->format('Y-m-d');
+            // $setup_date = Carbon::createFromFormat('d/m/Y', $request->setup_date)->subYears(543)->format('Y-m-d');
+            // $teardown_date = Carbon::createFromFormat('d/m/Y', $request->teardown_date)->subYears(543)->format('Y-m-d');
             // Set setup and teardown dates
-            $booking->setup_date = $setup_date;
-            $booking->teardown_date = $teardown_date;
+            // $booking->setup_date = $setup_date;
+            // $booking->teardown_date = $teardown_date;
 
             // Set additional equipment if provided
             $booking->additional_equipment = $validated['additional_equipment'] ?? null;

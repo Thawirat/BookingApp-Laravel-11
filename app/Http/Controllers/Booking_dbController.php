@@ -53,7 +53,7 @@ class Booking_dbController extends Controller
                 'total_price' => $booking->total_price,
                 'payment_status' => $booking->payment_status,
                 'is_external' => $booking->is_external,
-                'created_at' => now(),
+                'created_at' => $booking->created_at,
                 'updated_at' => now(),
                 'moved_to_history_at' => now(),
                 'title' => $booking->title ?? null,
@@ -157,9 +157,9 @@ class Booking_dbController extends Controller
         $booking->approver_position = Auth::user()->position;
         $booking->save();
 
-        if ($booking->user) {
-            $booking->user->notify(new BookingStatusNotification($booking, $status));
-        }
+        // if ($booking->user) {
+        //     $booking->user->notify(new BookingStatusNotification($booking, $status));
+        // }
 
         if ($booking->external_email) {
             if ($status->status_id == 4) { // อนุมัติ
