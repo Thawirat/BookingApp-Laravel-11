@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('favicon_io/favicon-32x32.png') }}" type="image/png">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <link rel="icon" href="<?php echo e(asset('favicon_io/favicon-32x32.png')); ?>" type="image/png">
     <title>ระบบจองห้องออนไลน์มหาวิทยาลัยราชภัฏสกลนคร</title>
     <!-- Fonts & CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     <!-- Core Libraries -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -36,7 +36,7 @@
     <script src="https://cdn.jsdelivr.net/npm/moment/locale/th.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo@^1.15.0/dist/echo.iife.js"></script>
     <!-- Your App -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 </head>
 
 <body>
@@ -68,134 +68,132 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <!-- Toggle Sidebar Button -->
-        <img src="{{ asset('images/snru v.1.png') }}" alt="SNru Logo" style="width: 100%; height: auto;">
-        @if (auth()->check())
+        <img src="<?php echo e(asset('images/snru v.1.png')); ?>" alt="SNru Logo" style="width: 100%; height: auto;">
+        <?php if(auth()->check()): ?>
             <div class="p-3 border-bottom ">
-                <strong class="text text-center">{{ auth()->user()->name }}</strong><br>
-                <small class="text-muted">{{ auth()->user()->email }}</small>
+                <strong class="text text-center"><?php echo e(auth()->user()->name); ?></strong><br>
+                <small class="text-muted"><?php echo e(auth()->user()->email); ?></small>
             </div>
-        @endif
+        <?php endif; ?>
         <nav>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="{{ route('index') }}" class="nav-link text-gray-700"><i class="fas fa-home me-2"></i>
+                    <a href="<?php echo e(route('index')); ?>" class="nav-link text-gray-700"><i class="fas fa-home me-2"></i>
                         หน้าแรก</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('calendar.index') }}" class="nav-link text-gray-700"><i
+                    <a href="<?php echo e(route('calendar.index')); ?>" class="nav-link text-gray-700"><i
                             class="fas fa-calendar-alt me-2"></i> ปฏิทินการจอง</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('booking.index') }}" class="nav-link text-gray-700"><i
+                    <a href="<?php echo e(route('booking.index')); ?>" class="nav-link text-gray-700"><i
                             class="fas fa-door-open me-2"></i> จองห้อง</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('my-bookings') }}" class="nav-link text-gray-700"><i
+                    <a href="<?php echo e(route('my-bookings')); ?>" class="nav-link text-gray-700"><i
                             class="fas fa-calendar-check"></i> การจองของฉัน</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('bookings.history') }}" class="nav-link text-gray-700"><i
+                    <a href="<?php echo e(route('bookings.history')); ?>" class="nav-link text-gray-700"><i
                             class="fas fa-history me-2"></i> ประวัติการจอง</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('usage.index') }}" class="nav-link text-gray-700"><i
+                    <a href="<?php echo e(route('usage.index')); ?>" class="nav-link text-gray-700"><i
                             class="fas fa-info-circle me-2"></i> วิธีใช้งาน</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('profile.show') }}" class="nav-link text-gray-700"><i
+                    <a href="<?php echo e(route('profile.show')); ?>" class="nav-link text-gray-700"><i
                             class="fas fa-user-circle"></i> โปรไฟล์ของฉัน</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('feedback.create') }}" class="nav-link text-gray-700"><i
+                    <a href="<?php echo e(route('feedback.create')); ?>" class="nav-link text-gray-700"><i
                             class="bi bi-chat-left-dots-fill"></i> แสดงความคิดเห็น</a>
                 </li>
-                @if (Auth::check() && Auth::user()->isAdminOrSubAdmin())
+                <?php if(Auth::check() && Auth::user()->isAdminOrSubAdmin()): ?>
                     <hr>
                     <h6 class="sidebar-heading text-white text-center py-2 px-3 mb-3"
                         style="background-color: #343a40; border-radius: 0.25rem;">สำหรับผู้ดูแล</h6>
                     <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link text-gray-700"><i
+                        <a href="<?php echo e(route('dashboard')); ?>" class="nav-link text-gray-700"><i
                                 class="fas fa-tachometer-alt me-2"></i> แดชบอร์ด</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('booking_db') }}" class="nav-link text-gray-700"><i
+                        <a href="<?php echo e(route('booking_db')); ?>" class="nav-link text-gray-700"><i
                                 class="fas fa-calendar-check me-2"></i> การจองห้อง</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('manage_rooms.index') }}" class="nav-link text-gray-700"><i
+                        <a href="<?php echo e(route('manage_rooms.index')); ?>" class="nav-link text-gray-700"><i
                                 class="fas fa-building me-2"></i> จัดการห้องและอาคาร</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('booking_history') }}" class="nav-link text-gray-700"><i
+                        <a href="<?php echo e(route('booking_history')); ?>" class="nav-link text-gray-700"><i
                                 class="fas fa-history me-2"></i> ประวัติการจอง</a>
                     </li>
-                    @if (Auth::user()->isAdmin())
+                    <?php if(Auth::user()->isAdmin()): ?>
                         <li class="nav-item">
-                            <a href="{{ route('manage_users.index') }}" class="nav-link text-gray-700"><i
+                            <a href="<?php echo e(route('manage_users.index')); ?>" class="nav-link text-gray-700"><i
                                     class="fas fa-users-cog me-2"></i> จัดการผู้ใช้</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('room-types.index') }}" class="nav-link text-gray-700"><i
+                            <a href="<?php echo e(route('room-types.index')); ?>" class="nav-link text-gray-700"><i
                                     class="fas fa-tags me-2"></i> จัดการประเภทห้อง</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.feedback.index') }}" class="nav-link text-gray-700"><i
+                            <a href="<?php echo e(route('admin.feedback.index')); ?>" class="nav-link text-gray-700"><i
                                     class="bi bi-chat-left-dots-fill"></i> กล่องความคิดเห็น</a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a href="{{ route('equipments.index') }}" class="nav-link text-gray-700"><i
-                                    class="fas fa-boxes me-2"></i> จัดการวัสดุ/อุปกรณ์</a>
-                        </li> --}}
-                    @endif
-                @endif
-                @if (Auth::check())
+                        
+                    <?php endif; ?>
+                <?php endif; ?>
+                <?php if(Auth::check()): ?>
                     <li class="nav-item">
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                            @csrf
+                        <form action="<?php echo e(route('logout')); ?>" method="POST" class="d-inline">
+                            <?php echo csrf_field(); ?>
                             <button type="submit" class="nav-link text-danger border-0 bg-transparent"><i
                                     class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ</button>
                         </form>
                     </li>
-                @else
+                <?php else: ?>
                     <li class="nav-item">
-                        <a href="{{ route('login') }}" class="nav-link text-gray-700"><i
+                        <a href="<?php echo e(route('login')); ?>" class="nav-link text-gray-700"><i
                                 class="fas fa-sign-in-alt me-2"></i> เข้าสู่ระบบ</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('register') }}" class="nav-link text-gray-700"><i
+                        <a href="<?php echo e(route('register')); ?>" class="nav-link text-gray-700"><i
                                 class="fas fa-user-plus me-2"></i> สมัครสมาชิก</a>
                     </li>
-                @endif
+                <?php endif; ?>
             </ul>
         </nav>
     </div>
-    @auth
+    <?php if(auth()->guard()->check()): ?>
         <!-- Floating Notification Button -->
         <div class="dropdown position-fixed top-0 end-0 m-3" style="z-index: 1060;">
             <button class="btn shadow position-relative d-flex align-items-center justify-content-center" type="button"
                 data-bs-toggle="dropdown" aria-expanded="false" title="การแจ้งเตือน"
                 style="width:50px; height:50px; font-size:18px; background-color:#ffffff; color:#000; border-radius:50%; border:none; box-shadow:0 6px 15px rgba(0,0,0,0.25); transition: transform 0.2s, box-shadow 0.2s;">
                 🔔
-                @if (auth()->user()->unreadNotifications->count() > 0)
+                <?php if(auth()->user()->unreadNotifications->count() > 0): ?>
                     <span id="notif-badge"
                         class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                         style="font-size:0.65rem; width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0;">
-                        {{ auth()->user()->unreadNotifications->count() }}
+                        <?php echo e(auth()->user()->unreadNotifications->count()); ?>
+
                     </span>
-                @endif
+                <?php endif; ?>
             </button>
             <ul id="notification-list" class="dropdown-menu dropdown-menu-end shadow"
                 style="min-width: 300px; max-height: 400px; overflow-y: auto;">
-                @forelse(auth()->user()->unreadNotifications as $notification)
+                <?php $__empty_1 = true; $__currentLoopData = auth()->user()->unreadNotifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <li>
                         <a class="dropdown-item" href="#">
-                            {{ $notification->data['message'] }} <br>
-                            <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                            <?php echo e($notification->data['message']); ?> <br>
+                            <small class="text-muted"><?php echo e($notification->created_at->diffForHumans()); ?></small>
                         </a>
                     </li>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <li><span class="dropdown-item">ไม่มีการแจ้งเตือน</span></li>
-                @endforelse
+                <?php endif; ?>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
@@ -206,13 +204,13 @@
                 </li>
             </ul>
         </div>
-    @endauth
+    <?php endif; ?>
     <!-- Content -->
     <div class="content">
-        @yield('content')
-        @yield('scripts')
+        <?php echo $__env->yieldContent('content'); ?>
+        <?php echo $__env->yieldContent('scripts'); ?>
     </div>
-    @include('footer')
+    <?php echo $__env->make('footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <!-- Scripts -->
     <script>
         // ===== 🎨 Sidebar toggle =====
@@ -235,7 +233,7 @@
 
         // ===== 🔔 ปุ่มล้างการแจ้งเตือน =====
         document.getElementById('clear-notifications-btn')?.addEventListener('click', async function() {
-            const res = await fetch("{{ route('notifications.clear') }}", {
+            const res = await fetch("<?php echo e(route('notifications.clear')); ?>", {
                 method: "DELETE",
                 headers: {
                     "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content,
@@ -269,9 +267,9 @@
         // ===== 🚀 Laravel Reverb (ฟรี WebSocket realtime) =====
         // window.Echo = new Echo({
         //     broadcaster: 'reverb',
-        //     key: '{{ env('REVERB_APP_KEY') }}',
-        //     wsHost: '{{ env('REVERB_HOST', 'localhost') }}',
-        //     wsPort: {{ env('REVERB_PORT', 8080) }},
+        //     key: '<?php echo e(env('REVERB_APP_KEY')); ?>',
+        //     wsHost: '<?php echo e(env('REVERB_HOST', 'localhost')); ?>',
+        //     wsPort: <?php echo e(env('REVERB_PORT', 8080)); ?>,
         //     forceTLS: false,
         //     disableStats: true,
         // });
@@ -300,7 +298,7 @@
                 // }
             });
     </script>
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
     <!-- Toast -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 2000">
         <div id="notifToast" class="toast align-items-center text-bg-success border-0" role="alert">
@@ -364,7 +362,7 @@
         font-family: 'Kanit', sans-serif;
         background-color: #f5f5f7;
         color: #333;
-        background-image: url('{{ asset('images/bg-1.jpg') }}');
+        background-image: url('<?php echo e(asset('images/bg-1.jpg')); ?>');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -782,3 +780,4 @@
         padding: 25px;
     }
 </style>
+<?php /**PATH /var/www/html/resources/views/layouts/app.blade.php ENDPATH**/ ?>

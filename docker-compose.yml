@@ -5,43 +5,45 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        container_name: laravel_app
+        container_name: roombooking_app
         restart: unless-stopped
         volumes:
             - ./:/var/www/html
-        depends_on:
-            - db
+            - ./storage_roombooking:/var/www/html/storage
+        networks:
+        - dev_mysql_net
+        - dev_net
+        environment:
+        - DB_CONNECTION=mysql
+        - DB_HOST=dev-mysql
+        - DB_PORT=3306
+        - DB_DATABASE=roombooking_db
+        - DB_USERNAME=devuser
+        - DB_PASSWORD=devpassword
+        - MAIL_HOST=mailpit
+        - MAIL_PORT=1025
+        - MAIL_USERNAME=null
+        - MAIL_PASSWORD=null
+        - MAIL_ENCRYPTION=null
 
     web:
         image: nginx:alpine
-        container_name: laravel_web
+        container_name: roombooking_web
         restart: unless-stopped
         ports:
             - "8000:80"
         volumes:
-            - ./:/var/www/html
+            - ./roombooking:/var/www/html
             - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./storage_roombooking:/var/www/html/storage
         depends_on:
             - app
-    mailpit:
-        image: axllent/mailpit
-        container_name: mailpit
-        restart: unless-stopped
-        ports:
-            - "1025:1025"
-            - "8025:8025"
-    db:
-        image: mysql:8.0
-        container_name: laravel_db
-        restart: unless-stopped
-        ports:
-            - "3306:3306"
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: bookingapp
-            MYSQL_USER: user
-            MYSQL_PASSWORD:
-        volumes:
-            - db_data:/docker/mysql/data:/var/lib/mysql
-volumes:
-    db_data:
+        networks:
+            - dev_mysql_net
+            - dev_net
+
+networks:
+  dev_mysql_net:
+    external: true
+  dev_net:
+    driver: bridge

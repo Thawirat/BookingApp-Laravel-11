@@ -233,15 +233,15 @@ class BookingController extends Controller
 
             // Log successful booking
             Log::info('Booking created successfully', ['booking_id' => $booking->id]);
-            $admins = User::where('role', 'admin')->get();
-            Notification::send($admins, new NewBookingNotification($booking));
+            // $admins = User::where('role', 'admin')->get();
+            // Notification::send($admins, new NewBookingNotification($booking));
 
-            $subAdmins = User::where('role', 'sub-admin')
-                ->whereHas('buildings', function ($query) use ($booking) {
-                    $query->where('building_id', $booking->building_id);
-                })->get();
+            // $subAdmins = User::where('role', 'sub-admin')
+            //     ->whereHas('buildings', function ($query) use ($booking) {
+            //         $query->where('building_id', $booking->building_id);
+            //     })->get();
 
-            Notification::send($subAdmins, new NewBookingNotification($booking));
+            // Notification::send($subAdmins, new NewBookingNotification($booking));
             // Send notification
             $this->sendBookingConfirmation($booking);
 

@@ -157,6 +157,8 @@ class Booking_dbController extends Controller
         $booking->approver_position = Auth::user()->position;
         $booking->save();
 
+        event(new \App\Events\BookingStatusUpdated($booking));
+
         // if ($booking->user) {
         //     $booking->user->notify(new BookingStatusNotification($booking, $status));
         // }
