@@ -21,7 +21,7 @@
             background-image: linear-gradient(to bottom right,
                     rgba(137, 255, 166, 0.4),
                     rgba(160, 183, 245, 0.6),
-                    rgba(245, 160, 234, 0.6)), url('{{ asset('images/bg-1.jpg') }}');
+                    rgba(245, 160, 234, 0.6)), url('<?php echo e(asset('images/bg-1.jpg')); ?>');
             background-size: cover;
             background-position: center;
         }
@@ -33,14 +33,15 @@
         class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md transform transition-all hover:scale-[1.01] duration-300 ease-in-out">
         <h1 class="text-2xl font-bold text-blue-800 mb-6 text-center">ลืมรหัสผ่าน</h1>
 
-        @if (session('status'))
+        <?php if(session('status')): ?>
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
-                {{ session('status') }}
-            </div>
-        @endif
+                <?php echo e(session('status')); ?>
 
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="<?php echo e(route('password.email')); ?>">
+            <?php echo csrf_field(); ?>
 
             <!-- Email -->
             <div class="mb-4">
@@ -58,7 +59,7 @@
 
         <!-- Back to login -->
         <div class="mt-4 text-center">
-            <a href="{{ route('login') }}" class="text-sm text-blue-600 hover:text-blue-800 transition">
+            <a href="<?php echo e(route('login')); ?>" class="text-sm text-blue-600 hover:text-blue-800 transition">
                 &larr; กลับไปเข้าสู่ระบบ
             </a>
         </div>
@@ -66,3 +67,4 @@
 </body>
 
 </html>
+<?php /**PATH /var/www/html/resources/views/forgot-password.blade.php ENDPATH**/ ?>

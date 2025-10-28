@@ -1,23 +1,23 @@
-<footer class="bg-dark text-white py-5 mt-5 border-top border-secondary">
+<footer class="bg-dark text-white py-3 mt-3 border-top border-secondary">
     <div class="container">
-        <div class="row gy-4 justify-content-center text-center text-md-start">
+        <div class="row gy-3 justify-content-center text-center text-md-start">
 
             <!-- ลิงก์สำคัญ -->
             <div class="col-md-4 col-lg-3">
-                <h5 class="fw-bold mb-3">ลิงก์สำคัญ</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <a href="#" class="text-white text-decoration-none link-hover">
+                <h6 class="fw-bold mb-2 text-uppercase">ลิงก์สำคัญ</h6>
+                <ul class="list-unstyled mb-0">
+                    <li>
+                        <a href="#" class="text-white-50 text-decoration-none link-hover">
                             <i class="fas fa-file-alt me-2"></i> นโยบายความเป็นส่วนตัว
                         </a>
                     </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white text-decoration-none link-hover">
+                    <li>
+                        <a href="#" class="text-white-50 text-decoration-none link-hover">
                             <i class="fas fa-gavel me-2"></i> ข้อตกลงการใช้งาน
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="text-white text-decoration-none link-hover">
+                        <a href="#" class="text-white-50 text-decoration-none link-hover">
                             <i class="fas fa-headset me-2"></i> ติดต่อฝ่ายสนับสนุน
                         </a>
                     </li>
@@ -25,55 +25,43 @@
             </div>
 
             <!-- ข้อมูลติดต่อ -->
-            <div class="col-md-4 col-lg-3">
-                <h5 class="fw-bold mb-3">ข้อมูลติดต่อ</h5>
-                <p class="mb-2">
-                    {{-- <i class="fas fa-envelope me-2"></i> itcenter@snru.ac.th --}}
-                    มหาวิทยาลัยราชภัฏสกลนคร เลขที่ 680 ถนนนิตโย ตำบลธาตุเชิงชุม อำเภอเมือง จังหวัดสกลนคร 47000
+            <div class="col-md-4 col-lg-4">
+                <h6 class="fw-bold mb-2 text-uppercase">ข้อมูลติดต่อ</h6>
+                <p class="mb-1 small text-white-50">
+                    มหาวิทยาลัยราชภัฏสกลนคร<br>
+                    680 ถนนนิตโย ตำบลธาตุเชิงชุม อำเภอเมือง จังหวัดสกลนคร 47000
                 </p>
-                <p class="mb-0">
-                    {{-- <i class="fas fa-phone-alt me-2"></i> 042-970-000 ต่อ 1234 --}}
-                    โทรศัพท์ 042-970021 , 042-970094
-                </p>
-                <p class="mb-0">
-                    {{-- <i class="fas fa-fax me-2"></i> 042-970-000 ต่อ 1234 --}}
-                    โทรสาร 042-970022
+                <p class="mb-0 small text-white-50">
+                    โทรศัพท์ 042-970021 , 042-970094 | โทรสาร 042-970022
                 </p>
             </div>
 
             <!-- โซเชียลมีเดีย -->
             <div class="col-md-4 col-lg-3">
-                <h5 class="fw-bold mb-3">ติดตามเรา</h5>
-                <div class="d-flex justify-content-center justify-content-md-start gap-3 fs-4">
-                    <a href="https://www.facebook.com/SNRUOfficial" target="_blank" class="text-white link-hover"><i
-                            class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.youtube.com/@SNRU" target="_blank" class="text-white link-hover"><i
-                            class="fab fa-youtube"></i></a>
-                    <a href="https://www.snru.ac.th/th" target="_blank" class="text-white link-hover"><i
-                            class="fas fa-globe"></i></a>
+                <h6 class="fw-bold mb-2 text-uppercase">ติดตามเรา</h6>
+                <div class="d-flex justify-content-center justify-content-md-start gap-3 fs-5">
+                    <a href="https://www.facebook.com/SNRUOfficial" target="_blank" class="text-white link-hover"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.youtube.com/@SNRU" target="_blank" class="text-white link-hover"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.snru.ac.th/th" target="_blank" class="text-white link-hover"><i class="fas fa-globe"></i></a>
                 </div>
             </div>
         </div>
 
-        <!-- เส้นคั่น -->
-        <hr class="border-secondary my-4">
+        <hr class="border-secondary my-3">
 
-        <!-- ลิขสิทธิ์ -->
         <div class="text-center small text-secondary">
             &copy; {{ date('Y') }} มหาวิทยาลัยราชภัฏสกลนคร. สงวนลิขสิทธิ์.
         </div>
     </div>
 </footer>
 
-<!-- Hover Style -->
 <style>
     .link-hover:hover {
         color: #0d6efd !important;
         transition: color 0.3s ease;
     }
-
     footer i {
-        width: 20px;
+        width: 18px;
         text-align: center;
     }
 </style>

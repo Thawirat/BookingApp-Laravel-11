@@ -46,4 +46,4 @@ networks:
   dev_mysql_net:
     external: true
   dev_net:
-    driver: bridge
+    external: true

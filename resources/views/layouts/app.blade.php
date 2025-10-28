@@ -171,7 +171,7 @@
     </div>
     @auth
         <!-- Floating Notification Button -->
-        <div class="dropdown position-fixed top-0 end-0 m-3" style="z-index: 1060;">
+        {{-- <div class="dropdown position-fixed top-0 end-0 m-3" style="z-index: 1060;">
             <button class="btn shadow position-relative d-flex align-items-center justify-content-center" type="button"
                 data-bs-toggle="dropdown" aria-expanded="false" title="การแจ้งเตือน"
                 style="width:50px; height:50px; font-size:18px; background-color:#ffffff; color:#000; border-radius:50%; border:none; box-shadow:0 6px 15px rgba(0,0,0,0.25); transition: transform 0.2s, box-shadow 0.2s;">
@@ -205,7 +205,7 @@
                     </button>
                 </li>
             </ul>
-        </div>
+        </div> --}}
     @endauth
     <!-- Content -->
     <div class="content">

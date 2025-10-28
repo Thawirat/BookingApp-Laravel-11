@@ -21,7 +21,7 @@
             background-image: linear-gradient(to bottom right,
                     rgba(137, 255, 166, 0.4),
                     rgba(160, 183, 245, 0.6),
-                    rgba(245, 160, 234, 0.6)), url('{{ asset('images/bg-1.jpg') }}');
+                    rgba(245, 160, 234, 0.6)), url('<?php echo e(asset('images/bg-1.jpg')); ?>');
             background-size: cover;
             background-position: center;
         }
@@ -33,35 +33,63 @@
         class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md transform transition-all hover:scale-[1.01] duration-300 ease-in-out">
         <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">รีเซ็ตรหัสผ่าน</h2>
 
-        <form method="POST" action="{{ route('password.update') }}">
-            @csrf
+        <form method="POST" action="<?php echo e(route('password.update')); ?>">
+            <?php echo csrf_field(); ?>
 
-            <input type="hidden" name="token" value="{{ $token }}">
+            <input type="hidden" name="token" value="<?php echo e($token); ?>">
 
             <!-- Email -->
             <div class="mb-4">
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">อีเมล</label>
                 <input id="email" type="email" name="email"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') border-red-500 @enderror"
-                    value="{{ old('email', $email ?? '') }}" required autocomplete="email">
-                @error('email')
-                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                @enderror
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                    value="<?php echo e(old('email', $email ?? '')); ?>" required autocomplete="email">
+                <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <p class="mt-1 text-sm text-red-500"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <!-- Password -->
             <div class="mb-4 relative">
                 <label for="password" class="block text-sm font-medium text-gray-700 mb-2">รหัสผ่านใหม่</label>
                 <input id="password" type="password" name="password"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') border-red-500 @enderror"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                     required autocomplete="new-password">
                 <span onclick="togglePassword('password', 'togglePasswordBtn')" id="togglePasswordBtn"
                     class="absolute right-3 top-9 cursor-pointer text-gray-500 hover:text-gray-700">
                     <i class="far fa-eye" id="passwordEyeIcon"></i>
                 </span>
-                @error('password')
-                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                @enderror
+                <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <p class="mt-1 text-sm text-red-500"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <!-- Confirm Password -->
@@ -104,3 +132,4 @@
 </body>
 
 </html>
+<?php /**PATH /var/www/html/resources/views/reset-password.blade.php ENDPATH**/ ?>

@@ -11,7 +11,7 @@
   <style>
     body {
       font-family: 'Kanit', sans-serif;
-      background-image: linear-gradient(to bottom right, rgba(137, 255, 245, 0.4), rgba(160, 183, 245, 0.6), rgba(245, 160, 234, 0.6)), url('{{ asset('images/bg-1.jpg') }}');
+      background-image: linear-gradient(to bottom right, rgba(137, 255, 166, 0.4), rgba(160, 183, 245, 0.6), rgba(245, 160, 234, 0.6)), url('{{ asset('images/bg-1.jpg') }}');
       background-size: cover;
       background-position: center;
     }
@@ -19,7 +19,7 @@
 </head>
 
 <body class="flex items-center justify-center min-h-screen">
-  <div class="backdrop-blur-md bg-white/90 p-10 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
+  <div class="backdrop-blur-md bg-white/90 p-10 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 transform transition-all hover:scale-[1.01] duration-300 ease-in-out">
     <div class="text-center mb-8">
       <h2 class="text-3xl font-bold text-blue-700">เข้าสู่ระบบ</h2>
       <p class="text-gray-500 text-sm mt-1">ระบบจองห้องออนไลน์ของมหาวิทยาลัย</p>
@@ -44,13 +44,13 @@
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700">อีเมล</label>
         <input id="email" name="email" type="email" required
-          class="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
 
       <div class="relative">
         <label for="password" class="block text-sm font-medium text-gray-700">รหัสผ่าน</label>
         <input id="password" name="password" type="password" required
-          class="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-10" />
+          class="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10" />
         <span class="absolute right-3 top-9 cursor-pointer text-gray-500" onclick="togglePasswordVisibility('password', this)">
           <i class="fas fa-eye"></i>
         </span>
@@ -66,7 +66,7 @@
       </div>
 
       <button type="submit"
-        class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg">
+        class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 ease-in-out">
         เข้าสู่ระบบ
       </button>
     </form>

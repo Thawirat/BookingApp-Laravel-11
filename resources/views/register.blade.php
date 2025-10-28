@@ -12,16 +12,16 @@
     <style>
         body {
             font-family: 'Kanit', sans-serif;
-            background-image: url('{{ asset('images/bg-1.jpg') }}');
+            background-image: linear-gradient(to bottom right, rgba(137, 255, 166, 0.4), rgba(160, 183, 245, 0.6), rgba(245, 160, 234, 0.6)), url('{{ asset('images/bg-1.jpg') }}');
             background-size: cover;
             background-position: center;
         }
     </style>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 class="text-2xl font-bold text-center text-blue-600 mb-6">สมัครสมาชิก</h2>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen py-12">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md transform transition-all hover:scale-[1.01] duration-300 ease-in-out">
+        <h2 class="text-2xl font-bold text-center text-blue-800 mb-6">สมัครสมาชิก</h2>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -87,14 +87,14 @@
             </div>
             <div>
                 <button id="submitBtn"
-                    class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 opacity-50 cursor-not-allowed"
+                    class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 opacity-50 cursor-not-allowed transform hover:shadow-md hover:-translate-y-0.5 ease-in-out"
                     type="submit" disabled>สมัครสมาชิก</button>
 
             </div>
         </form>
-        <p class="mt-6 text-center text-gray-600">มีบัญชีอยู่แล้ว? <a class="text-blue-500 hover:underline"
+        <p class="mt-1 text-center text-gray-600">มีบัญชีอยู่แล้ว? <a class="text-blue-600 hover:underline"
                 href="{{ url('/login') }}">เข้าสู่ระบบ</a></p>
-        <p class="mt-6 text-center text-gray-600"><a class="text-blue-500 hover:underline"
+        <p class="mt-1 text-center text-gray-600"><a class="text-blue-600 hover:underline"
                 href="{{ url('/') }}">กลับสู่หน้าหลัก</a></p>
     </div>
 </body>

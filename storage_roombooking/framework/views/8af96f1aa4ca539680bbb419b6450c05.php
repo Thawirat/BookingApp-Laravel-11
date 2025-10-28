@@ -168,42 +168,7 @@
     </div>
     <?php if(auth()->guard()->check()): ?>
         <!-- Floating Notification Button -->
-        <div class="dropdown position-fixed top-0 end-0 m-3" style="z-index: 1060;">
-            <button class="btn shadow position-relative d-flex align-items-center justify-content-center" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false" title="การแจ้งเตือน"
-                style="width:50px; height:50px; font-size:18px; background-color:#ffffff; color:#000; border-radius:50%; border:none; box-shadow:0 6px 15px rgba(0,0,0,0.25); transition: transform 0.2s, box-shadow 0.2s;">
-                🔔
-                <?php if(auth()->user()->unreadNotifications->count() > 0): ?>
-                    <span id="notif-badge"
-                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                        style="font-size:0.65rem; width:18px; height:18px; display:flex; align-items:center; justify-content:center; padding:0;">
-                        <?php echo e(auth()->user()->unreadNotifications->count()); ?>
-
-                    </span>
-                <?php endif; ?>
-            </button>
-            <ul id="notification-list" class="dropdown-menu dropdown-menu-end shadow"
-                style="min-width: 300px; max-height: 400px; overflow-y: auto;">
-                <?php $__empty_1 = true; $__currentLoopData = auth()->user()->unreadNotifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            <?php echo e($notification->data['message']); ?> <br>
-                            <small class="text-muted"><?php echo e($notification->created_at->diffForHumans()); ?></small>
-                        </a>
-                    </li>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                    <li><span class="dropdown-item">ไม่มีการแจ้งเตือน</span></li>
-                <?php endif; ?>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li class="text-center">
-                    <button id="clear-notifications-btn" class="btn btn-sm btn-danger">
-                        ล้างการแจ้งเตือนทั้งหมด
-                    </button>
-                </li>
-            </ul>
-        </div>
+        
     <?php endif; ?>
     <!-- Content -->
     <div class="content">
